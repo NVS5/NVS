@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova Smart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* ===== التنسيقات العامة ===== */
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #0f1117;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin: 15px auto 5px auto;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      display: block;
+    }
+    .logo:hover { transform: scale(1.1); }
+
+    /* ===== شبكة التحكم ===== */
+    .switches {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      width: 95%;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .card {
+      background-color: #1f2330;
+      border-radius: 14px;
+      padding: 0;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      position: relative;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      /* منع تحديد النصوص المتكرر أثناء الضغط المطول */
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .status-box {
+      background-color: #1f2330;
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      transition: background-color 0.3s ease;
+      position: relative;
+      height: 200px;
+      cursor: default;
+    }
+
+    .card.active { background-color: #1baa58; }
+    .card.on { background-color: #1baa58; }
+    .card.auto { background-color: #FFC107; color: black; }
+    
+    .card i, .status-icon { font-size: 22px; margin-bottom: 5px; }
+    .card span { display: block; font-size: 12px; }
+
+    /* تنسيق كلمة "تلقائي" أسفل اسم الجهاز */
+    .auto-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: #000000;
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* ===== مؤشرات الحالة (الحرارة والمياه) ===== */
+    .bar-container {
+      width: 24px;
+      height: 100px;
+      background-color: #2f3444;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      margin: 8px auto;
+    }
+
+    .bar-fill {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      border-radius: 8px;
+      transition: height 0.5s ease;
+    }
+
+    .status-label { font-size: 18px; font-weight: bold; }
+    #Auto-card { grid-column: span 1; }
+
+    /* ===== الكارت ثلاثي الحالة ===== */
+    .triple-state-card {
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      cursor: default;
+    }
+    .triple-state-card.active { background-color: #4CAF50; color: white; }
+    .triple-state-card.pending { background-color: #FFC107; color: black; }
+    .triple-state-card.inactive { background-color: #E0E0E0; color: #777; }
+
+    /* ===== أيقونة العداد والمؤقت ===== */
+    .card .timer-icon {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 16px;
+      color: #bbb;
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.3s ease;
+    }
+    .card .timer-icon:hover { color: #1baa58; }
+
+    /* ===== النوافذ المنبثقة (Popup) ===== */
+    #timer-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1f2330;
+      padding: 20px;
+      border-radius: 10px;
+      z-index: 9999;
+      color: white;
+      min-width: 320px;
+      box-shadow: 0 0 15px #1baa58;
+      font-size: 14px;
+      direction: rtl;
+    }
+
+    #timer-popup h3 { margin: 0 0 10px 0; font-weight: bold; text-align: center; }
+    #timer-popup label { display: block; margin-top: 10px; font-weight: bold; }
+    
+    #timer-popup input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background-color: #333;
+      color: white;
+      box-sizing: border-box;
+    }
+
+    #timer-popup button {
+      margin-top: 12px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      color: white;
+      width: 48%;
+    }
+
+    #set-timer-btn { background-color: #1baa58; }
+    #cancel-timer-btn { background-color: #777; }
+    #clear-timer-btn { background-color: #b32e2e; width: 100%; margin-top: 10px; }
+
+    #remote-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      z-index: 99999;
+      overflow: auto;
+    }
+
+    /* ===== ريموت التحكم ===== */
+    .remote {
+      width: 280px;
+      background: #0f0f0f;
+      border-radius: 30px;
+      padding: 16px 14px 22px;
+      margin: 40px auto;
+      color: #fff;
+    }
+
+    .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+    .row.two { grid-template-columns: repeat(2, 1fr); }
+    
+    .btn {
+      background: #2b2b2b;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 0;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn:active { background: #555; }
+    .red { background: #c0392b; }
+    .green { background: #27ae60; }
+    .yellow { background: #f1c40f; color: #000; }
+    .blue { background: #2980b9; }
+
+    .nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+    .ok { background: #444; font-weight: bold; }
+
+    .numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .extra-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+    .extra-keys .btn { padding: 14px 0; font-size: 13px; border-radius: 14px; }
+
+    .close-btn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #b32e2e;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* ===== شاشة التحميل ===== */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f1117;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loader {
+      width: 60px;
+      height: 60px;
+      border: 5px solid #2f3444;
+      border-top: 5px solid #1baa58;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .loading-text { margin-top: 15px; font-size: 16px; color: white; }
+
+    /* ===== نافذة تسجيل الدخول الجديدة ===== */
+    #login-popup {
+      position: fixed;
+      inset: 0;
+      background: #0f1117;
+      z-index: 999999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      direction: rtl;
+    }
+    .login-box {
+      background: #1f2330;
+      padding: 30px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .login-box h2 { margin: 0 0 20px 0; font-size: 22px; color: #1baa58; }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #2f3444;
+      background: #0f1117;
+      color: white;
+      font-family: 'Cairo';
+      box-sizing: border-box;
+      font-size: 14px;
+      outline: none;
+    }
+    .login-box input:focus { border-color: #1baa58; }
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: #1baa58;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Cairo';
+      font-size: 16px;
+      transition: background 0.2s ease;
+    }
+    .login-box button:hover { background: #158543; }
+    .login-box .error-msg {
+      color: #f44336;
+      font-size: 13px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== التجاوب مع الهواتف ===== */
+    @media screen and (orientation: portrait) {
+      .switches { grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 400px; }
+      #Auto-card { grid-column: span 2; }
+    }
+    
+    .status-led {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 16.5px;
+      height: 16.5px;
+      border-radius: 50%;
+      border: 1px solid #555;
+      display: none;
+    }
+
+    .status-led.show {
+      display: block;
+    }
+
+    .status-led.green {
+      background: #008f2f;
+      border: 1px solid #00ff66;
+      box-shadow: 0 0 5px #00ff66, 0 0 10px #00ff66;
+    }
+
+    .status-led.black {
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loading-screen">
+    <div class="loader"></div>
+    <div class="loading-text">جاري الاتصال...</div>
+  </div>
+
+  <div id="login-popup" style="display: none;">
+    <div class="login-box">
+      <h2>تسجيل دخول لوحة التحكم</h2>
+      <input type="email" id="login-email" placeholder="البريد الإلكتروني" required />
+      <input type="password" id="login-password" placeholder="كلمة المرور" required />
+      <button id="login-btn">تسجيل الدخول</button>
+      <div class="error-msg" id="login-error">فشل تسجيل الدخول! يرجى التحقق من صحة البيانات.</div>
+    </div>
+  </div>
+
+  <div class="switches">  
+    <div class="status-box">  
+      <i class="fas fa-thermometer-half status-icon"></i>  
+      <div class="bar-container">  
+        <div id="temperature-bar" class="bar-fill" style="height: 0%; background: linear-gradient(to top, #f44336, #ff9800);"></div>  
+      </div>  
+      <div class="status-label" id="temperature-value">0°C</div>  
+    </div>  
+
+    <div class="status-box">  
+      <i class="fas fa-tint status-icon"></i>  
+      <div class="bar-container">  
+        <div id="water-bar" class="bar-fill" style="height: 0%; background: linear-gradient(to top, #00c6ff, #0072ff);"></div>  
+      </div>  
+      <div class="status-label" id="water-value">0%</div>  
+    </div>  
+
+    <div class="card" id="waterpump-card">  
+      <div class="status-led"></div>
+      <i class="fas fa-faucet"></i><span>موتير</span>  
+      <i class="fas fa-clock timer-icon" title="ضبط مؤقت" data-device="waterpump"></i>  
+    </div>  
+
+    <div class="card triple-state-card" id="triple-state-card">  
+      <i class="fas fa-plug"></i>  
+      <span id="triple-state-label">تحميل...</span>  
+    </div>  
+
+    <div class="card" id="heater-card">  
+      <div class="status-led"></div>
+      <i class="fas fa-fire"></i><span>Heater (سخان)</span>  
+      <i class="fas fa-clock timer-icon" title="ضبط مؤقت" data-device="heater"></i>  
+    </div>  
+
+    <div class="card" id="remote-card">  
+      <i class="fas fa-tv"></i><span>ريموت</span>
+    </div>    
+
+    <div class="card" id="lamp1-card">  
+      <div class="status-led"></div>
+      <i class="fas fa-lightbulb"></i><span>Lamp 1</span>  
+      <i class="fas fa-clock timer-icon" title="ضبط مؤقت" data-device="lamp1"></i>  
+    </div>  
+
+    <div class="card" id="lamp2-card">  
+      <div class="status-led"></div>
+      <i class="fas fa-lightbulb"></i><span>Lamp 2</span>  
+      <i class="fas fa-clock timer-icon" title="ضبط مؤقت" data-device="lamp2"></i>  
+    </div>  
+  </div>    
+
+  <div id="remote-popup">  
+    <button class="close-btn" onclick="closeRemote()">✖ إغلاق</button>  
+    <div class="remote">    
+      <div class="row two">  
+        <button class="btn red" onclick="sendCmd('0x23DC', '0xFD01')">🔆</button>  
+        <button class="btn" onclick="sendCmd('0x8B', '0xFD01')">🔇</button>  
+      </div>    
+      <div class="row">  
+        <button class="btn" onclick="sendCmd('0xC9', '0xFD01')">&#x23EF;</button>  
+        <button class="btn" onclick="sendCmd('0xC8', '0xFD01')">USB</button>  
+        <button class="btn" onclick="sendCmd('0x99', '0xFD01')">&#x25CF;</button>  
+        <button class="btn" onclick="sendCmd('0xCD', '0xFD01')">INFO</button>  
+      </div>    
+      <div class="row">  
+        <button class="btn red" onclick="sendCmd('0xC7', '0xFD01')">|&#x25C0;&#x25C0;</button>  
+        <button class="btn green" onclick="sendCmd('0xC6', '0xFD01')">&#x25B6;&#x25B6;|</button>  
+        <button class="btn yellow" onclick="sendCmd('0xC5', '0xFD01')">&#x25C0;&#x25C0;</button>  
+        <button class="btn blue" onclick="sendCmd('0xC4', '0xFD01')">&#x25B6;&#x25B6;</button>  
+      </div>  
+      <div class="row two">  
+        <button class="btn" onclick="sendCmd('0x9F', '0xFD01')">FAV</button>  
+        <button class="btn" onclick="sendCmd('0x9B', '0xFD01')">SAT</button>
+      </div>    
+      <div class="nav">  
+        <div></div><button class="btn" onclick="sendCmd('0xDE', '0xFD01')">&#x25B2;</button><div></div>  
+        <button class="btn" onclick="sendCmd('0xDB', '0xFD01')">&#x25C0;</button>  
+        <button class="btn ok" onclick="sendCmd('0xDA', '0xFD01')">OK</button>  
+        <button class="btn" onclick="sendCmd('0xD8', '0xFD01')">&#x25B6;</button>  
+        <div></div><button class="btn" onclick="sendCmd('0xD6', '0xFD01')">&#x25BC;</button><div></div>  
+      </div>     
+      <div class="row two">  
+        <button class="btn" onclick="sendCmd('0xD4', '0xFD01')">MENU</button>  
+        <button class="btn" onclick="sendCmd('0xD7', '0xFD01')">EXIT</button>  
+      </div>    
+      <div class="extra-keys">  
+        <button class="btn" onclick="sendCmd('0x9D', '0xFD01')">SUBTITLE</button>  
+        <button class="btn" onclick="sendCmd('0xDD', '0xFD01')">RECALL</button>  
+        <button class="btn green" onclick="sendCmd('0x83', '0xFD01')">PAGE +</button>    
+        <button class="btn" onclick="sendCmd('0xCE', '0xFD01')">TXT</button>
+        <button class="btn" onclick="sendCmd('0xD0', '0xFD01')">AUDIO</button>
+        <button class="btn red" onclick="sendCmd('0xCC', '0xFD01')">PAGE −</button>
+      </div>    
+      <div class="numbers">  
+        <button class="btn" onclick="sendCmd('0x8E', '0xFD01')">1</button>  
+        <button class="btn" onclick="sendCmd('0x86', '0xFD01')">2</button>  
+        <button class="btn" onclick="sendCmd('0x8F', '0xFD01')">3</button>  
+        <button class="btn" onclick="sendCmd('0x92', '0xFD01')">4</button>  
+        <button class="btn" onclick="sendCmd('0x87', '0xFD01')">5</button>  
+        <button class="btn" onclick="sendCmd('0x93', '0xFD01')">6</button>  
+        <button class="btn" onclick="sendCmd('0x96', '0xFD01')">7</button>  
+        <button class="btn" onclick="sendCmd('0x82', '0xFD01')">8</button>  
+        <button class="btn" onclick="sendCmd('0x97', '0xFD01')">9</button>  
+        <button class="btn" onclick="sendCmd('0x9A', '0xFD01')">0</button>  
+        <button class="btn" onclick="sendCmd('0xDF', '0xFD01')">EPG</button>  
+        <button class="btn" onclick="sendCmd('0X89', '0xFD01')">TV/R</button>  
+      </div>  
+    </div>  
+  </div>  
+
+  <div id="timer-popup">  
+    <h3>ضبط مؤقت الجهاز</h3>  
+    <label for="start-time">البداية:</label>  
+    <input type="datetime-local" id="start-time" />  
+    <label for="end-time">النهاية:</label>  
+    <input type="datetime-local" id="end-time" />  
+    <div style="display:flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">  
+      <button id="set-timer-btn">ضبط</button>  
+      <button id="cancel-timer-btn">إلغاء</button>  
+      <button id="clear-timer-btn">مسح المؤقت</button>  
+    </div>  
+  </div>  
+
+  <script type="module">  
+    // استيراد حزم الموديول الكاملة لـ Firebase بما فيها الـ Auth
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  
+    const firebaseConfig = {  
+      apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
+      authDomain: "smarthome-ad84f.firebaseapp.com",  
+      databaseURL: "https://smarthome-ad84f-default-rtdb.firebaseio.com",  
+      projectId: "smarthome-ad84f",  
+      storageBucket: "smarthome-ad84f.appspot.com",  
+      messagingSenderId: "849228056680",  
+      appId: "1:849228056680:web:09fa91eaca63dc148953dd"  
+    };  
+  
+    const app = initializeApp(firebaseConfig);  
+    const database = getDatabase(app);  
+    const auth = getAuth(app); // إطلاق كائن التوثيق المصاحب للمشروع
+  
+    // عناصر النوافذ والشاشات
+    const loadingScreen = document.getElementById("loading-screen");
+    const loginPopup = document.getElementById("login-popup");
+    let pageReady = false;
+    let disconnectTimer = null; 
+
+    function hideLoading() {
+      if (pageReady) return;
+      pageReady = true;
+      loadingScreen.style.opacity = "0";
+      setTimeout(() => { loadingScreen.style.display = "none"; }, 500);
+    }
+
+    // ===== مراقبة حالة تسجيل الجلسة (الحفظ التلقائي في LocalStorage) =====
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // إذا كان العميل قد سجل دخوله مسبقاً، نخفي نافذة الدخول ونتابع الاتصال بقاعدة البيانات
+        loginPopup.style.display = "none";
+
+        onValue(ref(database, ".info/connected"), (snap) => {
+          if (snap.val() === true) {
+            if (disconnectTimer) {
+              clearTimeout(disconnectTimer);
+              disconnectTimer = null;
+            }
+            setTimeout(hideLoading, 1000);
+          } else {
+            if (pageReady && !disconnectTimer) {
+              disconnectTimer = setTimeout(() => {
+                loadingScreen.style.display = "flex";
+                loadingScreen.style.opacity = "1";
+                document.querySelector(".loading-text").innerText = "فُقد الاتصال! جاري إعادة التشغيل...";
+                setTimeout(() => { window.location.reload(); }, 500);
+              }, 4000); 
+            }
+          }
+        });
+
+        // تشغيل كافة مستمعات الأحداث وبث البيانات بعد تأكيد الهوية الأمنية
+        initSmartHomeApp();
+
+      } else {
+        // إذا لم تكن هناك جلسة سابقة، نخفي شاشة اللودر ونظهر واجهة طلب البيانات السري
+        loadingScreen.style.display = "none";
+        loginPopup.style.display = "flex";
+      }
+    });
+
+    // معالجة حدث الضغط على زر تسجيل الدخول
+    document.getElementById("login-btn").addEventListener("click", () => {
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      const errorMsg = document.getElementById("login-error");
+
+      if (!email || !password) return;
+
+      // إظهار شاشة اللودينج أثناء التحقق الفعلي مع الخادم
+      loadingScreen.style.display = "flex";
+      loadingScreen.style.opacity = "1";
+      document.querySelector(".loading-text").innerText = "جاري التحقق من الصلاحيات...";
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          errorMsg.style.display = "none";
+        })
+        .catch((error) => {
+          loadingScreen.style.display = "none";
+          errorMsg.style.display = "block";
+          console.error("Authentication failed:", error.message);
+        });
+    });
+
+    // ===== كبسولة النظام الأساسية ولوحة التحكم الفنية =====
+    function initSmartHomeApp() {
+  
+      // ===== التحكم بالريموت =====  
+      const remotePopup = document.getElementById("remote-popup");  
+      const remoteCard  = document.getElementById("remote-card");  
+    
+      remoteCard.addEventListener("click", () => { remotePopup.style.display = "block"; });  
+      window.closeRemote = function () { remotePopup.style.display = "none"; };  
+
+      window.sendCmd = function (command, address) {  
+        const remoteRef = ref(database, "Remote");  
+        set(remoteRef, { command: command, address: address });  
+      };  
+    
+      // ===== الأزرار والمفاتيح العادية =====  
+      const toggles = [  
+        { path: "output/devices/waterpump", id: "waterpump" },  
+        { path: "output/devices/heater", id: "heater" },  
+        { path: "output/devices/lamp1", id: "lamp1" },  
+        { path: "output/devices/lamp2", id: "lamp2" }
+      ];  
+    
+      let localDeviceStates = {};
+
+      toggles.forEach((toggle) => {  
+        const card = document.getElementById(`${toggle.id}-card`);  
+        const dbRef = ref(database, toggle.path);  
+    
+        // استقبال الحالة من السيرفر بشكل حي مباشر
+        onValue(dbRef, (snap) => {  
+          const val = snap.val() ?? 0;
+          localDeviceStates[toggle.id] = val;
+
+          card.classList.remove("on", "auto");
+
+          const led = card.querySelector(".status-led");
+          if (led) { led.classList.remove("show", "green", "black"); }
+          
+          const oldLabel = card.querySelector(".auto-label");
+          if (oldLabel) oldLabel.remove();
+
+          if (val === 1) {
+            card.classList.add("on");
+          } else if (val === 2) {
+            card.classList.add("auto");
+            const autoSpan = document.createElement("span");
+            autoSpan.className = "auto-label";
+            autoSpan.innerText = "تلقائي";
+            card.appendChild(autoSpan);
+            if (led) { led.classList.add("show", "black"); }
+          } else if (val === 3) {
+            card.classList.add("auto");
+            const autoSpan = document.createElement("span");
+            autoSpan.className = "auto-label";
+            autoSpan.innerText = "تلقائي";
+            card.appendChild(autoSpan);
+            if (led) { led.classList.add("show", "green"); }
+          }
+        });  
+    
+        let pressTimer = null;
+        let isLongPress = false;
+
+        card.addEventListener("pointerdown", (e) => {
+          if (e.target.classList.contains("timer-icon")) return;
+          isLongPress = false;
+          if (pressTimer) clearTimeout(pressTimer);
+
+          pressTimer = setTimeout(() => {
+            isLongPress = true;
+            set(dbRef, 2); // الانتقال للوضع التلقائي
+            if (navigator.vibrate) navigator.vibrate(60); 
+          }, 700); 
+        });
+
+        card.addEventListener("pointerup", (e) => {
+          if (e.target.classList.contains("timer-icon")) return;
+          clearTimeout(pressTimer); 
+
+          if (!isLongPress) {
+            let current = localDeviceStates[toggle.id] ?? 0;
+            let newState = 0;
+
+            if (current === 0) newState = 1;
+            else if (current === 1) newState = 0;
+            else if (current === 2 || current === 3) newState = 0;
+
+            set(dbRef, newState);
+          }
+        });
+
+        card.addEventListener("pointercancel", () => {
+          clearTimeout(pressTimer);
+        });
+      });  
+
+      // ===== قراءة وتحديث قيم الحساسات المباشرة =====  
+      onValue(ref(database, "temperature"), (snap) => {  
+        const temp = snap.val() || 0;  
+        document.getElementById("temperature-bar").style.height = `${temp}%`;  
+        document.getElementById("temperature-value").innerText = `${temp}°C`;  
+      });  
+    
+      onValue(ref(database, "waterLevel"), (snap) => {  
+        const level = snap.val() || 0;  
+        document.getElementById("water-bar").style.height = `${level}%`;  
+        document.getElementById("water-value").innerText = `${level}%`;  
+      });  
+    
+      // ===== عرض الحالات ثلاثية المصدر =====  
+      const tripleStates = [  
+        { class: "active", label: "دولة", value: 1 },  
+        { class: "pending", label: "نيوترل", value: 0 },  
+        { class: "inactive", label: "اشتراك", value: 2 }  
+      ];  
+    
+      const tripleCard = document.getElementById("triple-state-card");  
+      const labelSpan = document.getElementById("triple-state-label");  
+      const ishtirakRef = ref(database, "output/devices/kahrba");  
+    
+      function updateTripleStateUI(stateIndex) {  
+        tripleCard.classList.remove("active", "pending", "inactive");  
+        const state = tripleStates[stateIndex];  
+        tripleCard.classList.add(state.class);  
+        labelSpan.textContent = state.label;  
+      }  
+    
+      onValue(ishtirakRef, (snap) => {  
+        const val = snap.val();  
+        const index = tripleStates.findIndex(s => s.value === val);  
+        if (index !== -1) updateTripleStateUI(index);  
+      });  
+    
+      // ===== إدارة وضبط المؤقتات الحية الزمنية =====  
+      const popup = document.getElementById("timer-popup");  
+      const startInput = document.getElementById("start-time");  
+      const endInput = document.getElementById("end-time");  
+      const setTimerBtn = document.getElementById("set-timer-btn");  
+      const cancelTimerBtn = document.getElementById("cancel-timer-btn");  
+      const clearTimerBtn = document.getElementById("clear-timer-btn");  
+    
+      let currentDevice = null;  
+    
+      function msToLocalDatetime(ms) {  
+        if (!ms) return "";  
+        const date = new Date(ms);  
+        const year = date.getFullYear();  
+        const month = String(date.getMonth() + 1).padStart(2, "0");  
+        const day = String(date.getDate()).padStart(2, "0");  
+        const hours = String(date.getHours()).padStart(2, "0");  
+        const minutes = String(date.getMinutes()).padStart(2, "0");  
+        return `${year}-${month}-${day}T${hours}:${minutes}`;  
+      }  
+    
+      function datetimeLocalToMs(localStr) {  
+        if (!localStr) return null;  
+        const [datePart, timePart] = localStr.split("T");  
+        const [year, month, day] = datePart.split("-").map(Number);  
+        const [hour, minute] = timePart.split(":").map(Number);  
+        return new Date(year, month - 1, day, hour, minute).getTime();  
+      }  
+    
+      document.querySelectorAll(".timer-icon").forEach(icon => {  
+        icon.addEventListener("click", (e) => {  
+          e.stopPropagation();  
+          currentDevice = icon.getAttribute("data-device");  
+          popup.style.display = "block";  
+          popup.querySelector("h3").textContent = `ضبط مؤقت جهاز ${currentDevice}`;  
+    
+          const timerRef = ref(database, `timers/${currentDevice}`);  
+          onValue(timerRef, (snap) => {  
+            const data = snap.val();  
+            startInput.value = data?.start ? msToLocalDatetime(data.start) : "";  
+            endInput.value = data?.end ? msToLocalDatetime(data.end) : "";  
+          }, { onlyOnce: true });  
+        });  
+      });  
+    
+      setTimerBtn.addEventListener("click", () => {  
+        if (!currentDevice) return;  
+        const startMs = datetimeLocalToMs(startInput.value);  
+        const endMs = datetimeLocalToMs(endInput.value);  
+        if (!startMs || !endMs || startMs >= endMs) {  
+          popup.style.display = "none";  
+          currentDevice = null;  
+          return;  
+        }  
+        const timerRef = ref(database, `timers/${currentDevice}`);  
+        set(timerRef, { start: startMs, end: endMs }).then(() => {  
+          popup.style.display = "none";  
+          currentDevice = null;  
+        });  
+      });  
+    
+      cancelTimerBtn.addEventListener("click", () => {  
+        popup.style.display = "none";  
+        currentDevice = null;  
+      });  
+    
+      clearTimerBtn.addEventListener("click", () => {  
+        if (!currentDevice) return;  
+        const timerRef = ref(database, `timers/${currentDevice}`);  
+        set(timerRef, null).then(() => {  
+          popup.style.display = "none";  
+          currentDevice = null;  
+        });  
+      });  
+    }
+  </script>
+</body>
+</html>
