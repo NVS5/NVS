@@ -1,209 +1,464 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nova Smart</title>
   
   <link rel="manifest" href="manifest.json" />
-  
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Nova Smart" />
   <link rel="apple-touch-icon" href="logo.png" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
   <style>
-    /* ===== التنسيقات العامة ===== */
-    body {
-      font-family: 'Cairo', sans-serif;
-      background-color: #0f1117;
-      color: #fff;
+    :root {
+      /* Default Light Theme */
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #94a3b8;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark-mode {
+      /* Dark Theme */
+      --bg-color: #0b0f19;
+      --card-bg: #151c2c;
+      --card-border: #222d45;
+      --text-main: #ffffff;
+      --text-sub: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+      transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.1s;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
       display: flex;
-      flex-direction: column;
+      justify-content: center;
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .logo {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      margin: 15px auto 5px auto;
       cursor: pointer;
-      transition: transform 0.2s ease;
-      display: block;
-    }
-    .logo:hover { transform: scale(1.1); }
-
-    /* ===== شبكة التحكم ===== */
-    .switches {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      width: 95%;
-      max-width: 600px;
-      margin: 20px auto;
     }
 
-    .card {
-      background-color: #1f2330;
-      border-radius: 14px;
-      padding: 0;
-      text-align: center;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      position: relative;
-      height: 100px;
+    header h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .header-controls {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      gap: 8px;
+    }
+
+    .theme-btn, .lang-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--box-shadow);
+    }
+
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-sub);
+      font-weight: 700;
+      margin-bottom: 12px;
+      margin-top: 10px;
+    }
+
+    /* Top Grid: Water Tank & Temp */
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-stat {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .tank-box {
+      display: flex;
       align-items: center;
-      /* منع تحديد النصوص المتكرر أثناء الضغط المطول */
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
+      gap: 16px;
+      height: 90px;
     }
 
-    .status-box {
-      background-color: #1f2330;
-      border-radius: 14px;
-      padding: 14px;
-      text-align: center;
-      transition: background-color 0.3s ease;
+    .tank-container {
       position: relative;
-      height: 200px;
-      cursor: default;
-    }
-
-    .card.active { background-color: #1baa58; }
-    .card.on { background-color: #1baa58; }
-    .card.auto { background-color: #FFC107; color: black; }
-    
-    .card i, .status-icon { font-size: 22px; margin-bottom: 5px; }
-    .card span { display: block; font-size: 12px; }
-
-    /* تنسيق كلمة "تلقائي" أسفل اسم الجهاز */
-    .auto-label {
-      font-size: 11px;
-      font-weight: 900;
-      color: #000000;
-      margin-top: 2px;
-      display: block;
-    }
-
-    /* ===== مؤشرات الحالة (الحرارة والمياه) ===== */
-    .bar-container {
-      width: 24px;
-      height: 100px;
-      background-color: #2f3444;
+      width: 50px;
+      height: 80px;
+      border: 2px solid var(--accent-blue);
       border-radius: 8px;
-      position: relative;
+      background: rgba(59, 130, 246, 0.05);
       overflow: hidden;
-      margin: 8px auto;
     }
 
-    .bar-fill {
+    .tank-fill {
       position: absolute;
       bottom: 0;
       width: 100%;
-      border-radius: 8px;
+      height: 0%;
+      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+      border-radius: 0 0 4px 4px;
       transition: height 0.5s ease;
     }
 
-    .status-label { font-size: 18px; font-weight: bold; }
-    #Auto-card { grid-column: span 1; }
+    .bubble {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      bottom: 0;
+      animation: rise 3s infinite ease-in;
+    }
+    .b1 { width: 4px; height: 4px; left: 30%; animation-duration: 2.5s; }
+    .b2 { width: 6px; height: 6px; left: 60%; animation-duration: 3.2s; animation-delay: 0.5s; }
 
-    /* ===== الكارت ثلاثي الحالة ===== */
-    .triple-state-card {
-      height: 100px;
+    @keyframes rise {
+      0% { bottom: -5px; opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { bottom: 100%; opacity: 0; }
+    }
+
+    .tank-details h3 {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .tank-details p {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .temp-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 90px;
+    }
+
+    .temp-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-red);
+    }
+
+    .temp-lbl {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    /* Dual Power Source Grid */
+    .power-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .power-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 14px;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      cursor: default;
+      text-align: center;
+      box-shadow: var(--box-shadow);
+      opacity: 0.5;
+      transform: scale(0.98);
+      position: relative;
     }
-    .triple-state-card.active { background-color: #4CAF50; color: white; }
-    .triple-state-card.pending { background-color: #FFC107; color: black; }
-    .triple-state-card.inactive { background-color: #E0E0E0; color: #777; }
 
-    /* ===== أيقونة العداد والمؤقت ===== */
-    .card .timer-icon {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      font-size: 16px;
-      color: #bbb;
+    .power-card .power-icon {
+      font-size: 20px;
+      margin-bottom: 6px;
+      color: var(--text-sub);
+    }
+
+    .power-card .power-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .power-card .power-status {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 4px;
+      color: var(--text-sub);
+    }
+
+    /* Active Power Card Style */
+    .power-card.active {
+      opacity: 1;
+      transform: scale(1);
+      border-color: var(--accent-green);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.08) 100%);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+
+    .power-card.active .power-icon {
+      color: var(--accent-green);
+    }
+
+    .power-card.active .power-status {
+      color: var(--accent-green);
+      font-weight: 800;
+    }
+
+    /* Controls Grid */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .control-window {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 110px;
+      box-shadow: var(--box-shadow);
       cursor: pointer;
-      z-index: 10;
-      transition: color 0.3s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      position: relative;
     }
-    .card .timer-icon:hover { color: #1baa58; }
 
-    /* ===== النوافذ المنبثقة (Popup) ===== */
+    .control-window:active {
+      transform: scale(0.97);
+    }
+
+    /* Active States */
+    .control-window.on {
+      border-color: var(--accent-blue);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.08) 100%);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .control-window.auto {
+      border-color: var(--accent-amber);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(245, 158, 11, 0.08) 100%);
+    }
+
+    .control-window.timer-locked {
+      border-color: var(--accent-purple) !important;
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(139, 92, 246, 0.1) 100%) !important;
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    .window-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-icon {
+      font-size: 20px;
+      color: var(--text-sub);
+    }
+
+    .control-window.on .window-icon { color: var(--accent-blue); }
+    .control-window.auto .window-icon { color: var(--accent-amber); }
+    .control-window.timer-locked .window-icon { color: var(--accent-purple); }
+
+    .status-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-sub);
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body.dark-mode .status-tag {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .control-window.on .status-tag {
+      color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.15);
+    }
+
+    .control-window.auto .status-tag {
+      color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.15);
+    }
+
+    .control-window.timer-locked .status-tag {
+      color: var(--accent-purple);
+      background: rgba(139, 92, 246, 0.15);
+    }
+
+    .window-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* Timer Icon */
+    .timer-icon {
+      font-size: 14px;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: color 0.3s ease;
+      padding: 4px;
+    }
+    .timer-icon:hover { color: var(--accent-blue); }
+
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-15deg); }
+      75% { transform: rotate(15deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .timer-active {
+      animation: shake 0.5s infinite;
+      color: var(--accent-amber) !important;
+    }
+
+    /* LED Indicator */
+    .status-led {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: none;
+    }
+    .status-led.show { display: inline-block; }
+    .status-led.green { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+    .status-led.black { background: #000; }
+
+    /* Popups */
     #timer-popup {
       display: none;
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #1f2330;
-      padding: 20px;
-      border-radius: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 24px;
+      border-radius: 20px;
       z-index: 9999;
-      color: white;
-      min-width: 320px;
-      box-shadow: 0 0 15px #1baa58;
-      font-size: 14px;
-      direction: rtl;
+      color: var(--text-main);
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    #timer-popup h3 { margin: 0 0 10px 0; font-weight: bold; text-align: center; }
-    #timer-popup label { display: block; margin-top: 10px; font-weight: bold; }
-    
+    #timer-popup h3 { font-size: 16px; margin-bottom: 12px; text-align: center; font-weight: 800; }
+    #timer-popup label { display: block; margin-top: 10px; font-size: 12px; color: var(--text-sub); font-weight: 700; }
     #timer-popup input {
       width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: none;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--bg-color);
+      color: var(--text-main);
       outline: none;
-      font-size: 14px;
-      background-color: #333;
-      color: white;
-      box-sizing: border-box;
     }
 
     #timer-popup button {
-      margin-top: 12px;
-      padding: 10px 15px;
+      margin-top: 14px;
+      padding: 10px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 700;
       color: white;
       width: 48%;
     }
 
-    #set-timer-btn { background-color: #1baa58; }
-    #cancel-timer-btn { background-color: #777; }
-    #clear-timer-btn { background-color: #b32e2e; width: 100%; margin-top: 10px; }
+    #set-timer-btn { background-color: var(--accent-blue); }
+    #cancel-timer-btn { background-color: var(--text-sub); }
+    #clear-timer-btn { background-color: var(--accent-red); width: 100% !important; margin-top: 10px; }
 
+    /* Remote Popup */
     #remote-popup {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.85);
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
       z-index: 99999;
       overflow: auto;
     }
 
-    /* ===== ريموت التحكم ===== */
     .remote {
       width: 280px;
       background: #0f0f0f;
@@ -211,20 +466,12 @@
       padding: 16px 14px 22px;
       margin: 40px auto;
       color: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     }
 
     .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
     .row.two { grid-template-columns: repeat(2, 1fr); }
-    
-    .btn {
-      background: #2b2b2b;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 0;
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-    }
+    .btn { background: #2b2b2b; border: none; border-radius: 12px; padding: 12px 0; color: #fff; font-size: 14px; cursor: pointer; }
     .btn:active { background: #555; }
     .red { background: #c0392b; }
     .green { background: #27ae60; }
@@ -233,102 +480,98 @@
 
     .nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
     .ok { background: #444; font-weight: bold; }
-
     .numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
     .extra-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
     .extra-keys .btn { padding: 14px 0; font-size: 13px; border-radius: 14px; }
 
     .close-btn {
       position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #b32e2e;
+      top: 16px;
+      right: 16px;
+      background: var(--accent-red);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 10px 14px;
+      border-radius: 10px;
+      padding: 8px 14px;
       font-weight: bold;
       cursor: pointer;
     }
+    html[dir="rtl"] .close-btn {
+      right: auto;
+      left: 16px;
+    }
 
-    /* ===== شاشة التحميل ===== */
+    /* Loading & Login Screens */
     #loading-screen {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #0f1117;
+      inset: 0;
+      background: var(--bg-color);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 99999999;
+      z-index: 9999999;
       transition: opacity 0.5s ease;
     }
 
     .loader {
-      width: 60px;
-      height: 60px;
-      border: 5px solid #2f3444;
-      border-top: 5px solid #1baa58;
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--card-border);
+      border-top: 4px solid var(--accent-blue);
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
-    .loading-text { margin-top: 15px; font-size: 16px; color: white; }
 
-    /* ===== نافذة تسجيل الدخول الجديدة ===== */
+    .loading-text { margin-top: 15px; font-size: 14px; color: var(--text-sub); font-weight: 600; }
+
     #login-popup {
       position: fixed;
       inset: 0;
-      background: #0f1117;
+      background: var(--bg-color);
       z-index: 999999;
       display: flex;
       justify-content: center;
       align-items: center;
-      direction: rtl;
     }
+
     .login-box {
-      background: #1f2330;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       padding: 30px;
-      border-radius: 16px;
+      border-radius: 20px;
       width: 90%;
       max-width: 360px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      box-shadow: var(--box-shadow);
       text-align: center;
     }
-    .login-box h2 { margin: 0 0 20px 0; font-size: 22px; color: #1baa58; }
+
+    .login-box h2 { margin-bottom: 20px; font-size: 20px; color: var(--accent-blue); font-weight: 800; }
     .login-box input {
       width: 100%;
       padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #2f3444;
-      background: #0f1117;
-      color: white;
-      font-family: 'Cairo';
-      box-sizing: border-box;
-      font-size: 14px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--bg-color);
+      color: var(--text-main);
       outline: none;
     }
-    .login-box input:focus { border-color: #1baa58; }
+
     .login-box button {
       width: 100%;
       padding: 12px;
-      background: #1baa58;
+      background: var(--accent-blue);
       border: none;
       color: white;
-      font-weight: bold;
-      border-radius: 8px;
+      font-weight: 700;
+      border-radius: 10px;
       cursor: pointer;
-      font-family: 'Cairo';
-      font-size: 16px;
-      transition: background 0.2s ease;
     }
-    .login-box button:hover { background: #158543; }
+
     .login-box .error-msg {
-      color: #f44336;
-      font-size: 13px;
+      color: var(--accent-red);
+      font-size: 12px;
       margin-top: 12px;
       display: none;
     }
@@ -337,131 +580,159 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
-
-    /* ===== التجاوب مع الهواتف ===== */
-    @media screen and (orientation: portrait) {
-      .switches { grid-template-columns: repeat(2, 1fr); gap: 15px; max-width: 400px; }
-      #Auto-card { grid-column: span 2; }
-    }
-    
-    .status-led {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      width: 16.5px;
-      height: 16.5px;
-      border-radius: 50%;
-      border: 1px solid #555;
-      display: none;
-    }
-
-    .status-led.show {
-      display: block;
-    }
-
-    .status-led.green {
-      background: #008f2f;
-      border: 1px solid #00ff66;
-      box-shadow: 0 0 5px #00ff66, 0 0 10px #00ff66;
-    }
-
-    .status-led.black {
-      background: #000;
-    }
-    
-    /* حركة أيقونة المؤقت */
-@keyframes shake {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(-15deg); }
-  75% { transform: rotate(15deg); }
-  100% { transform: rotate(0deg); }
-}
-
-.timer-active {
-  animation: shake 0.5s infinite;
-  color: #ffc107 !important; /* لون التنبيه */
-}
-
-/* تنسيق الزر عند وجود مؤقت (القيمة 4) */
-.card.timer-locked {
-  background-color: #6a1b9a !important; /* لون بنفسجي */
-  cursor: not-allowed;
-  opacity: 0.8;
-}
-
-    
   </style>
 </head>
 <body>
 
+  <!-- Loading Screen -->
   <div id="loading-screen">
     <div class="loader"></div>
-    <div class="loading-text">جاري الاتصال...</div>
+    <div class="loading-text" data-i18n="connecting">Connecting...</div>
   </div>
 
+  <!-- Login Popup -->
   <div id="login-popup" style="display: none;">
     <div class="login-box">
-      <h2>تسجيل دخول لوحة التحكم</h2>
-      <input type="email" id="login-email" placeholder="البريد الإلكتروني" required />
-      <input type="password" id="login-password" placeholder="كلمة المرور" required />
-      <button id="login-btn">تسجيل الدخول</button>
-      <div class="error-msg" id="login-error">فشل تسجيل الدخول! يرجى التحقق من صحة البيانات.</div>
+      <h2 data-i18n="loginTitle">Control Panel Login</h2>
+      <input type="email" id="login-email" placeholder="Email" data-i18n-ph="emailPh" required />
+      <input type="password" id="login-password" placeholder="Password" data-i18n-ph="passPh" required />
+      <button id="login-btn" data-i18n="loginBtn">Login</button>
+      <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
     </div>
   </div>
 
-  <div class="switches">  
-    <div class="status-box">  
-      <i class="fas fa-thermometer-half status-icon"></i>  
-      <div class="bar-container">  
-        <div id="temperature-bar" class="bar-fill" style="height: 0%; background: linear-gradient(to top, #f44336, #ff9800);"></div>  
-      </div>  
-      <div class="status-label" id="temperature-value">0°C</div>  
-    </div>  
+  <!-- Main Container -->
+  <div class="container">
+    <header>
+      <div class="header-brand">
+        <img src="logo.png" alt="Logo" class="logo" />
+        <h1>Nova Smart</h1>
+      </div>
+      <div class="header-controls">
+        <button class="lang-btn" id="langBtn">العربية</button>
+        <button class="theme-btn" id="themeBtn">🌙 Dark</button>
+      </div>
+    </header>
 
-    <div class="status-box">  
-      <i class="fas fa-tint status-icon"></i>  
-      <div class="bar-container">  
-        <div id="water-bar" class="bar-fill" style="height: 0%; background: linear-gradient(to top, #00c6ff, #0072ff);"></div>  
-      </div>  
-      <div class="status-label" id="water-value">0%</div>  
-    </div>  
+    <!-- Sensors Section -->
+    <div class="top-grid">
+      <div class="card-stat">
+        <div class="tank-box">
+          <div class="tank-container">
+            <div id="water-bar" class="tank-fill">
+              <div class="bubble b1"></div>
+              <div class="bubble b2"></div>
+            </div>
+          </div>
+          <div class="tank-details">
+            <h3 id="water-value">0%</h3>
+            <p data-i18n="waterLevel">Water Level</p>
+          </div>
+        </div>
+      </div>
 
-    <div class="card" id="waterpump-card">  
-      <div class="status-led"></div>
-      <i class="fas fa-faucet"></i><span>موتير</span>  
-      <i class="fas fa-clock timer-icon" title="ضبط مؤقت" data-device="waterpump"></i>  
-    </div>  
+      <div class="card-stat">
+        <div class="temp-box">
+          <span class="temp-val" id="temperature-value">0°C</span>
+          <span class="temp-lbl" data-i18n="temperature">Temperature</span>
+        </div>
+      </div>
+    </div>
 
-    <div class="card triple-state-card" id="triple-state-card">  
-      <i class="fas fa-plug"></i>  
-      <span id="triple-state-label">تحميل...</span>  
-    </div>  
+    <!-- Grid Power Source Section (2 Cards) -->
+    <div class="section-title" data-i18n="secPower">Grid Power Source</div>
+    <div class="power-grid">
+      <div class="power-card" id="pwr-grid">
+        <i class="fa-solid fa-building-columns power-icon"></i>
+        <span class="power-name" data-i18n="pwrGrid">Grid Power</span>
+        <span class="power-status" id="pwr-grid-status" data-i18n="off">OFF</span>
+      </div>
+      <div class="power-card" id="pwr-generator">
+        <i class="fa-solid fa-plug-circle-bolt power-icon"></i>
+        <span class="power-name" data-i18n="pwrGenerator">Generator</span>
+        <span class="power-status" id="pwr-generator-status" data-i18n="off">OFF</span>
+      </div>
+    </div>
 
-    <div class="card" id="heater-card">  
-      <div class="status-led"></div>
-      <i class="fas fa-fire"></i><span>Heater (سخان)</span>  
-      <i class="fas fa-clock timer-icon" title="ضبط مؤقت" data-device="heater"></i>  
-    </div>  
+    <!-- Controls Grid Section -->
+    <div class="section-title" data-i18n="secControls">Controls</div>
+    <div class="controls-grid">
 
-    <div class="card" id="remote-card">  
-      <i class="fas fa-tv"></i><span>ريموت</span>
-    </div>    
+      <!-- Water Pump -->
+      <div class="control-window" id="waterpump-card">
+        <div class="window-top">
+          <i class="fa-solid fa-faucet-drip window-icon"></i>
+          <span class="status-tag">
+            <span class="status-led"></span>
+            <span class="status-text">OFF</span>
+          </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="window-title" data-i18n="waterPump">Water Pump</div>
+          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="waterpump"></i>
+        </div>
+      </div>
 
-    <div class="card" id="lamp1-card">  
-      <div class="status-led"></div>
-      <i class="fas fa-lightbulb"></i><span>Lamp 1</span>  
-      <i class="fas fa-clock timer-icon" title="ضبط مؤقت" data-device="lamp1"></i>  
-    </div>  
+      <!-- Heater -->
+      <div class="control-window" id="heater-card">
+        <div class="window-top">
+          <i class="fa-solid fa-temperature-arrow-up window-icon"></i>
+          <span class="status-tag">
+            <span class="status-led"></span>
+            <span class="status-text">OFF</span>
+          </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="window-title" data-i18n="heater">Heater</div>
+          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="heater"></i>
+        </div>
+      </div>
 
-    <div class="card" id="lamp2-card">  
-      <div class="status-led"></div>
-      <i class="fas fa-lightbulb"></i><span>Lamp 2</span>  
-      <i class="fas fa-clock timer-icon" title="ضبط مؤقت" data-device="lamp2"></i>  
-    </div>  
-  </div>    
+      <!-- Lamp 1 -->
+      <div class="control-window" id="lamp1-card">
+        <div class="window-top">
+          <i class="fa-solid fa-lightbulb window-icon"></i>
+          <span class="status-tag">
+            <span class="status-led"></span>
+            <span class="status-text">OFF</span>
+          </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="window-title" data-i18n="lamp1">Lamp 1</div>
+          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="lamp1"></i>
+        </div>
+      </div>
 
+      <!-- Lamp 2 -->
+      <div class="control-window" id="lamp2-card">
+        <div class="window-top">
+          <i class="fa-solid fa-lightbulb window-icon"></i>
+          <span class="status-tag">
+            <span class="status-led"></span>
+            <span class="status-text">OFF</span>
+          </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="window-title" data-i18n="lamp2">Lamp 2</div>
+          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="lamp2"></i>
+        </div>
+      </div>
+
+      <!-- Remote Control Card -->
+      <div class="control-window" id="remote-card" style="grid-column: span 2;">
+        <div class="window-top">
+          <i class="fa-solid fa-tv window-icon"></i>
+          <span class="status-tag">IR</span>
+        </div>
+        <div class="window-title" data-i18n="tvRemote">TV / Receiver Remote</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Remote Popup -->
   <div id="remote-popup">  
-    <button class="close-btn" onclick="closeRemote()">✖ إغلاق</button>  
+    <button class="close-btn" onclick="closeRemote()" data-i18n="closeBtn">✖ Close</button>  
     <div class="remote">    
       <div class="row two">  
         <button class="btn red" onclick="sendCmd('0x23DC', '0xFD01')">🔆</button>  
@@ -517,23 +788,24 @@
         <button class="btn" onclick="sendCmd('0X89', '0xFD01')">TV/R</button>  
       </div>  
     </div>  
-  </div>  
+  </div>
 
+  <!-- Timer Popup -->
   <div id="timer-popup">  
-    <h3>ضبط مؤقت الجهاز</h3>  
-    <label for="start-time">البداية:</label>  
+    <h3 id="timer-popup-title">Device Timer Setup</h3>  
+    <label for="start-time" data-i18n="startTime">Start Time:</label>  
     <input type="datetime-local" id="start-time" />  
-    <label for="end-time">النهاية:</label>  
+    <label for="end-time" data-i18n="endTime">End Time:</label>  
     <input type="datetime-local" id="end-time" />  
     <div style="display:flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">  
-      <button id="set-timer-btn">ضبط</button>  
-      <button id="cancel-timer-btn">إلغاء</button>  
-      <button id="clear-timer-btn">مسح المؤقت</button>  
+      <button id="set-timer-btn" data-i18n="setBtn">Set</button>  
+      <button id="cancel-timer-btn" data-i18n="cancelBtn">Cancel</button>  
+      <button id="clear-timer-btn" data-i18n="clearBtn">Clear Timer</button>  
     </div>  
-  </div>  
+  </div>
 
+  <!-- Firebase & App Script -->
   <script type="module">  
-    // استيراد حزم الموديول الكاملة لـ Firebase بما فيها مكتبات الـ Auth المعدلة لسفاري
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
@@ -550,18 +822,127 @@
   
     const app = initializeApp(firebaseConfig);  
     const database = getDatabase(app);  
-    const auth = getAuth(app); // إطلاق كائن التوثيق المصاحب للمشروع
+    const auth = getAuth(app);
+
+    // Translations Dictionary
+    const translations = {
+      en: {
+        connecting: "Connecting...",
+        loginTitle: "Control Panel Login",
+        emailPh: "Email",
+        passPh: "Password",
+        loginBtn: "Login",
+        loginErr: "Login failed! Please check your credentials.",
+        waterLevel: "Water Level",
+        temperature: "Temperature",
+        secPower: "Grid Power Source",
+        pwrGrid: "Grid Power",
+        pwrGenerator: "Generator",
+        on: "ACTIVE",
+        off: "OFF",
+        secControls: "Controls",
+        waterPump: "Water Pump",
+        heater: "Heater",
+        lamp1: "Lamp 1",
+        lamp2: "Lamp 2",
+        tvRemote: "TV / Receiver Remote",
+        closeBtn: "✖ Close",
+        startTime: "Start Time:",
+        endTime: "End Time:",
+        setBtn: "Set",
+        cancelBtn: "Cancel",
+        clearBtn: "Clear Timer",
+        autoState: "AUTO",
+        timerState: "TIMER",
+        lostConn: "Connection lost! Reconnecting...",
+        verifying: "Verifying credentials...",
+        timerTitlePrefix: "Set Timer for "
+      },
+      ar: {
+        connecting: "جاري الاتصال...",
+        loginTitle: "تسجيل دخول لوحة التحكم",
+        emailPh: "البريد الإلكتروني",
+        passPh: "كلمة المرور",
+        loginBtn: "تسجيل الدخول",
+        loginErr: "فشل تسجيل الدخول! يرجى التحقق من صحة البيانات.",
+        waterLevel: "مستوى المياه",
+        temperature: "درجة الحرارة",
+        secPower: "مصدر الكهرباء الحرفي",
+        pwrGrid: "كهرباء دولة",
+        pwrGenerator: "اشتراك",
+        on: "موصول",
+        off: "مقطوع",
+        secControls: "وحدات التحكم (Controls)",
+        waterPump: "موتير المياه",
+        heater: "السخان (Heater)",
+        lamp1: "اللمبة 1",
+        lamp2: "اللمبة 2",
+        tvRemote: "ريموت التلفزيون / الرسيفر",
+        closeBtn: "✖ إغلاق",
+        startTime: "البداية:",
+        endTime: "النهاية:",
+        setBtn: "ضبط",
+        cancelBtn: "إلغاء",
+        clearBtn: "مسح المؤقت",
+        autoState: "تلقائي",
+        timerState: "مؤقت",
+        lostConn: "فُقد الاتصال! جاري إعادة التشغيل...",
+        verifying: "جاري التحقق من الصلاحيات...",
+        timerTitlePrefix: "ضبط مؤقت جهاز "
+      }
+    };
+
+    let currentLang = 'en';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+          el.innerText = translations[lang][key];
+        }
+      });
+
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (translations[lang][key]) {
+          el.placeholder = translations[lang][key];
+        }
+      });
+
+      document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
+      
+      if (lastPowerValue !== null) {
+        updatePowerUI(lastPowerValue);
+      }
+    }
+
+    // Theme Toggle (Default Light)
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      themeBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+    });
+
+    // Language Toggle
+    const langBtn = document.getElementById('langBtn');
+    langBtn.addEventListener('click', () => {
+      const newLang = currentLang === 'en' ? 'ar' : 'en';
+      setLanguage(newLang);
+    });
   
-    // تسجيل الـ Service Worker في الخلفية لتفعيل ميزات الـ PWA كاملة
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('Service Worker Registered successfully.'))
+          .then(() => console.log('Service Worker Registered successfully.'))
           .catch(err => console.log('Service Worker registration failed:', err));
       });
     }
 
-    // عناصر النوافذ والشاشات
     const loadingScreen = document.getElementById("loading-screen");
     const loginPopup = document.getElementById("login-popup");
     let pageReady = false;
@@ -574,12 +955,9 @@
       setTimeout(() => { loadingScreen.style.display = "none"; }, 500);
     }
 
-    // ===== مراقبة حالة تسجيل الجلسة (الحفظ التلقائي المتوافق والمستقر) =====
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // إذا كان العميل قد سجل دخوله مسبقاً، نخفي نافذة الدخول ونتابع الاتصال بقاعدة البيانات
         loginPopup.style.display = "none";
-
         onValue(ref(database, ".info/connected"), (snap) => {
           if (snap.val() === true) {
             if (disconnectTimer) {
@@ -592,24 +970,19 @@
               disconnectTimer = setTimeout(() => {
                 loadingScreen.style.display = "flex";
                 loadingScreen.style.opacity = "1";
-                document.querySelector(".loading-text").innerText = "فُقد الاتصال! جاري إعادة التشغيل...";
+                document.querySelector(".loading-text").innerText = translations[currentLang].lostConn;
                 setTimeout(() => { window.location.reload(); }, 500);
               }, 4000); 
             }
           }
         });
-
-        // تشغيل كافة مستمعات الأحداث وبث البيانات بعد تأكيد الهوية الأمنية
         initSmartHomeApp();
-
       } else {
-        // إذا لم تكن هناك جلسة سابقة، نخفي شاشة اللودر ونظهر واجهة طلب البيانات السري
         loadingScreen.style.display = "none";
         loginPopup.style.display = "flex";
       }
     });
 
-    // معالجة حدث الضغط على زر تسجيل الدخول مع فرض الـ Persistence المتوافق مع متصفح سفاري و iOS
     document.getElementById("login-btn").addEventListener("click", () => {
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
@@ -617,31 +990,24 @@
 
       if (!email || !password) return;
 
-      // إظهار شاشة اللودينج أثناء التحقق الفعلي مع الخادم
       loadingScreen.style.display = "flex";
       loadingScreen.style.opacity = "1";
-      document.querySelector(".loading-text").innerText = "جاري التحقق من الصلاحيات...";
+      document.querySelector(".loading-text").innerText = translations[currentLang].verifying;
 
-      // فرض الـ Local Persistence لتخطي قيود حظر الجلسات في متصفح سفاري
       setPersistence(auth, browserLocalPersistence)
-        .then(() => {
-          return signInWithEmailAndPassword(auth, email, password);
-        })
-        .then(() => {
-          errorMsg.style.display = "none";
-        })
+        .then(() => signInWithEmailAndPassword(auth, email, password))
+        .then(() => { errorMsg.style.display = "none"; })
         .catch((error) => {
           loadingScreen.style.display = "none";
           errorMsg.style.display = "block";
-          errorMsg.innerText = `خطأ في سفاري أو البيانات: ${error.code}`;
-          console.error("Authentication failed:", error.message);
+          errorMsg.innerText = `Login Error: ${error.code}`;
         });
     });
 
-    // ===== كبسولة النظام الأساسية ولوحة التحكم الفنية =====
+    let lastPowerValue = null;
+
     function initSmartHomeApp() {
-  
-      // ===== التحكم بالريموت =====  
+      // Remote Setup
       const remotePopup = document.getElementById("remote-popup");  
       const remoteCard  = document.getElementById("remote-card");  
     
@@ -653,7 +1019,7 @@
         set(remoteRef, { command: command, address: address });  
       };  
     
-      // ===== الأزرار والمفاتيح العادية =====  
+      // Toggles Setup
       const toggles = [  
         { path: "output/devices/waterpump", id: "waterpump" },  
         { path: "output/devices/heater", id: "heater" },  
@@ -666,92 +1032,67 @@
       toggles.forEach((toggle) => {  
         const card = document.getElementById(`${toggle.id}-card`);  
         const dbRef = ref(database, toggle.path);  
-         // إضافة مرجع للمؤقت الخاص بالجهاز
-const timerRef = ref(database, `timers/${toggle.id}`);
+        const timerRef = ref(database, `timers/${toggle.id}`);
 
-onValue(timerRef, (snap) => {
-  const timerIcon = card.querySelector(".timer-icon");
-  // إذا كان هناك بيانات للمؤقت، أضف الحركة، وإلا أزلها
-  if (snap.exists() && snap.val() !== null) {
-    timerIcon.classList.add("timer-active");
-  } else {
-    timerIcon.classList.remove("timer-active");
-  }
-});
+        onValue(timerRef, (snap) => {
+          const timerIcon = card.querySelector(".timer-icon");
+          if (snap.exists() && snap.val() !== null) {
+            timerIcon.classList.add("timer-active");
+          } else {
+            timerIcon.classList.remove("timer-active");
+          }
+        });
 
-        // استقبال الحالة من السيرفر بشكل حي مباشر
         onValue(dbRef, (snap) => {  
           const val = snap.val() ?? 0;
           localDeviceStates[toggle.id] = val;
 
-          // تنظيف الحالة السابقة
           card.classList.remove("on", "auto", "timer-locked");
           const led = card.querySelector(".status-led");
+          const statusText = card.querySelector(".status-text");
           if (led) { led.classList.remove("show", "green", "black"); }
-          const oldLabel = card.querySelector(".auto-label");
-          if (oldLabel) oldLabel.remove();
 
-          // تطبيق الحالة الجديدة
           if (val === 1) {
             card.classList.add("on");
+            if (statusText) statusText.innerText = "ON";
           } else if (val === 2) {
             card.classList.add("auto");
-            const autoSpan = document.createElement("span");
-            autoSpan.className = "auto-label";
-            autoSpan.innerText = "تلقائي";
-            card.appendChild(autoSpan);
+            if (statusText) statusText.innerText = translations[currentLang].autoState;
             if (led) { led.classList.add("show", "black"); }
           } else if (val === 3) {
             card.classList.add("auto");
-            const autoSpan = document.createElement("span");
-            autoSpan.className = "auto-label";
-            autoSpan.innerText = "تلقائي";
-            card.appendChild(autoSpan);
+            if (statusText) statusText.innerText = translations[currentLang].autoState;
             if (led) { led.classList.add("show", "green"); }
           } else if (val === 4) {
             card.classList.add("timer-locked");
+            if (statusText) statusText.innerText = translations[currentLang].timerState;
+          } else {
+            if (statusText) statusText.innerText = "OFF";
           }
         });
 
-    
         let pressTimer = null;
         let isLongPress = false;
 
-// استبدل الجزء الخاص بـ pointerdown في الكود الخاص بك بهذا الكود:
-
-card.addEventListener("pointerdown", (e) => {
-  // إذا كانت القيمة 4، نخرج فوراً ولا نفعل شيئاً
-  if (localDeviceStates[toggle.id] === 4) return; 
-  
-  if (e.target.classList.contains("timer-icon")) return;
-  
-  isLongPress = false;
-  if (pressTimer) clearTimeout(pressTimer);
-
-  pressTimer = setTimeout(() => {
-    isLongPress = true;
-    
-    // الحصول على الحالة الحالية قبل التغيير
-    let current = localDeviceStates[toggle.id] ?? 0;
-    let targetState = 2; // القيمة الافتراضية إذا كانت 0
-
-    // المنطق الجديد:
-    if (current === 1) {
-      targetState = 3; // إذا كانت 1، اجعلها 3
-    } else {
-      targetState = 2; // إذا كانت 0 (أو أي حالة أخرى)، اجعلها 2
-    }
-
-    set(dbRef, targetState);
-    if (navigator.vibrate) navigator.vibrate(60); 
-  }, 700); 
-});
-
-
-                card.addEventListener("pointerup", (e) => {
-          // إذا كانت القيمة 4، نمنع تنفيذ أي كود تبديل
-          if (localDeviceStates[toggle.id] === 4) return;
+        card.addEventListener("pointerdown", (e) => {
+          if (localDeviceStates[toggle.id] === 4) return; 
+          if (e.target.classList.contains("timer-icon")) return;
           
+          isLongPress = false;
+          if (pressTimer) clearTimeout(pressTimer);
+
+          pressTimer = setTimeout(() => {
+            isLongPress = true;
+            let current = localDeviceStates[toggle.id] ?? 0;
+            let targetState = (current === 1) ? 3 : 2;
+
+            set(dbRef, targetState);
+            if (navigator.vibrate) navigator.vibrate(60); 
+          }, 700); 
+        });
+
+        card.addEventListener("pointerup", (e) => {
+          if (localDeviceStates[toggle.id] === 4) return;
           if (e.target.classList.contains("timer-icon")) return;
           
           clearTimeout(pressTimer); 
@@ -773,10 +1114,9 @@ card.addEventListener("pointerdown", (e) => {
         });
       });  
 
-      // ===== قراءة وتحديث قيم الحساسات المباشرة =====  
+      // Sensors updates
       onValue(ref(database, "temperature"), (snap) => {  
         const temp = snap.val() || 0;  
-        document.getElementById("temperature-bar").style.height = `${temp}%`;  
         document.getElementById("temperature-value").innerText = `${temp}°C`;  
       });  
     
@@ -786,31 +1126,36 @@ card.addEventListener("pointerdown", (e) => {
         document.getElementById("water-value").innerText = `${level}%`;  
       });  
     
-      // ===== عرض الحالات ثلاثية المصدر =====  
-      const tripleStates = [  
-        { class: "active", label: "دولة", value: 1 },  
-        { class: "pending", label: "نيوترل", value: 0 },  
-        { class: "inactive", label: "اشتراك", value: 2 }  
-      ];  
-    
-      const tripleCard = document.getElementById("triple-state-card");  
-      const labelSpan = document.getElementById("triple-state-label");  
-      const ishtirakRef = ref(database, "output/devices/kahrba");  
-    
-      function updateTripleStateUI(stateIndex) {  
-        tripleCard.classList.remove("active", "pending", "inactive");  
-        const state = tripleStates[stateIndex];  
-        tripleCard.classList.add(state.class);  
-        labelSpan.textContent = state.label;  
-      }  
-    
-      onValue(ishtirakRef, (snap) => {  
-        const val = snap.val();  
-        const index = tripleStates.findIndex(s => s.value === val);  
-        if (index !== -1) updateTripleStateUI(index);  
+      // Dual Power State Handler (Grid = 1, Generator = 2)
+      const pwrGrid = document.getElementById("pwr-grid");
+      const pwrGenerator = document.getElementById("pwr-generator");
+
+      const pwrGridStat = document.getElementById("pwr-grid-status");
+      const pwrGenStat = document.getElementById("pwr-generator-status");
+
+      window.updatePowerUI = function(val) {
+        lastPowerValue = val;
+        
+        pwrGrid.className = "power-card";
+        pwrGenerator.className = "power-card";
+
+        pwrGridStat.innerText = translations[currentLang].off;
+        pwrGenStat.innerText = translations[currentLang].off;
+
+        if (val === 1) {
+          pwrGrid.classList.add("active");
+          pwrGridStat.innerText = translations[currentLang].on;
+        } else if (val === 2) {
+          pwrGenerator.classList.add("active");
+          pwrGenStat.innerText = translations[currentLang].on;
+        }
+      };
+
+      onValue(ref(database, "output/devices/kahrba"), (snap) => {  
+        updatePowerUI(snap.val());  
       });  
     
-      // ===== إدارة وضبط المؤقتات الحية الزمنية =====  
+      // Timers logic
       const popup = document.getElementById("timer-popup");  
       const startInput = document.getElementById("start-time");  
       const endInput = document.getElementById("end-time");  
@@ -844,7 +1189,7 @@ card.addEventListener("pointerdown", (e) => {
           e.stopPropagation();  
           currentDevice = icon.getAttribute("data-device");  
           popup.style.display = "block";  
-          popup.querySelector("h3").textContent = `ضبط مؤقت جهاز ${currentDevice}`;  
+          document.getElementById("timer-popup-title").textContent = `${translations[currentLang].timerTitlePrefix}${currentDevice}`;  
     
           const timerRef = ref(database, `timers/${currentDevice}`);  
           onValue(timerRef, (snap) => {  
