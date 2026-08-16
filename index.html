@@ -755,7 +755,7 @@
         <button class="btn" onclick="sendCmd('0x9B', '0xFD01')">SAT</button>
       </div>    
       <div class="nav">  
-        <div></div><button class="btn" onclick="sendCmd('0xDE', '0xFD01')">&#x25BB;</button><div></div>  
+        <div></div><button class="btn" onclick="sendCmd('0xDE', '0xFD01')">&#x25B2;</button><div></div>  
         <button class="btn" onclick="sendCmd('0xDB', '0xFD01')">&#x25C0;</button>  
         <button class="btn ok" onclick="sendCmd('0xDA', '0xFD01')">OK</button>  
         <button class="btn" onclick="sendCmd('0xD8', '0xFD01')">&#x25B6;</button>  
@@ -805,7 +805,7 @@
   </div>
 
   <!-- Firebase & App Script -->
-  <script type="module">  
+<script type="module">  
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
@@ -823,6 +823,10 @@
     const app = initializeApp(firebaseConfig);  
     const database = getDatabase(app);  
     const auth = getAuth(app);
+
+    // --- LocalStorage Read ---
+    let savedLang = localStorage.getItem('nova_lang') || 'en';
+    let savedTheme = localStorage.getItem('nova_theme') || 'light';
 
     // Translations Dictionary
     const translations = {
@@ -892,15 +896,15 @@
       }
     };
 
-    let currentLang = 'en';
+    let currentLang = savedLang;
+    let lastPowerValue = null;
 
+    // Set Language with LocalStorage Support
     function setLanguage(lang) {
       currentLang = lang;
+      localStorage.setItem('nova_lang', lang);
       document.documentElement.lang = lang;
       document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-      // حفظ خيار اللغة لكل جهاز/متصفح
-      localStorage.setItem('app_lang', lang);
 
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -918,38 +922,36 @@
 
       document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
       
-      if (lastPowerValue !== null) {
-        updatePowerUI(lastPowerValue);
+      if (lastPowerValue !== null && typeof window.updatePowerUI === 'function') {
+        window.updatePowerUI(lastPowerValue);
       }
     }
 
-    // --- استرجاع وتطبيق الإعدادات المحفوظة بالجهاز ---
-    const savedTheme = localStorage.getItem('app_theme') || 'light';
-    const savedLang = localStorage.getItem('app_lang') || 'en';
-
-    const themeBtn = document.getElementById('themeBtn');
-
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark-mode');
-      themeBtn.textContent = '☀️ Light';
-    } else {
-      document.body.classList.remove('dark-mode');
-      themeBtn.textContent = '🌙 Dark';
+    // Set Theme with LocalStorage Support
+    function setTheme(theme) {
+      const themeBtn = document.getElementById('themeBtn');
+      if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeBtn.textContent = '☀️ Light';
+        localStorage.setItem('nova_theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-mode');
+        themeBtn.textContent = '🌙 Dark';
+        localStorage.setItem('nova_theme', 'light');
+      }
     }
 
+    // Initialize Preferences
     setLanguage(savedLang);
+    setTheme(savedTheme);
 
-    // Theme Toggle
+    // Event Listeners for Theme & Language Switches
+    const themeBtn = document.getElementById('themeBtn');
     themeBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
       const isDark = document.body.classList.contains('dark-mode');
-      
-      // حفظ الثيم بـ localStorage الخاص بالجهاز
-      localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
-      themeBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+      setTheme(isDark ? 'light' : 'dark');
     });
 
-    // Language Toggle
     const langBtn = document.getElementById('langBtn');
     langBtn.addEventListener('click', () => {
       const newLang = currentLang === 'en' ? 'ar' : 'en';
@@ -1024,8 +1026,6 @@
           errorMsg.innerText = `Login Error: ${error.code}`;
         });
     });
-
-    let lastPowerValue = null;
 
     function initSmartHomeApp() {
       // Remote Setup
@@ -1251,6 +1251,7 @@
         });  
       });  
     }
-  </script>
+</script>
+
 </body>
 </html>
