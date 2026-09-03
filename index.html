@@ -86,12 +86,6 @@
       height: 40px;
       border-radius: 50%;
       cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    .logo:active {
-      transform: scale(0.9);
     }
 
     header h1 {
@@ -216,65 +210,97 @@
       font-weight: 600;
     }
 
-    /* Dual Power Source Grid */
-    .power-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .power-card {
+    /* Single Power Source Block */
+    .single-power-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 14px 10px;
+      border-radius: 20px;
+      padding: 16px 20px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      text-align: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
       box-shadow: var(--box-shadow);
-      opacity: 0.5;
-      transform: scale(0.98);
-      position: relative;
     }
 
-    .power-card .power-icon {
-      font-size: 20px;
-      margin-bottom: 6px;
+    .power-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .power-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(148, 163, 184, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
       color: var(--text-sub);
     }
 
-    .power-card .power-name {
-      font-size: 13px;
-      font-weight: 700;
+    .power-details h3 {
+      font-size: 16px;
+      font-weight: 800;
       color: var(--text-main);
     }
 
-    .power-card .power-status {
-      font-size: 11px;
+    .power-details p {
+      font-size: 12px;
+      color: var(--text-sub);
       font-weight: 600;
-      margin-top: 4px;
+      margin-top: 2px;
+    }
+
+    .power-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: rgba(148, 163, 184, 0.1);
       color: var(--text-sub);
     }
 
-    /* Active Power Card Style */
-    .power-card.active {
-      opacity: 1;
-      transform: scale(1);
+    /* Power State Styles */
+    .single-power-card.grid {
+      border-color: var(--accent-blue);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(37, 99, 235, 0.08) 100%);
+    }
+    .single-power-card.grid .power-icon-wrap {
+      background: rgba(37, 99, 235, 0.15);
+      color: var(--accent-blue);
+    }
+    .single-power-card.grid .power-badge {
+      background: rgba(37, 99, 235, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .single-power-card.generator {
+      border-color: var(--accent-amber);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(217, 119, 6, 0.08) 100%);
+    }
+    .single-power-card.generator .power-icon-wrap {
+      background: rgba(217, 119, 6, 0.15);
+      color: var(--accent-amber);
+    }
+    .single-power-card.generator .power-badge {
+      background: rgba(217, 119, 6, 0.15);
+      color: var(--accent-amber);
+    }
+
+    .single-power-card.solar {
       border-color: var(--accent-green);
-      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.08) 100%);
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(5, 150, 105, 0.08) 100%);
     }
-
-    .power-card.active .power-icon {
+    .single-power-card.solar .power-icon-wrap {
+      background: rgba(5, 150, 105, 0.15);
       color: var(--accent-green);
     }
-
-    .power-card.active .power-status {
+    .single-power-card.solar .power-badge {
+      background: rgba(5, 150, 105, 0.15);
       color: var(--accent-green);
-      font-weight: 800;
     }
 
     /* Controls Grid */
@@ -611,7 +637,7 @@
   <div class="container">
     <header>
       <div class="header-brand">
-        <img src="logo.png" alt="Logo" class="logo" id="logo-btn" title="Logout" />
+        <img src="logo.png" alt="Logo" class="logo" />
         <h1>Nova Smart</h1>
       </div>
       <div class="header-controls">
@@ -645,19 +671,19 @@
       </div>
     </div>
 
-    <!-- Grid Power Source Section (2 Cards) -->
-    <div class="section-title" data-i18n="secPower">Grid Power Source</div>
-    <div class="power-grid">
-      <div class="power-card" id="pwr-grid">
-        <i class="fa-solid fa-building-columns power-icon"></i>
-        <span class="power-name" data-i18n="pwrGrid">Grid Power</span>
-        <span class="power-status" id="pwr-grid-status" data-i18n="off">OFF</span>
+    <!-- Dynamic Single Power Source Section -->
+    <div class="section-title" data-i18n="secPower">Power Source</div>
+    <div class="single-power-card" id="power-card">
+      <div class="power-info">
+        <div class="power-icon-wrap" id="power-icon-wrap">
+          <i class="fa-solid fa-power-off" id="power-icon"></i>
+        </div>
+        <div class="power-details">
+          <h3 id="power-title" data-i18n="pwrOff">Disconnected</h3>
+          <p id="power-desc" data-i18n="pwrOffDesc">No active power source</p>
+        </div>
       </div>
-      <div class="power-card" id="pwr-generator">
-        <i class="fa-solid fa-plug-circle-bolt power-icon"></i>
-        <span class="power-name" data-i18n="pwrGenerator">Generator</span>
-        <span class="power-status" id="pwr-generator-status" data-i18n="off">OFF</span>
-      </div>
+      <span class="power-badge" id="power-status" data-i18n="off">OFF</span>
     </div>
 
     <!-- Controls Grid Section -->
@@ -810,38 +836,31 @@
     </div>  
   </div>
 
-<!-- Firebase & App Script -->
+  <!-- Firebase & App Script -->
 <script type="module">  
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
-    import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
   
-    // 1. إعدادات السنترال فايربيس الخاصة بك (Nova User Central)
-    const centralFirebaseConfig = {  
-      apiKey: "AIzaSyACJo8eozzBeUIQ45KBUSVpTtzZ_Vac2Mo",
-      authDomain: "novauser-ee332.firebaseapp.com",
-      databaseURL: "https://novauser-ee332-default-rtdb.firebaseio.com",
-      projectId: "novauser-ee332",
-      storageBucket: "novauser-ee332.firebasestorage.app",
-      messagingSenderId: "170384580105",
-      appId: "1:170384580105:web:6384592f92e43c2af322d8",
-      measurementId: "G-Z26D2YL849"
+    const firebaseConfig = {  
+      apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
+      authDomain: "smarthome-ad84f.firebaseapp.com",  
+      databaseURL: "https://smarthome-ad84f-default-rtdb.firebaseio.com",  
+      projectId: "smarthome-ad84f",  
+      storageBucket: "smarthome-ad84f.appspot.com",  
+      messagingSenderId: "849228056680",  
+      appId: "1:849228056680:web:09fa91eaca63dc148953dd"  
     };  
   
-    // تهيئة مشروع السنترال فايربيس
-    const centralApp = initializeApp(centralFirebaseConfig, "centralApp");  
-    const centralDb = getDatabase(centralApp);  
-
-    // متغيرات الفايربيس الديناميكية للعميل
-    let clientApp = null;
-    let database = null;
-    let auth = null;
+    const app = initializeApp(firebaseConfig);  
+    const database = getDatabase(app);  
+    const auth = getAuth(app);
 
     // --- LocalStorage Read ---
     let savedLang = localStorage.getItem('nova_lang') || 'en';
     let savedTheme = localStorage.getItem('nova_theme') || 'light';
 
-    // القاموس للترجمة
+    // Translations Dictionary
     const translations = {
       en: {
         connecting: "Connecting...",
@@ -854,8 +873,14 @@
         temperature: "Temperature",
         secPower: "Power Source",
         pwrGrid: "Grid Power",
+        pwrGridDesc: "Main Electricity Active",
         pwrGenerator: "Generator",
-        on: "ACTIVE",
+        pwrGenDesc: "Generator Subscription Active",
+        pwrSolar: "Solar Power",
+        pwrSolarDesc: "Solar Inverter Active",
+        pwrOff: "No Power",
+        pwrOffDesc: "Electricity Disconnected",
+        active: "ACTIVE",
         off: "OFF",
         secControls: "Controls",
         waterPump: "Water Pump",
@@ -885,9 +910,15 @@
         waterLevel: "مستوى المياه",
         temperature: "درجة الحرارة",
         secPower: "مصدر الكهرباء",
-        pwrGrid: "كهرباء دولة",
-        pwrGenerator: "اشتراك",
-        on: "موصول",
+        pwrGrid: "كهرباء الدولة",
+        pwrGridDesc: "موصول على كهرباء لبنان",
+        pwrGenerator: "اشتراك المولد",
+        pwrGenDesc: "موصول على خط الاشتراك",
+        pwrSolar: "الطاقة الشمسية",
+        pwrSolarDesc: "موصول على نظام الطاقة",
+        pwrOff: "مقطوعة",
+        pwrOffDesc: "لا يوجد مصدر كهرباء فعال",
+        active: "فعّال",
         off: "مقطوع",
         secControls: "وحدات التحكم",
         waterPump: "موتير المياه",
@@ -912,6 +943,7 @@
     let currentLang = savedLang;
     let lastPowerValue = null;
 
+    // Set Language with LocalStorage Support
     function setLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('nova_lang', lang);
@@ -939,6 +971,7 @@
       }
     }
 
+    // Set Theme with LocalStorage Support
     function setTheme(theme) {
       const themeBtn = document.getElementById('themeBtn');
       if (theme === 'dark') {
@@ -952,32 +985,21 @@
       }
     }
 
+    // Initialize Preferences
     setLanguage(savedLang);
     setTheme(savedTheme);
 
-    document.getElementById('themeBtn').addEventListener('click', () => {
+    // Event Listeners for Theme & Language Switches
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.addEventListener('click', () => {
       const isDark = document.body.classList.contains('dark-mode');
       setTheme(isDark ? 'light' : 'dark');
     });
 
-    document.getElementById('langBtn').addEventListener('click', () => {
+    const langBtn = document.getElementById('langBtn');
+    langBtn.addEventListener('click', () => {
       const newLang = currentLang === 'en' ? 'ar' : 'en';
       setLanguage(newLang);
-    });
-
-    // --- وظيفة تسجيل الخروج عند الضغط على اللوجو ---
-    document.getElementById('logo-btn').addEventListener('click', () => {
-      localStorage.removeItem("nova_client_config");
-      localStorage.removeItem("nova_client_email");
-      if (auth) {
-        signOut(auth).then(() => {
-          window.location.reload();
-        }).catch(() => {
-          window.location.reload();
-        });
-      } else {
-        window.location.reload();
-      }
     });
   
     if ('serviceWorker' in navigator) {
@@ -1000,21 +1022,35 @@
       setTimeout(() => { loadingScreen.style.display = "none"; }, 500);
     }
 
-    // --- فحص وجود بيانات العميل المحفوظة تلقائياً للتسجيل التلقائي ---
-    window.addEventListener("DOMContentLoaded", () => {
-      const savedClientConfig = localStorage.getItem("nova_client_config");
-      const savedEmail = localStorage.getItem("nova_client_email");
-
-      if (savedClientConfig && savedEmail) {
-        initClientApp(JSON.parse(savedClientConfig));
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginPopup.style.display = "none";
+        onValue(ref(database, ".info/connected"), (snap) => {
+          if (snap.val() === true) {
+            if (disconnectTimer) {
+              clearTimeout(disconnectTimer);
+              disconnectTimer = null;
+            }
+            setTimeout(hideLoading, 1000);
+          } else {
+            if (pageReady && !disconnectTimer) {
+              disconnectTimer = setTimeout(() => {
+                loadingScreen.style.display = "flex";
+                loadingScreen.style.opacity = "1";
+                document.querySelector(".loading-text").innerText = translations[currentLang].lostConn;
+                setTimeout(() => { window.location.reload(); }, 500);
+              }, 4000); 
+            }
+          }
+        });
+        initSmartHomeApp();
       } else {
         loadingScreen.style.display = "none";
         loginPopup.style.display = "flex";
       }
     });
 
-    // --- عملية تسجيل الدخول عند ضغط الزر ---
-    document.getElementById("login-btn").addEventListener("click", async () => {
+    document.getElementById("login-btn").addEventListener("click", () => {
       const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
       const errorMsg = document.getElementById("login-error");
@@ -1025,78 +1061,15 @@
       loadingScreen.style.opacity = "1";
       document.querySelector(".loading-text").innerText = translations[currentLang].verifying;
 
-      try {
-        const sanitizedEmailKey = email.replace(/\./g, "_");
-        
-        const userConfigRef = ref(centralDb, `users/${sanitizedEmailKey}`);
-        const snapshot = await get(userConfigRef);
-
-        if (!snapshot.exists()) {
-          throw new Error("No configuration found for this email");
-        }
-
-        const clientConfig = snapshot.val();
-
-        localStorage.setItem("nova_client_config", JSON.stringify(clientConfig));
-        localStorage.setItem("nova_client_email", email);
-
-        initClientApp(clientConfig, email, password);
-
-      } catch (error) {
-        loadingScreen.style.display = "none";
-        errorMsg.style.display = "block";
-        errorMsg.innerText = `${translations[currentLang].loginErr}`;
-      }
-    });
-
-    // --- تهيئة فايربيس العميل والاتصال بقاعدة بياناته ---
-    function initClientApp(config, email = null, password = null) {
-      if (!clientApp) {
-        clientApp = initializeApp(config, "clientApp");
-        database = getDatabase(clientApp);
-        auth = getAuth(clientApp);
-      }
-
-      setPersistence(auth, browserLocalPersistence).then(() => {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            loginPopup.style.display = "none";
-            onValue(ref(database, ".info/connected"), (snap) => {
-              if (snap.val() === true) {
-                if (disconnectTimer) {
-                  clearTimeout(disconnectTimer);
-                  disconnectTimer = null;
-                }
-                setTimeout(hideLoading, 1000);
-              } else {
-                if (pageReady && !disconnectTimer) {
-                  disconnectTimer = setTimeout(() => {
-                    loadingScreen.style.display = "flex";
-                    loadingScreen.style.opacity = "1";
-                    document.querySelector(".loading-text").innerText = translations[currentLang].lostConn;
-                    setTimeout(() => { window.location.reload(); }, 500);
-                  }, 4000); 
-                }
-              }
-            });
-            initSmartHomeApp();
-          } else {
-            if (email && password) {
-              signInWithEmailAndPassword(auth, email, password)
-                .catch((err) => {
-                  localStorage.removeItem("nova_client_config");
-                  localStorage.removeItem("nova_client_email");
-                  loadingScreen.style.display = "none";
-                  document.getElementById("login-error").style.display = "block";
-                });
-            } else {
-              loadingScreen.style.display = "none";
-              loginPopup.style.display = "flex";
-            }
-          }
+      setPersistence(auth, browserLocalPersistence)
+        .then(() => signInWithEmailAndPassword(auth, email, password))
+        .then(() => { errorMsg.style.display = "none"; })
+        .catch((error) => {
+          loadingScreen.style.display = "none";
+          errorMsg.style.display = "block";
+          errorMsg.innerText = `Login Error: ${error.code}`;
         });
-      });
-    }
+    });
 
     function initSmartHomeApp() {
       // Remote Setup
@@ -1218,28 +1191,41 @@
         document.getElementById("water-value").innerText = `${level}%`;  
       });  
     
-      // Dual Power State Handler
-      const pwrGrid = document.getElementById("pwr-grid");
-      const pwrGenerator = document.getElementById("pwr-generator");
-
-      const pwrGridStat = document.getElementById("pwr-grid-status");
-      const pwrGenStat = document.getElementById("pwr-generator-status");
+      // Unified Power State Handler (1 = Grid, 2 = Generator, 3 = Solar)
+      const powerCard = document.getElementById("power-card");
+      const powerIcon = document.getElementById("power-icon");
+      const powerTitle = document.getElementById("power-title");
+      const powerDesc = document.getElementById("power-desc");
+      const powerStatus = document.getElementById("power-status");
 
       window.updatePowerUI = function(val) {
         lastPowerValue = val;
         
-        pwrGrid.className = "power-card";
-        pwrGenerator.className = "power-card";
-
-        pwrGridStat.innerText = translations[currentLang].off;
-        pwrGenStat.innerText = translations[currentLang].off;
+        powerCard.className = "single-power-card";
 
         if (val === 1) {
-          pwrGrid.classList.add("active");
-          pwrGridStat.innerText = translations[currentLang].on;
+          powerCard.classList.add("grid");
+          powerIcon.className = "fa-solid fa-building-columns";
+          powerTitle.innerText = translations[currentLang].pwrGrid;
+          powerDesc.innerText = translations[currentLang].pwrGridDesc;
+          powerStatus.innerText = translations[currentLang].active;
         } else if (val === 2) {
-          pwrGenerator.classList.add("active");
-          pwrGenStat.innerText = translations[currentLang].on;
+          powerCard.classList.add("generator");
+          powerIcon.className = "fa-solid fa-plug-circle-bolt";
+          powerTitle.innerText = translations[currentLang].pwrGenerator;
+          powerDesc.innerText = translations[currentLang].pwrGenDesc;
+          powerStatus.innerText = translations[currentLang].active;
+        } else if (val === 3) {
+          powerCard.classList.add("solar");
+          powerIcon.className = "fa-solid fa-solar-panel";
+          powerTitle.innerText = translations[currentLang].pwrSolar;
+          powerDesc.innerText = translations[currentLang].pwrSolarDesc;
+          powerStatus.innerText = translations[currentLang].active;
+        } else {
+          powerIcon.className = "fa-solid fa-power-off";
+          powerTitle.innerText = translations[currentLang].pwrOff;
+          powerDesc.innerText = translations[currentLang].pwrOffDesc;
+          powerStatus.innerText = translations[currentLang].off;
         }
       };
 
