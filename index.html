@@ -434,7 +434,7 @@
     .status-led.green { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
     .status-led.black { background: #000; }
 
-    /* Popups */
+    /* Popups & Modals */
     #timer-popup {
       display: none;
       position: fixed;
@@ -480,7 +480,72 @@
     #cancel-timer-btn { background-color: var(--text-sub); }
     #clear-timer-btn { background-color: var(--accent-red); width: 100% !important; margin-top: 10px; }
 
-    /* Remote Popup */
+    /* Selection Popup (IR Menu) */
+    #remote-menu-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px);
+      z-index: 99998;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .remote-menu-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      position: relative;
+    }
+
+    .remote-menu-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    .remote-options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .remote-option-btn {
+      background: var(--bg-color);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .remote-option-btn i {
+      font-size: 26px;
+      color: var(--accent-blue);
+    }
+
+    .remote-option-btn:hover, .remote-option-btn:active {
+      border-color: var(--accent-blue);
+      background: rgba(37, 99, 235, 0.08);
+      transform: translateY(-2px);
+    }
+
+    /* TV Remote Popup */
     #remote-popup {
       display: none;
       position: fixed;
@@ -516,6 +581,138 @@
     .extra-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
     .extra-keys .btn { padding: 14px 0; font-size: 13px; border-radius: 14px; }
 
+    /* AC Remote Popup */
+    #ac-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 99999;
+      overflow: auto;
+    }
+
+    .ac-remote {
+      width: 300px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 24px 20px;
+      margin: 40px auto;
+      color: var(--text-main);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ac-header {
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 15px;
+      color: var(--text-main);
+    }
+
+    /* Arc Thermostat Dial */
+    .dial-container {
+      position: relative;
+      width: 220px;
+      height: 140px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      margin: 10px 0 20px;
+      touch-action: none;
+    }
+
+    .dial-svg {
+      width: 220px;
+      height: 140px;
+    }
+
+    .dial-bg-path {
+      fill: none;
+      stroke: var(--card-border);
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+
+    .dial-active-path {
+      fill: none;
+      stroke: var(--accent-blue);
+      stroke-width: 12;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.05s linear;
+    }
+
+    .dial-handle {
+      fill: #ffffff;
+      stroke: var(--accent-blue);
+      stroke-width: 4;
+      cursor: pointer;
+      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .dial-center-info {
+      position: absolute;
+      bottom: 10px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .ac-temp-display {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+    }
+
+    .ac-mode-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    .ac-controls-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .ac-btn {
+      background: var(--bg-color);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 8px;
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ac-btn i { font-size: 16px; }
+
+    .ac-btn.power-btn {
+      background: rgba(220, 38, 38, 0.1);
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+    .ac-btn.power-btn i { color: var(--accent-red); }
+
+    .ac-btn:active {
+      transform: scale(0.95);
+    }
+
     .close-btn {
       position: fixed;
       top: 16px;
@@ -527,6 +724,7 @@
       padding: 8px 14px;
       font-weight: bold;
       cursor: pointer;
+      z-index: 100000;
     }
     html[dir="rtl"] .close-btn {
       right: auto;
@@ -753,18 +951,36 @@
       <!-- Remote Control Card -->
       <div class="control-window" id="remote-card" style="grid-column: span 2;">
         <div class="window-top">
-          <i class="fa-solid fa-tv window-icon"></i>
+          <i class="fa-solid fa-tower-broadcast window-icon"></i>
           <span class="status-tag">IR</span>
         </div>
-        <div class="window-title" data-i18n="tvRemote">TV / Receiver Remote</div>
+        <div class="window-title" data-i18n="irRemoteTitle">IR Remote Controls</div>
       </div>
 
     </div>
   </div>
 
-  <!-- Remote Popup -->
+  <!-- Selection Popup (TV vs AC Menu) -->
+  <div id="remote-menu-popup">
+    <div class="remote-menu-card">
+      <h3 data-i18n="selectRemote">Select Remote</h3>
+      <div class="remote-options-grid">
+        <button class="remote-option-btn" onclick="openTVRemote()">
+          <i class="fa-solid fa-tv"></i>
+          <span>TV</span>
+        </button>
+        <button class="remote-option-btn" onclick="openACRemote()">
+          <i class="fa-solid fa-snowflake"></i>
+          <span>AC</span>
+        </button>
+      </div>
+      <button class="close-btn" onclick="closeRemoteMenu()" data-i18n="closeBtn">✖ Close</button>
+    </div>
+  </div>
+
+  <!-- TV Remote Popup -->
   <div id="remote-popup">  
-    <button class="close-btn" onclick="closeRemote()" data-i18n="closeBtn">✖ Close</button>  
+    <button class="close-btn" onclick="closeTVRemote()" data-i18n="closeBtn">✖ Close</button>  
     <div class="remote">    
       <div class="row two">  
         <button class="btn red" onclick="sendCmd('0x23DC', '0xFD01')">🔆</button>  
@@ -822,6 +1038,43 @@
     </div>  
   </div>
 
+  <!-- AC Remote Popup -->
+  <div id="ac-popup">
+    <button class="close-btn" onclick="closeACRemote()" data-i18n="closeBtn">✖ Close</button>
+    <div class="ac-remote">
+      <div class="ac-header" data-i18n="acTitle">Air Conditioner</div>
+      
+      <!-- Arc Temperature Slider -->
+      <div class="dial-container" id="dial-container">
+        <svg class="dial-svg" viewBox="0 0 220 140">
+          <path class="dial-bg-path" d="M 20 120 A 90 90 0 0 1 200 120" />
+          <path class="dial-active-path" id="dial-active" d="M 20 120 A 90 90 0 0 1 200 120" />
+          <circle class="dial-handle" id="dial-handle" cx="20" cy="120" r="12" />
+        </svg>
+        <div class="dial-center-info">
+          <div class="ac-temp-display" id="ac-temp-val">24°C</div>
+          <div class="ac-mode-sub" id="ac-mode-lbl" data-i18n="acCool">COOL MODE</div>
+        </div>
+      </div>
+
+      <!-- AC Control Buttons -->
+      <div class="ac-controls-grid">
+        <button class="ac-btn power-btn" onclick="sendCmd('AC_POWER', 'AC')">
+          <i class="fa-solid fa-power-off"></i>
+          <span data-i18n="acPower">Power</span>
+        </button>
+        <button class="ac-btn" onclick="sendCmd('AC_MODE', 'AC')">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span data-i18n="acMode">Mode</span>
+        </button>
+        <button class="ac-btn" onclick="sendCmd('AC_FAN', 'AC')">
+          <i class="fa-solid fa-fan"></i>
+          <span data-i18n="acFan">Fan Speed</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Timer Popup -->
   <div id="timer-popup">  
     <h3 id="timer-popup-title">Device Timer Setup</h3>  
@@ -837,7 +1090,7 @@
   </div>
 
   <!-- Firebase & App Script -->
-<script type="module">  
+  <script type="module">  
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
@@ -887,7 +1140,13 @@
         heater: "Heater",
         lamp1: "Lamp 1",
         lamp2: "Lamp 2",
-        tvRemote: "TV / Receiver Remote",
+        irRemoteTitle: "IR Remote Controls",
+        selectRemote: "Select Device Remote",
+        acTitle: "Air Conditioner",
+        acCool: "COOL MODE",
+        acPower: "Power",
+        acMode: "Mode",
+        acFan: "Fan Speed",
         closeBtn: "✖ Close",
         startTime: "Start Time:",
         endTime: "End Time:",
@@ -925,7 +1184,13 @@
         heater: "السخان",
         lamp1: "اللمبة 1",
         lamp2: "اللمبة 2",
-        tvRemote: "ريموت التلفزيون / الرسيفر",
+        irRemoteTitle: "أجهزة التحكم عن بعد",
+        selectRemote: "اختر جهاز التحكم",
+        acTitle: "المكيف الهوائي",
+        acCool: "وضع التبريد",
+        acPower: "تشغيل/إطفاء",
+        acMode: "الوضع",
+        acFan: "سرعة المروحة",
         closeBtn: "✖ إغلاق",
         startTime: "البداية:",
         endTime: "النهاية:",
@@ -1072,17 +1337,98 @@
     });
 
     function initSmartHomeApp() {
-      // Remote Setup
-      const remotePopup = document.getElementById("remote-popup");  
-      const remoteCard  = document.getElementById("remote-card");  
+      // Remote Modals Setup
+      const remoteMenuPopup = document.getElementById("remote-menu-popup");
+      const remotePopup     = document.getElementById("remote-popup");
+      const acPopup         = document.getElementById("ac-popup");
+      const remoteCard      = document.getElementById("remote-card");  
     
-      remoteCard.addEventListener("click", () => { remotePopup.style.display = "block"; });  
-      window.closeRemote = function () { remotePopup.style.display = "none"; };  
+      remoteCard.addEventListener("click", () => { remoteMenuPopup.style.display = "flex"; });  
+      
+      window.closeRemoteMenu = function () { remoteMenuPopup.style.display = "none"; };
+      window.openTVRemote = function () { remoteMenuPopup.style.display = "none"; remotePopup.style.display = "block"; };
+      window.closeTVRemote = function () { remotePopup.style.display = "none"; };
+      
+      window.openACRemote = function () { remoteMenuPopup.style.display = "none"; acPopup.style.display = "block"; };
+      window.closeACRemote = function () { acPopup.style.display = "none"; };
 
       window.sendCmd = function (command, address) {  
         const remoteRef = ref(database, "Remote");  
         set(remoteRef, { command: command, address: address });  
       };  
+
+      // Arc Thermostat Dial Slider Logic (16°C - 30°C)
+      const dialContainer = document.getElementById("dial-container");
+      const dialHandle = document.getElementById("dial-handle");
+      const dialActive = document.getElementById("dial-active");
+      const acTempVal = document.getElementById("ac-temp-val");
+
+      const minTemp = 16;
+      const maxTemp = 30;
+      let currentAcTemp = 24;
+      let isDraggingDial = false;
+
+      const pathRadius = 90;
+      const pathCenterX = 110;
+      const pathCenterY = 120;
+      const pathTotalLength = Math.PI * pathRadius;
+
+      function updateDialUI(temp) {
+        temp = Math.max(minTemp, Math.min(maxTemp, temp));
+        currentAcTemp = temp;
+        acTempVal.innerText = `${temp}°C`;
+
+        const ratio = (temp - minTemp) / (maxTemp - minTemp);
+        const angle = Math.PI - (ratio * Math.PI); // Angle from PI down to 0
+
+        const x = pathCenterX + pathRadius * Math.cos(angle);
+        const y = pathCenterY - pathRadius * Math.sin(angle);
+
+        dialHandle.setAttribute("cx", x);
+        dialHandle.setAttribute("cy", y);
+
+        const strokeDashOffset = pathTotalLength * (1 - ratio);
+        dialActive.style.strokeDasharray = pathTotalLength;
+        dialActive.style.strokeDashoffset = strokeDashOffset;
+      }
+
+      function handleDialPointer(e) {
+        const rect = dialContainer.getBoundingClientRect();
+        const mouseX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+        const mouseY = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+        const dx = mouseX - (rect.width / 2);
+        const dy = pathCenterY - mouseY;
+
+        let rad = Math.atan2(dy, dx);
+        if (rad < 0) {
+          rad = dx < 0 ? Math.PI : 0;
+        }
+
+        let ratio = (Math.PI - rad) / Math.PI;
+        ratio = Math.max(0, Math.min(1, ratio));
+
+        const computedTemp = Math.round(minTemp + ratio * (maxTemp - minTemp));
+        if (computedTemp !== currentAcTemp) {
+          updateDialUI(computedTemp);
+          sendCmd(`AC_TEMP_${computedTemp}`, 'AC');
+        }
+      }
+
+      dialContainer.addEventListener("pointerdown", (e) => {
+        isDraggingDial = true;
+        handleDialPointer(e);
+      });
+
+      window.addEventListener("pointermove", (e) => {
+        if (isDraggingDial) handleDialPointer(e);
+      });
+
+      window.addEventListener("pointerup", () => {
+        isDraggingDial = false;
+      });
+
+      updateDialUI(24); // Init Default
     
       // Toggles Setup
       const toggles = [  
@@ -1308,7 +1654,7 @@
         });  
       });  
     }
-</script>
+  </script>
 
 </body>
 </html>
