@@ -434,27 +434,48 @@
     .status-led.green { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
     .status-led.black { background: #000; }
 
-    /* Popups & Modals */
-    #timer-popup {
+    /* Modal Overlay Common Cursor */
+    #timer-overlay,
+    #remote-menu-popup,
+    #remote-popup,
+    #ac-popup {
+      cursor: pointer;
+    }
+
+    /* Popups & Modals Inner Card Cursor */
+    .timer-card,
+    .remote-menu-card,
+    .remote,
+    .ac-remote {
+      cursor: default;
+    }
+
+    /* Timer Modal Backdrop Overlay */
+    #timer-overlay {
       display: none;
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timer-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       padding: 24px;
       border-radius: 20px;
-      z-index: 9999;
       color: var(--text-main);
       width: 90%;
       max-width: 360px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    #timer-popup h3 { font-size: 16px; margin-bottom: 12px; text-align: center; font-weight: 800; }
-    #timer-popup label { display: block; margin-top: 10px; font-size: 12px; color: var(--text-sub); font-weight: 700; }
-    #timer-popup input {
+    .timer-card h3 { font-size: 16px; margin-bottom: 12px; text-align: center; font-weight: 800; }
+    .timer-card label { display: block; margin-top: 10px; font-size: 12px; color: var(--text-sub); font-weight: 700; }
+    .timer-card input {
       width: 100%;
       padding: 10px;
       margin-top: 6px;
@@ -465,7 +486,7 @@
       outline: none;
     }
 
-    #timer-popup button {
+    .timer-card button {
       margin-top: 14px;
       padding: 10px;
       border: none;
@@ -713,24 +734,6 @@
       transform: scale(0.95);
     }
 
-    .close-btn {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      background: var(--accent-red);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 8px 14px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 100000;
-    }
-    html[dir="rtl"] .close-btn {
-      right: auto;
-      left: 16px;
-    }
-
     /* Loading & Login Screens */
     #loading-screen {
       position: fixed;
@@ -974,13 +977,11 @@
           <span>AC</span>
         </button>
       </div>
-      <button class="close-btn" onclick="closeRemoteMenu()" data-i18n="closeBtn">✖ Close</button>
     </div>
   </div>
 
   <!-- TV Remote Popup -->
   <div id="remote-popup">  
-    <button class="close-btn" onclick="closeTVRemote()" data-i18n="closeBtn">✖ Close</button>  
     <div class="remote">    
       <div class="row two">  
         <button class="btn red" onclick="sendCmd('0x23DC', '0xFD01')">🔆</button>  
@@ -1040,7 +1041,6 @@
 
   <!-- AC Remote Popup -->
   <div id="ac-popup">
-    <button class="close-btn" onclick="closeACRemote()" data-i18n="closeBtn">✖ Close</button>
     <div class="ac-remote">
       <div class="ac-header" data-i18n="acTitle">Air Conditioner</div>
       
@@ -1076,17 +1076,19 @@
   </div>
 
   <!-- Timer Popup -->
-  <div id="timer-popup">  
-    <h3 id="timer-popup-title">Device Timer Setup</h3>  
-    <label for="start-time" data-i18n="startTime">Start Time:</label>  
-    <input type="datetime-local" id="start-time" />  
-    <label for="end-time" data-i18n="endTime">End Time:</label>  
-    <input type="datetime-local" id="end-time" />  
-    <div style="display:flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">  
-      <button id="set-timer-btn" data-i18n="setBtn">Set</button>  
-      <button id="cancel-timer-btn" data-i18n="cancelBtn">Cancel</button>  
-      <button id="clear-timer-btn" data-i18n="clearBtn">Clear Timer</button>  
-    </div>  
+  <div id="timer-overlay">  
+    <div class="timer-card">
+      <h3 id="timer-popup-title">Device Timer Setup</h3>  
+      <label for="start-time" data-i18n="startTime">Start Time:</label>  
+      <input type="datetime-local" id="start-time" />  
+      <label for="end-time" data-i18n="endTime">End Time:</label>  
+      <input type="datetime-local" id="end-time" />  
+      <div style="display:flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">  
+        <button id="set-timer-btn" data-i18n="setBtn">Set</button>  
+        <button id="cancel-timer-btn" data-i18n="cancelBtn">Cancel</button>  
+        <button id="clear-timer-btn" data-i18n="clearBtn">Clear Timer</button>  
+      </div>  
+    </div>
   </div>
 
   <!-- Firebase & App Script -->
@@ -1147,7 +1149,6 @@
         acPower: "Power",
         acMode: "Mode",
         acFan: "Fan Speed",
-        closeBtn: "✖ Close",
         startTime: "Start Time:",
         endTime: "End Time:",
         setBtn: "Set",
@@ -1191,7 +1192,6 @@
         acPower: "تشغيل/إطفاء",
         acMode: "الوضع",
         acFan: "سرعة المروحة",
-        closeBtn: "✖ إغلاق",
         startTime: "البداية:",
         endTime: "النهاية:",
         setBtn: "ضبط",
@@ -1342,15 +1342,32 @@
       const remotePopup     = document.getElementById("remote-popup");
       const acPopup         = document.getElementById("ac-popup");
       const remoteCard      = document.getElementById("remote-card");  
+      const timerOverlay    = document.getElementById("timer-overlay");
     
       remoteCard.addEventListener("click", () => { remoteMenuPopup.style.display = "flex"; });  
       
-      window.closeRemoteMenu = function () { remoteMenuPopup.style.display = "none"; };
       window.openTVRemote = function () { remoteMenuPopup.style.display = "none"; remotePopup.style.display = "block"; };
-      window.closeTVRemote = function () { remotePopup.style.display = "none"; };
-      
       window.openACRemote = function () { remoteMenuPopup.style.display = "none"; acPopup.style.display = "block"; };
-      window.closeACRemote = function () { acPopup.style.display = "none"; };
+
+      // Close popups when clicking outside card content
+      remoteMenuPopup.addEventListener("click", (e) => {
+        if (e.target === remoteMenuPopup) remoteMenuPopup.style.display = "none";
+      });
+
+      remotePopup.addEventListener("click", (e) => {
+        if (e.target === remotePopup) remotePopup.style.display = "none";
+      });
+
+      acPopup.addEventListener("click", (e) => {
+        if (e.target === acPopup) acPopup.style.display = "none";
+      });
+
+      timerOverlay.addEventListener("click", (e) => {
+        if (e.target === timerOverlay) {
+          timerOverlay.style.display = "none";
+          currentDevice = null;
+        }
+      });
 
       window.sendCmd = function (command, address) {  
         const remoteRef = ref(database, "Remote");  
@@ -1580,7 +1597,6 @@
       });  
     
       // Timers logic
-      const popup = document.getElementById("timer-popup");  
       const startInput = document.getElementById("start-time");  
       const endInput = document.getElementById("end-time");  
       const setTimerBtn = document.getElementById("set-timer-btn");  
@@ -1612,7 +1628,7 @@
         icon.addEventListener("click", (e) => {  
           e.stopPropagation();  
           currentDevice = icon.getAttribute("data-device");  
-          popup.style.display = "block";  
+          timerOverlay.style.display = "flex";  
           document.getElementById("timer-popup-title").textContent = `${translations[currentLang].timerTitlePrefix}${currentDevice}`;  
     
           const timerRef = ref(database, `timers/${currentDevice}`);  
@@ -1629,19 +1645,19 @@
         const startMs = datetimeLocalToMs(startInput.value);  
         const endMs = datetimeLocalToMs(endInput.value);  
         if (!startMs || !endMs || startMs >= endMs) {  
-          popup.style.display = "none";  
+          timerOverlay.style.display = "none";  
           currentDevice = null;  
           return;  
         }  
         const timerRef = ref(database, `timers/${currentDevice}`);  
         set(timerRef, { start: startMs, end: endMs }).then(() => {  
-          popup.style.display = "none";  
+          timerOverlay.style.display = "none";  
           currentDevice = null;  
         });  
       });  
     
       cancelTimerBtn.addEventListener("click", () => {  
-        popup.style.display = "none";  
+        timerOverlay.style.display = "none";  
         currentDevice = null;  
       });  
     
@@ -1649,7 +1665,7 @@
         if (!currentDevice) return;  
         const timerRef = ref(database, `timers/${currentDevice}`);  
         set(timerRef, null).then(() => {  
-          popup.style.display = "none";  
+          timerOverlay.style.display = "none";  
           currentDevice = null;  
         });  
       });  
