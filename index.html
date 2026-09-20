@@ -1,1864 +1,218 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nova Smart</title>
-  
-  <link rel="manifest" href="manifest.json" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Nova Smart" />
-  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1a1c23">
 
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  
   <style>
     :root {
-      /* Default Light Theme */
-      --bg-color: #f8fafc;
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --accent-color: #3b82f6;
+      --alert-color: #ef4444;
+      --success-color: #10b981;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f1f5f9;
       --card-bg: #ffffff;
-      --card-border: #e2e8f0;
-      --text-main: #0f172a;
-      --text-sub: #94a3b8;
-      --accent-blue: #2563eb;
-      --accent-green: #059669;
-      --accent-red: #dc2626;
-      --accent-amber: #d97706;
-      --accent-purple: #7c3aed;
-      --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-    }
-
-    body.dark-mode {
-      /* Dark Theme */
-      --bg-color: #0b0f19;
-      --card-bg: #151c2c;
-      --card-border: #222d45;
-      --text-main: #ffffff;
-      --text-sub: #64748b;
-      --accent-blue: #3b82f6;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --accent-amber: #f59e0b;
-      --accent-purple: #8b5cf6;
-      --box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.1s;
+      --text-color: #0f172a;
+      --accent-color: #2563eb;
     }
 
     body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
       background-color: var(--bg-color);
-      color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      padding: 24px 16px;
-      min-height: 100vh;
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+      padding: 16px;
     }
 
-    .container {
-      width: 100%;
-      max-width: 480px;
-    }
-
-    /* Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .header-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .logo:active {
-      transform: scale(0.9);
-    }
-
-    header h1 {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .header-controls {
-      display: flex;
-      gap: 8px;
-    }
-
-    .theme-btn, .lang-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 8px 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: var(--box-shadow);
-    }
-
-    .section-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-sub);
-      font-weight: 700;
-      margin-bottom: 12px;
-      margin-top: 10px;
-    }
-
-    /* Top Grid: Water Tank & Temp */
-    .top-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 12px;
       margin-bottom: 20px;
     }
 
-    .card-stat {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
       padding: 16px;
-      box-shadow: var(--box-shadow);
+      margin-bottom: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    .tank-box {
+    .water-tank {
+      height: 120px;
+      border: 2px solid var(--accent-color);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
       display: flex;
       align-items: center;
-      gap: 16px;
-      height: 90px;
+      justify-content: center;
     }
 
-    .tank-container {
-      position: relative;
-      width: 50px;
-      height: 80px;
-      border: 2px solid var(--accent-blue);
-      border-radius: 8px;
-      background: rgba(59, 130, 246, 0.05);
-      overflow: hidden;
-    }
-
-    .tank-fill {
+    .water-fill {
       position: absolute;
       bottom: 0;
       width: 100%;
-      height: 0%;
-      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
-      border-radius: 0 0 4px 4px;
-      transition: height 0.5s ease;
+      background-color: var(--accent-color);
+      opacity: 0.6;
+      transition: height 0.5s ease-in-out;
     }
 
-    .bubble {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.4);
-      border-radius: 50%;
-      bottom: 0;
-      animation: rise 3s infinite ease-in;
-    }
-    .b1 { width: 4px; height: 4px; left: 30%; animation-duration: 2.5s; }
-    .b2 { width: 6px; height: 6px; left: 60%; animation-duration: 3.2s; animation-delay: 0.5s; }
-
-    @keyframes rise {
-      0% { bottom: -5px; opacity: 0; }
-      50% { opacity: 0.8; }
-      100% { bottom: 100%; opacity: 0; }
-    }
-
-    .tank-details h3 {
-      font-size: 22px;
-      font-weight: 800;
-    }
-
-    .tank-details p {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .temp-box {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 90px;
-    }
-
-    .temp-val {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--accent-red);
-    }
-
-    .temp-lbl {
-      font-size: 11px;
-      color: var(--text-sub);
-      font-weight: 600;
-    }
-
-    /* Single Power Source Block */
-    .single-power-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      box-shadow: var(--box-shadow);
-    }
-
-    .power-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .power-icon-wrap {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: rgba(148, 163, 184, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      color: var(--text-sub);
-    }
-
-    .power-details h3 {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--text-main);
-    }
-
-    .power-details p {
-      font-size: 12px;
-      color: var(--text-sub);
-      font-weight: 600;
-      margin-top: 2px;
-    }
-
-    .power-badge {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 6px 12px;
-      border-radius: 10px;
-      background: rgba(148, 163, 184, 0.1);
-      color: var(--text-sub);
-    }
-
-    /* Power State Styles */
-    .single-power-card.grid {
-      border-color: var(--accent-blue);
-      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(37, 99, 235, 0.08) 100%);
-    }
-    .single-power-card.grid .power-icon-wrap {
-      background: rgba(37, 99, 235, 0.15);
-      color: var(--accent-blue);
-    }
-    .single-power-card.grid .power-badge {
-      background: rgba(37, 99, 235, 0.15);
-      color: var(--accent-blue);
-    }
-
-    .single-power-card.generator {
-      border-color: var(--accent-amber);
-      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(217, 119, 6, 0.08) 100%);
-    }
-    .single-power-card.generator .power-icon-wrap {
-      background: rgba(217, 119, 6, 0.15);
-      color: var(--accent-amber);
-    }
-    .single-power-card.generator .power-badge {
-      background: rgba(217, 119, 6, 0.15);
-      color: var(--accent-amber);
-    }
-
-    .single-power-card.solar {
-      border-color: var(--accent-green);
-      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(5, 150, 105, 0.08) 100%);
-    }
-    .single-power-card.solar .power-icon-wrap {
-      background: rgba(5, 150, 105, 0.15);
-      color: var(--accent-green);
-    }
-    .single-power-card.solar .power-badge {
-      background: rgba(5, 150, 105, 0.15);
-      color: var(--accent-green);
-    }
-
-    /* Controls Grid */
     .controls-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 12px;
     }
 
-    .control-window {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 110px;
-      box-shadow: var(--box-shadow);
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      position: relative;
-    }
-
-    .control-window:active {
-      transform: scale(0.97);
-    }
-
-    /* Active States */
-    .control-window.on {
-      border-color: var(--accent-blue);
-      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.08) 100%);
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
-    }
-
-    .control-window.auto {
-      border-color: var(--accent-amber);
-      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(245, 158, 11, 0.08) 100%);
-    }
-
-    .control-window.timer-locked {
-      border-color: var(--accent-purple) !important;
-      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(139, 92, 246, 0.1) 100%) !important;
-      cursor: not-allowed;
-      opacity: 0.85;
-    }
-
-    .window-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .window-icon {
-      font-size: 20px;
-      color: var(--text-sub);
-    }
-
-    .control-window.on .window-icon { color: var(--accent-blue); }
-    .control-window.auto .window-icon { color: var(--accent-amber); }
-    .control-window.timer-locked .window-icon { color: var(--accent-purple); }
-
-    .status-tag {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--text-sub);
-      padding: 4px 8px;
+    .btn {
+      padding: 12px;
+      border: none;
       border-radius: 8px;
-      background: rgba(0, 0, 0, 0.05);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    body.dark-mode .status-tag {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .control-window.on .status-tag {
-      color: var(--accent-blue);
-      background: rgba(59, 130, 246, 0.15);
-    }
-
-    .control-window.auto .status-tag {
-      color: var(--accent-amber);
-      background: rgba(245, 158, 11, 0.15);
-    }
-
-    .control-window.timer-locked .status-tag {
-      color: var(--accent-purple);
-      background: rgba(139, 92, 246, 0.15);
-    }
-
-    .window-title {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    /* Timer Icon */
-    .timer-icon {
-      font-size: 14px;
-      color: var(--text-sub);
-      cursor: pointer;
-      transition: color 0.3s ease;
-      padding: 4px;
-    }
-    .timer-icon:hover { color: var(--accent-blue); }
-
-    @keyframes shake {
-      0% { transform: rotate(0deg); }
-      25% { transform: rotate(-15deg); }
-      75% { transform: rotate(15deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    .timer-active {
-      animation: shake 0.5s infinite;
-      color: var(--accent-amber) !important;
-    }
-
-    /* LED Indicator */
-    .status-led {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      display: none;
-    }
-    .status-led.show { display: inline-block; }
-    .status-led.green { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
-    .status-led.black { background: #000; }
-
-    /* Modal Overlay Common Cursor */
-    #timer-overlay,
-    #remote-menu-popup,
-    #remote-popup,
-    #ac-popup,
-    #logout-confirm-modal {
-      cursor: pointer;
-    }
-
-    /* Popups & Modals Inner Card Cursor */
-    .timer-card,
-    .remote-menu-card,
-    .remote,
-    .ac-remote,
-    .confirm-card {
-      cursor: default;
-    }
-
-    /* Custom Modern Modal Overlay */
-    .custom-modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 999999;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.25s ease-out forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.9) translateY(10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    /* Confirmation Modal Styling */
-    .confirm-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 32px 24px 24px;
-      width: 90%;
-      max-width: 360px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      text-align: center;
-      position: relative;
-      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .confirm-icon-box {
-      width: 64px;
-      height: 64px;
-      border-radius: 20px;
-      background: rgba(220, 38, 38, 0.1);
-      color: var(--accent-red);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      margin: 0 auto 20px;
-    }
-
-    .confirm-card h3 {
-      font-size: 19px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-
-    .confirm-card p {
-      font-size: 13px;
-      color: var(--text-sub);
-      line-height: 1.5;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    .confirm-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .confirm-btn {
-      flex: 1;
-      padding: 12px 16px;
-      border-radius: 14px;
-      border: none;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-
-    .confirm-btn-primary {
-      background: var(--accent-red);
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
-    }
-
-    .confirm-btn-primary:active {
-      transform: scale(0.96);
-      opacity: 0.9;
-    }
-
-    .confirm-btn-secondary {
-      background: var(--bg-color);
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
-    }
-
-    .confirm-btn-secondary:active {
-      transform: scale(0.96);
-      background: var(--card-border);
-    }
-
-    /* Timer Modal Backdrop Overlay */
-    #timer-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(5px);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .timer-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 24px;
-      border-radius: 20px;
-      color: var(--text-main);
-      width: 90%;
-      max-width: 360px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
-
-    .timer-card h3 { font-size: 16px; margin-bottom: 12px; text-align: center; font-weight: 800; }
-    .timer-card label { display: block; margin-top: 10px; font-size: 12px; color: var(--text-sub); font-weight: 700; }
-    .timer-card input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      background: var(--bg-color);
-      color: var(--text-main);
-      outline: none;
-    }
-
-    .timer-card button {
-      margin-top: 14px;
-      padding: 10px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 700;
+      background-color: var(--accent-color);
       color: white;
-      width: 48%;
-    }
-
-    #set-timer-btn { background-color: var(--accent-blue); }
-    #cancel-timer-btn { background-color: var(--text-sub); }
-    #clear-timer-btn { background-color: var(--accent-red); width: 100% !important; margin-top: 10px; }
-
-    /* Selection Popup (IR Menu) */
-    #remote-menu-popup {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(5px);
-      z-index: 99998;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .remote-menu-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 24px;
-      width: 90%;
-      max-width: 360px;
-      box-shadow: var(--box-shadow);
-      text-align: center;
-      position: relative;
-    }
-
-    .remote-menu-card h3 {
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 20px;
-      color: var(--text-main);
-    }
-
-    .remote-options-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .remote-option-btn {
-      background: var(--bg-color);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 20px 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      font-weight: bold;
       cursor: pointer;
-      color: var(--text-main);
-      font-weight: 700;
-      font-size: 14px;
-      transition: all 0.2s ease;
-    }
-
-    .remote-option-btn i {
-      font-size: 26px;
-      color: var(--accent-blue);
-    }
-
-    .remote-option-btn:hover, .remote-option-btn:active {
-      border-color: var(--accent-blue);
-      background: rgba(37, 99, 235, 0.08);
-      transform: translateY(-2px);
-    }
-
-    /* TV Remote Popup */
-    #remote-popup {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(5px);
-      z-index: 99999;
-      overflow: auto;
-    }
-
-    .remote {
-      width: 280px;
-      background: #0f0f0f;
-      border-radius: 30px;
-      padding: 16px 14px 22px;
-      margin: 40px auto;
-      color: #fff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    }
-
-    .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
-    .row.two { grid-template-columns: repeat(2, 1fr); }
-    .btn { background: #2b2b2b; border: none; border-radius: 12px; padding: 12px 0; color: #fff; font-size: 14px; cursor: pointer; }
-    .btn:active { background: #555; }
-    .red { background: #c0392b; }
-    .green { background: #27ae60; }
-    .yellow { background: #f1c40f; color: #000; }
-    .blue { background: #2980b9; }
-
-    .nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
-    .ok { background: #444; font-weight: bold; }
-    .numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-    .extra-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
-    .extra-keys .btn { padding: 14px 0; font-size: 13px; border-radius: 14px; }
-
-    /* AC Remote Popup */
-    #ac-popup {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(5px);
-      z-index: 99999;
-      overflow: auto;
-    }
-
-    .ac-remote {
-      width: 300px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 30px;
-      padding: 24px 20px;
-      margin: 40px auto;
-      color: var(--text-main);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .ac-header {
       width: 100%;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 15px;
-      color: var(--text-main);
     }
 
-    /* Arc Thermostat Dial */
-    .dial-container {
-      position: relative;
-      width: 220px;
-      height: 140px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      margin: 10px 0 20px;
-      touch-action: none;
-    }
-
-    .dial-svg {
-      width: 220px;
-      height: 140px;
-    }
-
-    .dial-bg-path {
-      fill: none;
-      stroke: var(--card-border);
-      stroke-width: 12;
-      stroke-linecap: round;
-    }
-
-    .dial-active-path {
-      fill: none;
-      stroke: var(--accent-blue);
-      stroke-width: 12;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 0.05s linear;
-    }
-
-    .dial-handle {
-      fill: #ffffff;
-      stroke: var(--accent-blue);
-      stroke-width: 4;
-      cursor: pointer;
-      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3));
-    }
-
-    .dial-center-info {
-      position: absolute;
-      bottom: 10px;
-      text-align: center;
-      pointer-events: none;
-    }
-
-    .ac-temp-display {
-      font-size: 38px;
-      font-weight: 800;
-      color: var(--text-main);
-      line-height: 1;
-    }
-
-    .ac-mode-sub {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-sub);
-      margin-top: 4px;
-    }
-
-    .ac-controls-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      width: 100%;
-      margin-top: 10px;
-    }
-
-    .ac-btn {
-      background: var(--bg-color);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 12px 8px;
-      color: var(--text-main);
-      font-size: 12px;
-      font-weight: 700;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .ac-btn i { font-size: 16px; }
-
-    .ac-btn.power-btn {
-      background: rgba(220, 38, 38, 0.1);
-      border-color: var(--accent-red);
-      color: var(--accent-red);
-    }
-    .ac-btn.power-btn i { color: var(--accent-red); }
-
-    .ac-btn:active {
-      transform: scale(0.95);
-    }
-
-    /* Loading & Login Screens */
-    #loading-screen {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-color);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999999;
-      transition: opacity 0.5s ease;
-    }
-
-    .loader {
-      width: 50px;
-      height: 50px;
-      border: 4px solid var(--card-border);
-      border-top: 4px solid var(--accent-blue);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    .loading-text { margin-top: 15px; font-size: 14px; color: var(--text-sub); font-weight: 600; }
-
-    #login-popup {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-color);
-      z-index: 999999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .login-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 30px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 360px;
-      box-shadow: var(--box-shadow);
-      text-align: center;
-    }
-
-    .login-box h2 { margin-bottom: 20px; font-size: 20px; color: var(--accent-blue); font-weight: 800; }
-    .login-box input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      background: var(--bg-color);
-      color: var(--text-main);
-      outline: none;
-    }
-
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      background: var(--accent-blue);
-      border: none;
-      color: white;
-      font-weight: 700;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .login-box .error-msg {
-      color: var(--accent-red);
-      font-size: 12px;
-      margin-top: 12px;
-      display: none;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    .btn-off {
+      background-color: #64748b;
     }
   </style>
 </head>
 <body>
 
-  <!-- Loading Screen -->
-  <div id="loading-screen">
-    <div class="loader"></div>
-    <div class="loading-text" data-i18n="connecting">Connecting...</div>
-  </div>
+  <header>
+    <h1>Nova Smart 🏠</h1>
+    <button id="themeToggle" class="btn" style="width: auto;">تغيير المظهر</button>
+  </header>
 
-  <!-- Login Popup -->
-  <div id="login-popup" style="display: none;">
-    <div class="login-box">
-      <h2 data-i18n="loginTitle">Control Panel Login</h2>
-      <input 
-  type="email" 
-  id="login-email" 
-  placeholder="Email" 
-  data-i18n-ph="emailPh" 
-  autocomplete="username"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
-
-<input 
-  type="password" 
-  id="login-password" 
-  placeholder="Password" 
-  data-i18n-ph="passPh" 
-  autocomplete="current-password"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
-
-      <button id="login-btn" data-i18n="loginBtn">Login</button>
-      <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
+  <!-- قسم مستوى المياه -->
+  <div class="card">
+    <h3>مستوى المياه 💧</h3>
+    <div class="water-tank">
+      <div id="waterFill" class="water-fill" style="height: 0%;"></div>
+      <span id="waterText" style="position: relative; z-index: 2; font-weight: bold;">0%</span>
     </div>
   </div>
 
-  <!-- Custom Modern Logout Confirmation Modal -->
-  <div id="logout-confirm-modal" class="custom-modal-overlay">
-    <div class="confirm-card">
-      <div class="confirm-icon-box">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-      </div>
-      <h3 data-i18n="logoutTitle">Sign Out</h3>
-      <p data-i18n="logoutConfirmMsg">Are you sure you want to exit your Nova Smart session?</p>
-      <div class="confirm-actions">
-        <button id="cancel-logout-btn" class="confirm-btn confirm-btn-secondary" data-i18n="cancelBtn">Cancel</button>
-        <button id="confirm-logout-btn" class="confirm-btn confirm-btn-primary">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span data-i18n="logoutConfirmBtn">Logout</span>
-        </button>
-      </div>
-    </div>
+  <!-- قسم الإشعارات الأخيرة -->
+  <div class="card">
+    <h3>آخر التنبيهات 🔔</h3>
+    <p id="alertBox">لا توجد تنبيهات حالية</p>
   </div>
 
-  <!-- Main Container -->
-  <div class="container">
-    <header>
-      <div class="header-brand">
-        <img src="logo.png" alt="Logo" class="logo" id="appLogo" title="Logout / تسجيل الخروج" />
-        <h1>Nova Smart</h1>
-      </div>
-      <div class="header-controls">
-        <button class="lang-btn" id="langBtn">العربية</button>
-        <button class="theme-btn" id="themeBtn">🌙 Dark</button>
-      </div>
-    </header>
-
-    <!-- Sensors Section -->
-    <div class="top-grid">
-      <div class="card-stat">
-        <div class="tank-box">
-          <div class="tank-container">
-            <div id="water-bar" class="tank-fill">
-              <div class="bubble b1"></div>
-              <div class="bubble b2"></div>
-            </div>
-          </div>
-          <div class="tank-details">
-            <h3 id="water-value">0%</h3>
-            <p data-i18n="waterLevel">Water Level</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card-stat">
-        <div class="temp-box">
-          <span class="temp-val" id="temperature-value">0°C</span>
-          <span class="temp-lbl" data-i18n="temperature">Temperature</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dynamic Single Power Source Section -->
-    <div class="section-title" data-i18n="secPower">Power Source</div>
-    <div class="single-power-card" id="power-card">
-      <div class="power-info">
-        <div class="power-icon-wrap" id="power-icon-wrap">
-          <i class="fa-solid fa-power-off" id="power-icon"></i>
-        </div>
-        <div class="power-details">
-          <h3 id="power-title" data-i18n="pwrOff">Disconnected</h3>
-          <p id="power-desc" data-i18n="pwrOffDesc">No active power source</p>
-        </div>
-      </div>
-      <span class="power-badge" id="power-status" data-i18n="off">OFF</span>
-    </div>
-
-    <!-- Controls Grid Section -->
-    <div class="section-title" data-i18n="secControls">Controls</div>
+  <!-- قسم التحكم بالوحدات -->
+  <div class="card">
+    <h3>وحدات التحكم ⚡</h3>
     <div class="controls-grid">
-
-      <!-- Water Pump -->
-      <div class="control-window" id="waterpump-card">
-        <div class="window-top">
-          <i class="fa-solid fa-faucet-drip window-icon"></i>
-          <span class="status-tag">
-            <span class="status-led"></span>
-            <span class="status-text">OFF</span>
-          </span>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="window-title" data-i18n="waterPump">Water Pump</div>
-          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="waterpump"></i>
-        </div>
-      </div>
-
-      <!-- Heater -->
-      <div class="control-window" id="heater-card">
-        <div class="window-top">
-          <i class="fa-solid fa-temperature-arrow-up window-icon"></i>
-          <span class="status-tag">
-            <span class="status-led"></span>
-            <span class="status-text">OFF</span>
-          </span>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="window-title" data-i18n="heater">Heater</div>
-          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="heater"></i>
-        </div>
-      </div>
-
-      <!-- Lamp 1 -->
-      <div class="control-window" id="lamp1-card">
-        <div class="window-top">
-          <i class="fa-solid fa-lightbulb window-icon"></i>
-          <span class="status-tag">
-            <span class="status-led"></span>
-            <span class="status-text">OFF</span>
-          </span>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="window-title" data-i18n="lamp1">Lamp 1</div>
-          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="lamp1"></i>
-        </div>
-      </div>
-
-      <!-- Lamp 2 -->
-      <div class="control-window" id="lamp2-card">
-        <div class="window-top">
-          <i class="fa-solid fa-lightbulb window-icon"></i>
-          <span class="status-tag">
-            <span class="status-led"></span>
-            <span class="status-text">OFF</span>
-          </span>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="window-title" data-i18n="lamp2">Lamp 2</div>
-          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="lamp2"></i>
-        </div>
-      </div>
-
-      <!-- Remote Control Card -->
-      <div class="control-window" id="remote-card" style="grid-column: span 2;">
-        <div class="window-top">
-          <i class="fa-solid fa-tower-broadcast window-icon"></i>
-          <span class="status-tag">IR</span>
-        </div>
-        <div class="window-title" data-i18n="irRemoteTitle">IR Remote Controls</div>
-      </div>
-
+      <button id="pumpBtn" class="btn btn-off" onclick="toggleSwitch('Controls/Pump/status', this)">مضخة المياه</button>
+      <button id="heaterBtn" class="btn btn-off" onclick="toggleSwitch('Controls/Heater/status', this)">السخان</button>
+      <button id="lamp1Btn" class="btn btn-off" onclick="toggleSwitch('Controls/Lamp1/status', this)">اللمبة 1</button>
+      <button id="lamp2Btn" class="btn btn-off" onclick="toggleSwitch('Controls/Lamp2/status', this)">اللمبة 2</button>
     </div>
   </div>
 
-  <!-- Selection Popup (TV vs AC Menu) -->
-  <div id="remote-menu-popup">
-    <div class="remote-menu-card">
-      <h3 data-i18n="selectRemote">Select Remote</h3>
-      <div class="remote-options-grid">
-        <button class="remote-option-btn" onclick="openTVRemote()">
-          <i class="fa-solid fa-tv"></i>
-          <span>TV</span>
-        </button>
-        <button class="remote-option-btn" onclick="openACRemote()">
-          <i class="fa-solid fa-snowflake"></i>
-          <span>AC</span>
-        </button>
-      </div>
-    </div>
-  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-  <!-- TV Remote Popup -->
-  <div id="remote-popup">  
-    <div class="remote">    
-      <div class="row two">  
-        <button class="btn red" onclick="sendCmd('0x23DC', '0xFD01')">🔆</button>  
-        <button class="btn" onclick="sendCmd('0x8B', '0xFD01')">🔇</button>  
-      </div>    
-      <div class="row">  
-        <button class="btn" onclick="sendCmd('0xC9', '0xFD01')">&#x23EF;</button>  
-        <button class="btn" onclick="sendCmd('0xC8', '0xFD01')">USB</button>  
-        <button class="btn" onclick="sendCmd('0x99', '0xFD01')">&#x25CF;</button>  
-        <button class="btn" onclick="sendCmd('0xCD', '0xFD01')">INFO</button>  
-      </div>    
-      <div class="row">  
-        <button class="btn red" onclick="sendCmd('0xC7', '0xFD01')">|&#x25C0;&#x25C0;</button>  
-        <button class="btn green" onclick="sendCmd('0xC6', '0xFD01')">&#x25B6;&#x25B6;|</button>  
-        <button class="btn yellow" onclick="sendCmd('0xC5', '0xFD01')">&#x25C0;&#x25C0;</button>  
-        <button class="btn blue" onclick="sendCmd('0xC4', '0xFD01')">&#x25B6;&#x25B6;</button>  
-      </div>  
-      <div class="row two">  
-        <button class="btn" onclick="sendCmd('0x9F', '0xFD01')">FAV</button>  
-        <button class="btn" onclick="sendCmd('0x9B', '0xFD01')">SAT</button>
-      </div>    
-      <div class="nav">  
-        <div></div><button class="btn" onclick="sendCmd('0xDE', '0xFD01')">&#x25B2;</button><div></div>  
-        <button class="btn" onclick="sendCmd('0xDB', '0xFD01')">&#x25C0;</button>  
-        <button class="btn ok" onclick="sendCmd('0xDA', '0xFD01')">OK</button>  
-        <button class="btn" onclick="sendCmd('0xD8', '0xFD01')">&#x25B6;</button>  
-        <div></div><button class="btn" onclick="sendCmd('0xD6', '0xFD01')">&#x25BC;</button><div></div>  
-      </div>     
-      <div class="row two">  
-        <button class="btn" onclick="sendCmd('0xD4', '0xFD01')">MENU</button>  
-        <button class="btn" onclick="sendCmd('0xD7', '0xFD01')">EXIT</button>  
-      </div>    
-      <div class="extra-keys">  
-        <button class="btn" onclick="sendCmd('0x9D', '0xFD01')">SUBTITLE</button>  
-        <button class="btn" onclick="sendCmd('0xDD', '0xFD01')">RECALL</button>  
-        <button class="btn green" onclick="sendCmd('0x83', '0xFD01')">PAGE +</button>    
-        <button class="btn" onclick="sendCmd('0xCE', '0xFD01')">TXT</button>
-        <button class="btn" onclick="sendCmd('0xD0', '0xFD01')">AUDIO</button>
-        <button class="btn red" onclick="sendCmd('0xCC', '0xFD01')">PAGE −</button>
-      </div>    
-      <div class="numbers">  
-        <button class="btn" onclick="sendCmd('0x8E', '0xFD01')">1</button>  
-        <button class="btn" onclick="sendCmd('0x86', '0xFD01')">2</button>  
-        <button class="btn" onclick="sendCmd('0x8F', '0xFD01')">3</button>  
-        <button class="btn" onclick="sendCmd('0x92', '0xFD01')">4</button>  
-        <button class="btn" onclick="sendCmd('0x87', '0xFD01')">5</button>  
-        <button class="btn" onclick="sendCmd('0x93', '0xFD01')">6</button>  
-        <button class="btn" onclick="sendCmd('0x96', '0xFD01')">7</button>  
-        <button class="btn" onclick="sendCmd('0x82', '0xFD01')">8</button>  
-        <button class="btn" onclick="sendCmd('0x97', '0xFD01')">9</button>  
-        <button class="btn" onclick="sendCmd('0x9A', '0xFD01')">0</button>  
-        <button class="btn" onclick="sendCmd('0xDF', '0xFD01')">EPG</button>  
-        <button class="btn" onclick="sendCmd('0X89', '0xFD01')">TV/R</button>  
-      </div>  
-    </div>  
-  </div>
-
-  <!-- AC Remote Popup -->
-  <div id="ac-popup">
-    <div class="ac-remote">
-      <div class="ac-header" data-i18n="acTitle">Air Conditioner</div>
-      
-      <!-- Arc Temperature Slider -->
-      <div class="dial-container" id="dial-container">
-        <svg class="dial-svg" viewBox="0 0 220 140">
-          <path class="dial-bg-path" d="M 20 120 A 90 90 0 0 1 200 120" />
-          <path class="dial-active-path" id="dial-active" d="M 20 120 A 90 90 0 0 1 200 120" />
-          <circle class="dial-handle" id="dial-handle" cx="20" cy="120" r="12" />
-        </svg>
-        <div class="dial-center-info">
-          <div class="ac-temp-display" id="ac-temp-val">24°C</div>
-          <div class="ac-mode-sub" id="ac-mode-lbl" data-i18n="acCool">COOL MODE</div>
-        </div>
-      </div>
-
-      <!-- AC Control Buttons -->
-      <div class="ac-controls-grid">
-        <button class="ac-btn power-btn" onclick="sendCmd('AC_POWER', 'AC')">
-          <i class="fa-solid fa-power-off"></i>
-          <span data-i18n="acPower">Power</span>
-        </button>
-        <button class="ac-btn" onclick="sendCmd('AC_MODE', 'AC')">
-          <i class="fa-solid fa-arrows-rotate"></i>
-          <span data-i18n="acMode">Mode</span>
-        </button>
-        <button class="ac-btn" onclick="sendCmd('AC_FAN', 'AC')">
-          <i class="fa-solid fa-fan"></i>
-          <span data-i18n="acFan">Fan Speed</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Timer Popup -->
-  <div id="timer-overlay">  
-    <div class="timer-card">
-      <h3 id="timer-popup-title">Device Timer Setup</h3>  
-      <label for="start-time" data-i18n="startTime">Start Time:</label>  
-      <input type="datetime-local" id="start-time" />  
-      <label for="end-time" data-i18n="endTime">End Time:</label>  
-      <input type="datetime-local" id="end-time" />  
-      <div style="display:flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">  
-        <button id="set-timer-btn" data-i18n="setBtn">Set</button>  
-        <button id="cancel-timer-btn" data-i18n="cancelBtn">Cancel</button>  
-        <button id="clear-timer-btn" data-i18n="clearBtn">Clear Timer</button>  
-      </div>  
-    </div>
-  </div>
-
-  <!-- Firebase & App Script -->
-  <script type="module">  
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-  
-    const firebaseConfig = {  
-      apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
-      authDomain: "smarthome-ad84f.firebaseapp.com",  
-      databaseURL: "https://smarthome-ad84f-default-rtdb.firebaseio.com",  
-      projectId: "smarthome-ad84f",  
-      storageBucket: "smarthome-ad84f.appspot.com",  
-      messagingSenderId: "849228056680",  
-      appId: "1:849228056680:web:09fa91eaca63dc148953dd"  
-    };  
-  
-    const app = initializeApp(firebaseConfig);  
-    const database = getDatabase(app);  
-    const auth = getAuth(app);
-
-    // --- LocalStorage Read ---
-    let savedLang = localStorage.getItem('nova_lang') || 'en';
-    let savedTheme = localStorage.getItem('nova_theme') || 'light';
-
-    // Translations Dictionary
-    const translations = {
-      en: {
-        connecting: "Connecting...",
-        loginTitle: "Control Panel Login",
-        emailPh: "Email",
-        passPh: "Password",
-        loginBtn: "Login",
-        loginErr: "Login failed! Please check your credentials.",
-        waterLevel: "Water Level",
-        temperature: "Temperature",
-        secPower: "Power Source",
-        pwrGrid: "Grid Power",
-        pwrGridDesc: "Main Electricity Active",
-        pwrGenerator: "Generator",
-        pwrGenDesc: "Generator Subscription Active",
-        pwrSolar: "Solar Power",
-        pwrSolarDesc: "Solar Inverter Active",
-        pwrOff: "No Power",
-        pwrOffDesc: "Electricity Disconnected",
-        active: "ACTIVE",
-        off: "OFF",
-        secControls: "Controls",
-        waterPump: "Water Pump",
-        heater: "Heater",
-        lamp1: "Lamp 1",
-        lamp2: "Lamp 2",
-        irRemoteTitle: "IR Remote Controls",
-        selectRemote: "Select Device Remote",
-        acTitle: "Air Conditioner",
-        acCool: "COOL MODE",
-        acPower: "Power",
-        acMode: "Mode",
-        acFan: "Fan Speed",
-        startTime: "Start Time:",
-        endTime: "End Time:",
-        setBtn: "Set",
-        cancelBtn: "Cancel",
-        clearBtn: "Clear Timer",
-        autoState: "AUTO",
-        timerState: "TIMER",
-        lostConn: "Connection lost! Reconnecting...",
-        verifying: "Verifying credentials...",
-        timerTitlePrefix: "Set Timer for ",
-        logoutTitle: "Sign Out",
-        logoutConfirmMsg: "Are you sure you want to exit your Nova Smart session?",
-        logoutConfirmBtn: "Logout"
-      },
-      ar: {
-        connecting: "جاري الاتصال...",
-        loginTitle: "تسجيل دخول لوحة التحكم",
-        emailPh: "البريد الإلكتروني",
-        passPh: "كلمة المرور",
-        loginBtn: "تسجيل الدخول",
-        loginErr: "فشل تسجيل الدخول! يرجى التحقق من صحة البيانات.",
-        waterLevel: "مستوى المياه",
-        temperature: "درجة الحرارة",
-        secPower: "مصدر الكهرباء",
-        pwrGrid: "كهرباء الدولة",
-        pwrGridDesc: "موصول على كهرباء لبنان",
-        pwrGenerator: "اشتراك المولد",
-        pwrGenDesc: "موصول على خط الاشتراك",
-        pwrSolar: "الطاقة الشمسية",
-        pwrSolarDesc: "موصول على نظام الطاقة",
-        pwrOff: "مقطوعة",
-        pwrOffDesc: "لا يوجد مصدر كهرباء فعال",
-        active: "فعّال",
-        off: "مقطوع",
-        secControls: "وحدات التحكم",
-        waterPump: "موتير المياه",
-        heater: "السخان",
-        lamp1: "اللمبة 1",
-        lamp2: "اللمبة 2",
-        irRemoteTitle: "أجهزة التحكم عن بعد",
-        selectRemote: "اختر جهاز التحكم",
-        acTitle: "المكيف الهوائي",
-        acCool: "وضع التبريد",
-        acPower: "تشغيل/إطفاء",
-        acMode: "الوضع",
-        acFan: "سرعة المروحة",
-        startTime: "البداية:",
-        endTime: "النهاية:",
-        setBtn: "ضبط",
-        cancelBtn: "إلغاء",
-        clearBtn: "مسح المؤقت",
-        autoState: "تلقائي",
-        timerState: "مؤقت",
-        lostConn: "فُقد الاتصال! جاري إعادة التشغيل...",
-        verifying: "جاري التحقق من الصلاحيات...",
-        timerTitlePrefix: "ضبط مؤقت جهاز ",
-        logoutTitle: "تسجيل الخروج",
-        logoutConfirmMsg: "هل أنت تأكد من رغبتك في تسجيل الخروج من تطبيق Nova Smart؟",
-        logoutConfirmBtn: "خروج"
-      }
+    const firebaseConfig = {
+      apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",
+      databaseURL: "https://smarthome-ad84f-default-rtdb.firebaseio.com"
     };
 
-    let currentLang = savedLang;
-    let lastPowerValue = null;
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    // Set Language with LocalStorage Support
-    function setLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('nova_lang', lang);
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) {
-          el.innerText = translations[lang][key];
-        }
-      });
-
-      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-        const key = el.getAttribute('data-i18n-ph');
-        if (translations[lang][key]) {
-          el.placeholder = translations[lang][key];
-        }
-      });
-
-      document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
-      
-      if (lastPowerValue !== null && typeof window.updatePowerUI === 'function') {
-        window.updatePowerUI(lastPowerValue);
+    // 1. طلب إذن الإشعارات
+    if ("Notification" in window) {
+      if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission();
       }
     }
 
-    // Set Theme with LocalStorage Support
-    function setTheme(theme) {
-      const themeBtn = document.getElementById('themeBtn');
-      if (theme === 'dark') {
-        document.body.classList.add('dark-mode');
-        themeBtn.textContent = '☀️ Light';
-        localStorage.setItem('nova_theme', 'dark');
+    function sendLocalNotification(title, body) {
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, {
+          body: body,
+          icon: "https://cdn-icons-png.flaticon.com/512/25/25694.png"
+        });
+      }
+    }
+
+    // 2. الاستماع لمستوى المياه
+    const waterFill = document.getElementById("waterFill");
+    const waterText = document.getElementById("waterText");
+
+    onValue(ref(db, "waterLevel"), (snapshot) => {
+      const level = snapshot.val() || 0;
+      waterFill.style.height = level + "%";
+      waterText.innerText = level + "%";
+    });
+
+    // 3. الاستماع للتنبيهات القادمة من NodeMCU
+    let lastAlertText = "";
+    onValue(ref(db, "notifications/lastAlert"), (snapshot) => {
+      const alertMsg = snapshot.val();
+      if (alertMsg && alertMsg !== lastAlertText) {
+        lastAlertText = alertMsg;
+        document.getElementById("alertBox").innerText = alertMsg;
+        sendLocalNotification("Nova Smart", alertMsg);
+      }
+    });
+
+    // 4. التحكم بالمفاتيح
+    window.toggleSwitch = function(path, element) {
+      const currentStatus = element.classList.contains("btn-off") ? 1 : 0;
+      set(ref(db, path), currentStatus);
+    };
+
+    function bindButton(path, elementId) {
+      const btn = document.getElementById(elementId);
+      onValue(ref(db, path), (snapshot) => {
+        const val = snapshot.val();
+        if (val === 1) {
+          btn.classList.remove("btn-off");
+        } else {
+          btn.classList.add("btn-off");
+        }
+      });
+    }
+
+    bindButton("Controls/Pump/status", "pumpBtn");
+    bindButton("Controls/Heater/status", "heaterBtn");
+    bindButton("Controls/Lamp1/status", "lamp1Btn");
+    bindButton("Controls/Lamp2/status", "lamp2Btn");
+
+    // 5. تبديل المظهر (Dark/Light Mode)
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const currentTheme = document.body.getAttribute("data-theme");
+      if (currentTheme === "light") {
+        document.body.removeAttribute("data-theme");
       } else {
-        document.body.classList.remove('dark-mode');
-        themeBtn.textContent = '🌙 Dark';
-        localStorage.setItem('nova_theme', 'light');
+        document.body.setAttribute("data-theme", "light");
       }
-    }
-
-    // Initialize Preferences
-    setLanguage(savedLang);
-    setTheme(savedTheme);
-
-    // Event Listeners for Theme & Language Switches
-    const themeBtn = document.getElementById('themeBtn');
-    themeBtn.addEventListener('click', () => {
-      const isDark = document.body.classList.contains('dark-mode');
-      setTheme(isDark ? 'light' : 'dark');
     });
 
-    const langBtn = document.getElementById('langBtn');
-    langBtn.addEventListener('click', () => {
-      const newLang = currentLang === 'en' ? 'ar' : 'en';
-      setLanguage(newLang);
-    });
-
-    // Custom Modern Logout Modal Elements & Logic
-    const logoutModal = document.getElementById("logout-confirm-modal");
-    const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
-    const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
-
-    // Open Custom Logout Modal on Logo Click
-    document.getElementById("appLogo").addEventListener("click", () => {
-      logoutModal.style.display = "flex";
-    });
-
-    // Hide Modal
-    cancelLogoutBtn.addEventListener("click", () => {
-      logoutModal.style.display = "none";
-    });
-
-    logoutModal.addEventListener("click", (e) => {
-      if (e.target === logoutModal) logoutModal.style.display = "none";
-    });
-
-    // Execute Signout
-    confirmLogoutBtn.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.reload();
-      }).catch((err) => {
-        console.error("Logout error:", err);
-      });
-    });
-  
+    // 6. تسجيل الـ Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log('Service Worker Registered successfully.'))
-          .catch(err => console.log('Service Worker registration failed:', err));
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker Registered!', reg))
+          .catch(err => console.error('Service Worker Registration Failed!', err));
       });
-    }
-
-    const loadingScreen = document.getElementById("loading-screen");
-    const loginPopup = document.getElementById("login-popup");
-    let pageReady = false;
-    let disconnectTimer = null; 
-
-    function hideLoading() {
-      if (pageReady) return;
-      pageReady = true;
-      loadingScreen.style.opacity = "0";
-      setTimeout(() => { loadingScreen.style.display = "none"; }, 500);
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        loginPopup.style.display = "none";
-        onValue(ref(database, ".info/connected"), (snap) => {
-          if (snap.val() === true) {
-            if (disconnectTimer) {
-              clearTimeout(disconnectTimer);
-              disconnectTimer = null;
-            }
-            setTimeout(hideLoading, 1000);
-          } else {
-            if (pageReady && !disconnectTimer) {
-              disconnectTimer = setTimeout(() => {
-                loadingScreen.style.display = "flex";
-                loadingScreen.style.opacity = "1";
-                document.querySelector(".loading-text").innerText = translations[currentLang].lostConn;
-                setTimeout(() => { window.location.reload(); }, 500);
-              }, 4000); 
-            }
-          }
-        });
-        initSmartHomeApp();
-      } else {
-        loadingScreen.style.display = "none";
-        loginPopup.style.display = "flex";
-      }
-    });
-
-    document.getElementById("login-btn").addEventListener("click", () => {
-      const email = document.getElementById("login-email").value.trim();
-      const password = document.getElementById("login-password").value;
-      const errorMsg = document.getElementById("login-error");
-
-      if (!email || !password) return;
-
-      loadingScreen.style.display = "flex";
-      loadingScreen.style.opacity = "1";
-      document.querySelector(".loading-text").innerText = translations[currentLang].verifying;
-
-      setPersistence(auth, browserLocalPersistence)
-        .then(() => signInWithEmailAndPassword(auth, email, password))
-        .then(() => { errorMsg.style.display = "none"; })
-        .catch((error) => {
-          loadingScreen.style.display = "none";
-          errorMsg.style.display = "block";
-          errorMsg.innerText = `Login Error: ${error.code}`;
-        });
-    });
-
-    function initSmartHomeApp() {
-      // Remote Modals Setup
-      const remoteMenuPopup = document.getElementById("remote-menu-popup");
-      const remotePopup     = document.getElementById("remote-popup");
-      const acPopup         = document.getElementById("ac-popup");
-      const remoteCard      = document.getElementById("remote-card");  
-      const timerOverlay    = document.getElementById("timer-overlay");
-    
-      remoteCard.addEventListener("click", () => { remoteMenuPopup.style.display = "flex"; });  
-      
-      window.openTVRemote = function () { remoteMenuPopup.style.display = "none"; remotePopup.style.display = "block"; };
-      window.openACRemote = function () { remoteMenuPopup.style.display = "none"; acPopup.style.display = "block"; };
-
-      // Close popups when clicking outside card content
-      remoteMenuPopup.addEventListener("click", (e) => {
-        if (e.target === remoteMenuPopup) remoteMenuPopup.style.display = "none";
-      });
-
-      remotePopup.addEventListener("click", (e) => {
-        if (e.target === remotePopup) remotePopup.style.display = "none";
-      });
-
-      acPopup.addEventListener("click", (e) => {
-        if (e.target === acPopup) acPopup.style.display = "none";
-      });
-
-      timerOverlay.addEventListener("click", (e) => {
-        if (e.target === timerOverlay) {
-          timerOverlay.style.display = "none";
-          currentDevice = null;
-        }
-      });
-
-      window.sendCmd = function (command, address) {  
-        const remoteRef = ref(database, "Remote");  
-        set(remoteRef, { command: command, address: address });  
-      };  
-
-      // Arc Thermostat Dial Slider Logic (16°C - 30°C)
-      const dialContainer = document.getElementById("dial-container");
-      const dialHandle = document.getElementById("dial-handle");
-      const dialActive = document.getElementById("dial-active");
-      const acTempVal = document.getElementById("ac-temp-val");
-
-      const minTemp = 16;
-      const maxTemp = 30;
-      let currentAcTemp = 24;
-      let isDraggingDial = false;
-
-      const pathRadius = 90;
-      const pathCenterX = 110;
-      const pathCenterY = 120;
-      const pathTotalLength = Math.PI * pathRadius;
-
-      function updateDialUI(temp) {
-        temp = Math.max(minTemp, Math.min(maxTemp, temp));
-        currentAcTemp = temp;
-        acTempVal.innerText = `${temp}°C`;
-
-        const ratio = (temp - minTemp) / (maxTemp - minTemp);
-        const angle = Math.PI - (ratio * Math.PI); // Angle from PI down to 0
-
-        const x = pathCenterX + pathRadius * Math.cos(angle);
-        const y = pathCenterY - pathRadius * Math.sin(angle);
-
-        dialHandle.setAttribute("cx", x);
-        dialHandle.setAttribute("cy", y);
-
-        const strokeDashOffset = pathTotalLength * (1 - ratio);
-        dialActive.style.strokeDasharray = pathTotalLength;
-        dialActive.style.strokeDashoffset = strokeDashOffset;
-      }
-
-      function handleDialPointer(e) {
-        const rect = dialContainer.getBoundingClientRect();
-        const mouseX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
-        const mouseY = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
-
-        const dx = mouseX - (rect.width / 2);
-        const dy = pathCenterY - mouseY;
-
-        let rad = Math.atan2(dy, dx);
-        if (rad < 0) {
-          rad = dx < 0 ? Math.PI : 0;
-        }
-
-        let ratio = (Math.PI - rad) / Math.PI;
-        ratio = Math.max(0, Math.min(1, ratio));
-
-        const computedTemp = Math.round(minTemp + ratio * (maxTemp - minTemp));
-        if (computedTemp !== currentAcTemp) {
-          updateDialUI(computedTemp);
-          sendCmd(`AC_TEMP_${computedTemp}`, 'AC');
-        }
-      }
-
-      dialContainer.addEventListener("pointerdown", (e) => {
-        isDraggingDial = true;
-        handleDialPointer(e);
-      });
-
-      window.addEventListener("pointermove", (e) => {
-        if (isDraggingDial) handleDialPointer(e);
-      });
-
-      window.addEventListener("pointerup", () => {
-        isDraggingDial = false;
-      });
-
-      updateDialUI(24); // Init Default
-    
-      // Toggles Setup
-      const toggles = [  
-        { path: "output/devices/waterpump", id: "waterpump" },  
-        { path: "output/devices/heater", id: "heater" },  
-        { path: "output/devices/lamp1", id: "lamp1" },  
-        { path: "output/devices/lamp2", id: "lamp2" }
-      ];  
-    
-      let localDeviceStates = {};
-
-      toggles.forEach((toggle) => {  
-        const card = document.getElementById(`${toggle.id}-card`);  
-        const dbRef = ref(database, toggle.path);  
-        const timerRef = ref(database, `timers/${toggle.id}`);
-
-        onValue(timerRef, (snap) => {
-          const timerIcon = card.querySelector(".timer-icon");
-          if (snap.exists() && snap.val() !== null) {
-            timerIcon.classList.add("timer-active");
-          } else {
-            timerIcon.classList.remove("timer-active");
-          }
-        });
-
-        onValue(dbRef, (snap) => {  
-          const val = snap.val() ?? 0;
-          localDeviceStates[toggle.id] = val;
-
-          card.classList.remove("on", "auto", "timer-locked");
-          const led = card.querySelector(".status-led");
-          const statusText = card.querySelector(".status-text");
-          if (led) { led.classList.remove("show", "green", "black"); }
-
-          if (val === 1) {
-            card.classList.add("on");
-            if (statusText) statusText.innerText = "ON";
-          } else if (val === 2) {
-            card.classList.add("auto");
-            if (statusText) statusText.innerText = translations[currentLang].autoState;
-            if (led) { led.classList.add("show", "black"); }
-          } else if (val === 3) {
-            card.classList.add("auto");
-            if (statusText) statusText.innerText = translations[currentLang].autoState;
-            if (led) { led.classList.add("show", "green"); }
-          } else if (val === 4) {
-            card.classList.add("timer-locked");
-            if (statusText) statusText.innerText = translations[currentLang].timerState;
-          } else {
-            if (statusText) statusText.innerText = "OFF";
-          }
-        });
-
-        let pressTimer = null;
-        let isLongPress = false;
-
-        card.addEventListener("pointerdown", (e) => {
-          if (localDeviceStates[toggle.id] === 4) return; 
-          if (e.target.classList.contains("timer-icon")) return;
-          
-          isLongPress = false;
-          if (pressTimer) clearTimeout(pressTimer);
-
-          pressTimer = setTimeout(() => {
-            isLongPress = true;
-            let current = localDeviceStates[toggle.id] ?? 0;
-            let targetState = (current === 1) ? 3 : 2;
-
-            set(dbRef, targetState);
-            if (navigator.vibrate) navigator.vibrate(60); 
-          }, 700); 
-        });
-
-        card.addEventListener("pointerup", (e) => {
-          if (localDeviceStates[toggle.id] === 4) return;
-          if (e.target.classList.contains("timer-icon")) return;
-          
-          clearTimeout(pressTimer); 
-
-          if (!isLongPress) {
-            let current = localDeviceStates[toggle.id] ?? 0;
-            let newState = 0;
-
-            if (current === 0) newState = 1;
-            else if (current === 1) newState = 0;
-            else if (current === 2 || current === 3) newState = 0;
-
-            set(dbRef, newState);
-          }
-        });
-
-        card.addEventListener("pointercancel", () => {
-          clearTimeout(pressTimer);
-        });
-      });  
-
-      // Sensors updates
-      onValue(ref(database, "temperature"), (snap) => {  
-        const temp = snap.val() || 0;  
-        document.getElementById("temperature-value").innerText = `${temp}°C`;  
-      });  
-    
-      onValue(ref(database, "waterLevel"), (snap) => {  
-        const level = snap.val() || 0;  
-        document.getElementById("water-bar").style.height = `${level}%`;  
-        document.getElementById("water-value").innerText = `${level}%`;  
-      });  
-    
-      // Unified Power State Handler (1 = Grid, 2 = Generator, 3 = Solar)
-      const powerCard = document.getElementById("power-card");
-      const powerIcon = document.getElementById("power-icon");
-      const powerTitle = document.getElementById("power-title");
-      const powerDesc = document.getElementById("power-desc");
-      const powerStatus = document.getElementById("power-status");
-
-      window.updatePowerUI = function(val) {
-        lastPowerValue = val;
-        
-        powerCard.className = "single-power-card";
-
-        if (val === 1) {
-          powerCard.classList.add("grid");
-          powerIcon.className = "fa-solid fa-building-columns";
-          powerTitle.innerText = translations[currentLang].pwrGrid;
-          powerDesc.innerText = translations[currentLang].pwrGridDesc;
-          powerStatus.innerText = translations[currentLang].active;
-        } else if (val === 2) {
-          powerCard.classList.add("generator");
-          powerIcon.className = "fa-solid fa-plug-circle-bolt";
-          powerTitle.innerText = translations[currentLang].pwrGenerator;
-          powerDesc.innerText = translations[currentLang].pwrGenDesc;
-          powerStatus.innerText = translations[currentLang].active;
-        } else if (val === 3) {
-          powerCard.classList.add("solar");
-          powerIcon.className = "fa-solid fa-solar-panel";
-          powerTitle.innerText = translations[currentLang].pwrSolar;
-          powerDesc.innerText = translations[currentLang].pwrSolarDesc;
-          powerStatus.innerText = translations[currentLang].active;
-        } else {
-          powerIcon.className = "fa-solid fa-power-off";
-          powerTitle.innerText = translations[currentLang].pwrOff;
-          powerDesc.innerText = translations[currentLang].pwrOffDesc;
-          powerStatus.innerText = translations[currentLang].off;
-        }
-      };
-
-      onValue(ref(database, "output/devices/kahrba"), (snap) => {  
-        updatePowerUI(snap.val());  
-      });  
-    
-      // Timers logic
-      const startInput = document.getElementById("start-time");  
-      const endInput = document.getElementById("end-time");  
-      const setTimerBtn = document.getElementById("set-timer-btn");  
-      const cancelTimerBtn = document.getElementById("cancel-timer-btn");  
-      const clearTimerBtn = document.getElementById("clear-timer-btn");  
-    
-      let currentDevice = null;  
-    
-      function msToLocalDatetime(ms) {  
-        if (!ms) return "";  
-        const date = new Date(ms);  
-        const year = date.getFullYear();  
-        const month = String(date.getMonth() + 1).padStart(2, "0");  
-        const day = String(date.getDate()).padStart(2, "0");  
-        const hours = String(date.getHours()).padStart(2, "0");  
-        const minutes = String(date.getMinutes()).padStart(2, "0");  
-        return `${year}-${month}-${day}T${hours}:${minutes}`;  
-      }  
-    
-      function datetimeLocalToMs(localStr) {  
-        if (!localStr) return null;  
-        const [datePart, timePart] = localStr.split("T");  
-        const [year, month, day] = datePart.split("-").map(Number);  
-        const [hour, minute] = timePart.split(":").map(Number);  
-        return new Date(year, month - 1, day, hour, minute).getTime();  
-      }  
-    
-      document.querySelectorAll(".timer-icon").forEach(icon => {  
-        icon.addEventListener("click", (e) => {  
-          e.stopPropagation();  
-          currentDevice = icon.getAttribute("data-device");  
-          timerOverlay.style.display = "flex";  
-          document.getElementById("timer-popup-title").textContent = `${translations[currentLang].timerTitlePrefix}${currentDevice}`;  
-    
-          const timerRef = ref(database, `timers/${currentDevice}`);  
-          onValue(timerRef, (snap) => {  
-            const data = snap.val();  
-            startInput.value = data?.start ? msToLocalDatetime(data.start) : "";  
-            endInput.value = data?.end ? msToLocalDatetime(data.end) : "";  
-          }, { onlyOnce: true });  
-        });  
-      });  
-    
-      setTimerBtn.addEventListener("click", () => {  
-        if (!currentDevice) return;  
-        const startMs = datetimeLocalToMs(startInput.value);  
-        const endMs = datetimeLocalToMs(endInput.value);  
-        if (!startMs || !endMs || startMs >= endMs) {  
-          timerOverlay.style.display = "none";  
-          currentDevice = null;  
-          return;  
-        }  
-        const timerRef = ref(database, `timers/${currentDevice}`);  
-        set(timerRef, { start: startMs, end: endMs }).then(() => {  
-          timerOverlay.style.display = "none";  
-          currentDevice = null;  
-        });  
-      });  
-    
-      cancelTimerBtn.addEventListener("click", () => {  
-        timerOverlay.style.display = "none";  
-        currentDevice = null;  
-      });  
-    
-      clearTimerBtn.addEventListener("click", () => {  
-        if (!currentDevice) return;  
-        const timerRef = ref(database, `timers/${currentDevice}`);  
-        set(timerRef, null).then(() => {  
-          timerOverlay.style.display = "none";  
-          currentDevice = null;  
-        });  
-      });  
     }
   </script>
-
 </body>
 </html>
