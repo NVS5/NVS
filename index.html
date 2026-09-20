@@ -14,6 +14,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
+  <!-- OneSignal Web Push SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "a70e30b5-d703-4102-87fb-d76eb0fa94ab", // ضع App ID الخاص بك هنا
+        allowLocalhostAsSecureOrigin: true,
+      });
+    });
+  </script>
+
   <style>
     :root {
       /* Default Light Theme */
@@ -942,28 +954,28 @@
     <div class="login-box">
       <h2 data-i18n="loginTitle">Control Panel Login</h2>
       <input 
-  type="email" 
-  id="login-email" 
-  placeholder="Email" 
-  data-i18n-ph="emailPh" 
-  autocomplete="username"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
+        type="email" 
+        id="login-email" 
+        placeholder="Email" 
+        data-i18n-ph="emailPh" 
+        autocomplete="username"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
 
-<input 
-  type="password" 
-  id="login-password" 
-  placeholder="Password" 
-  data-i18n-ph="passPh" 
-  autocomplete="current-password"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
+      <input 
+        type="password" 
+        id="login-password" 
+        placeholder="Password" 
+        data-i18n-ph="passPh" 
+        autocomplete="current-password"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
 
       <button id="login-btn" data-i18n="loginBtn">Login</button>
       <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
@@ -1478,6 +1490,13 @@
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loginPopup.style.display = "none";
+
+        // OneSignal User Login Link
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        window.OneSignalDeferred.push(function(OneSignal) {
+          OneSignal.login(user.uid);
+        });
+
         onValue(ref(database, ".info/connected"), (snap) => {
           if (snap.val() === true) {
             if (disconnectTimer) {
@@ -1498,6 +1517,12 @@
         });
         initSmartHomeApp();
       } else {
+        // OneSignal User Logout
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        window.OneSignalDeferred.push(function(OneSignal) {
+          OneSignal.logout();
+        });
+
         loadingScreen.style.display = "none";
         loginPopup.style.display = "flex";
       }
