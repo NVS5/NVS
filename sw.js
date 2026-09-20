@@ -1,41 +1,30 @@
-const CACHE_NAME = 'nova-smart-v1';
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json'
-];
+// sw.js
+importScripts('https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging-compat.js');
 
-// 1. التثبيت والتخزين المؤقت للملفات الأساسية
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
-  self.skipWaiting();
-});
+const firebaseConfig = {
+  apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",
+  authDomain: "smarthome-ad84f.firebaseapp.com",
+  databaseURL: "https://smarthome-ad84f-default-rtdb.firebaseio.com",
+  projectId: "smarthome-ad84f",
+  storageBucket: "smarthome-ad84f.appspot.com",
+  messagingSenderId: "849228056680",
+  appId: "1:849228056680:web:09fa91eaca63dc148953dd"
+};
 
-// 2. التفعيل وتحديث الكاش القديم
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
-  );
-  self.clients.claim();
-});
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
 
-// 3. جلب البيانات (تغليب الشبكة لضمان الحصول على بيانات Firebase المباشرة)
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
-  );
+// استقبال الإشعار عندما يكون التطبيق مغلقاً
+messaging.onBackgroundMessage((payload) => {
+  console.log('[sw.js] Received background message ', payload);
+  const notificationTitle = payload.notification.title || 'تنبيه مستوى المياه';
+  const notificationOptions = {
+    body: payload.notification.body,
+    icon: '/logo.png',
+    badge: '/logo.png',
+    vibrate: [200, 100, 200]
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
