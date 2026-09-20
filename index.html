@@ -942,28 +942,28 @@
     <div class="login-box">
       <h2 data-i18n="loginTitle">Control Panel Login</h2>
       <input 
-  type="email" 
-  id="login-email" 
-  placeholder="Email" 
-  data-i18n-ph="emailPh" 
-  autocomplete="username"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
+        type="email" 
+        id="login-email" 
+        placeholder="Email" 
+        data-i18n-ph="emailPh" 
+        autocomplete="username"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
 
-<input 
-  type="password" 
-  id="login-password" 
-  placeholder="Password" 
-  data-i18n-ph="passPh" 
-  autocomplete="current-password"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
+      <input 
+        type="password" 
+        id="login-password" 
+        placeholder="Password" 
+        data-i18n-ph="passPh" 
+        autocomplete="current-password"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
 
       <button id="login-btn" data-i18n="loginBtn">Login</button>
       <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
@@ -1248,9 +1248,10 @@
   <!-- Firebase & App Script -->
   <script type="module">  
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
+    import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-  
+    import { getMessaging, getToken, deleteToken, onMessage } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
+
     const firebaseConfig = {  
       apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
       authDomain: "smarthome-ad84f.firebaseapp.com",  
@@ -1264,6 +1265,9 @@
     const app = initializeApp(firebaseConfig);  
     const database = getDatabase(app);  
     const auth = getAuth(app);
+    const messaging = getMessaging(app);
+
+    let currentUserUID = null;
 
     // --- LocalStorage Read ---
     let savedLang = localStorage.getItem('nova_lang') || 'en';
@@ -1446,13 +1450,25 @@
       if (e.target === logoutModal) logoutModal.style.display = "none";
     });
 
-    // Execute Signout
-    confirmLogoutBtn.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.reload();
-      }).catch((err) => {
-        console.error("Logout error:", err);
-      });
+    // Execute Signout & Disable Notifications
+    confirmLogoutBtn.addEventListener("click", async () => {
+      try {
+        if (currentUserUID) {
+          // 1. حذف التوكن من قاعدة البيانات
+          await remove(ref(database, `users/${currentUserUID}/fcmToken`));
+        }
+        // 2. إلغاء توكن FCM من الخدمة
+        await deleteToken(messaging);
+      } catch (err) {
+        console.warn("إشعارات: فشل إزالة التوكن عند الخروج", err);
+      } finally {
+        // 3. إنهاء الجلسة وإعادة تحميل الصفحة
+        signOut(auth).then(() => {
+          window.location.reload();
+        }).catch((err) => {
+          console.error("Logout error:", err);
+        });
+      }
     });
   
     if ('serviceWorker' in navigator) {
@@ -1475,9 +1491,39 @@
       setTimeout(() => { loadingScreen.style.display = "none"; }, 500);
     }
 
+    // FCM Notification Handling
+    function initFCM(userId) {
+      if ('Notification' in window && 'serviceWorker' in navigator) {
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            getToken(messaging, { 
+              vapidKey: "BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ" 
+            }).then((currentToken) => {
+              if (currentToken) {
+                set(ref(database, `users/${userId}/fcmToken`), currentToken);
+              }
+            }).catch((err) => {
+              console.error("FCM Token Error:", err);
+            });
+          }
+        });
+      }
+    }
+
+    onMessage(messaging, (payload) => {
+      if (payload.notification) {
+        alert(`${payload.notification.title}\n${payload.notification.body}`);
+      }
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        currentUserUID = user.uid;
         loginPopup.style.display = "none";
+        
+        // تفعيل الإشعارات للمستخدم النشط
+        initFCM(user.uid);
+
         onValue(ref(database, ".info/connected"), (snap) => {
           if (snap.val() === true) {
             if (disconnectTimer) {
@@ -1498,6 +1544,7 @@
         });
         initSmartHomeApp();
       } else {
+        currentUserUID = null;
         loadingScreen.style.display = "none";
         loginPopup.style.display = "flex";
       }
@@ -1584,7 +1631,7 @@
         acTempVal.innerText = `${temp}°C`;
 
         const ratio = (temp - minTemp) / (maxTemp - minTemp);
-        const angle = Math.PI - (ratio * Math.PI); // Angle from PI down to 0
+        const angle = Math.PI - (ratio * Math.PI);
 
         const x = pathCenterX + pathRadius * Math.cos(angle);
         const y = pathCenterY - pathRadius * Math.sin(angle);
@@ -1633,7 +1680,7 @@
         isDraggingDial = false;
       });
 
-      updateDialUI(24); // Init Default
+      updateDialUI(24);
     
       // Toggles Setup
       const toggles = [  
