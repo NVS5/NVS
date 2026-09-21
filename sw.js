@@ -1,79 +1,43 @@
-const CACHE_NAME = "nova-smart-v4";
+const CACHE_NAME = "nova-smart-v5";
 
-const APP_FILES = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/logo.png"
-];
-
-// ================================
-// INSTALL
-// ================================
 self.addEventListener("install", event => {
-  console.log("[Nova Smart] Service Worker installing...");
+
+  console.log("[Nova Smart] SW installing");
 
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_FILES))
-      .then(() => self.skipWaiting())
-      .catch(error => {
-        console.error("[Nova Smart] Cache error:", error);
-      })
+    self.skipWaiting()
   );
+
 });
 
-// ================================
-// ACTIVATE
-// ================================
+
 self.addEventListener("activate", event => {
-  console.log("[Nova Smart] Service Worker activated");
+
+  console.log("[Nova Smart] SW activated");
 
   event.waitUntil(
-    caches.keys()
-      .then(keys =>
-        Promise.all(
-          keys
-            .filter(key => key !== CACHE_NAME)
-            .map(key => caches.delete(key))
-        )
-      )
-      .then(() => self.clients.claim())
+    self.clients.claim()
   );
+
 });
 
-// ================================
-// FETCH
-// ================================
-self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return;
 
-  event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(event.request);
-      })
-  );
-});
-
-// ================================
-// PUSH NOTIFICATION
-// ================================
 self.addEventListener("push", event => {
+
+  console.log("[Nova Smart] Push received");
 
   let data = {};
 
   try {
+
     if (event.data) {
       data = event.data.json();
     }
+
   } catch (error) {
+
     console.error(
-      "[Nova Smart] Push data JSON error:",
+      "[Nova Smart] Push JSON error:",
       error
     );
 
@@ -83,87 +47,110 @@ self.addEventListener("push", event => {
         ? event.data.text()
         : "لديك تنبيه جديد"
     };
+
   }
 
-  const title = data.title || "Nova Smart";
 
-  const iconUrl = new URL(
-    data.icon || "/logo.png",
-    self.location.origin
-  ).href;
+  const title =
+    data.title || "Nova Smart";
 
-  const badgeUrl = new URL(
-    data.badge || "/logo.png",
-    self.location.origin
-  ).href;
 
   const options = {
 
-    body: data.body || "لديك تنبيه جديد",
+    body:
+      data.body ||
+      "لديك تنبيه جديد",
 
-    icon: iconUrl,
+    icon:
+      data.icon ||
+      new URL(
+        "/logo.png",
+        self.location.origin
+      ).href,
 
-    badge: badgeUrl,
-
-    tag: data.tag || "nova-smart-water",
+    tag:
+      data.tag ||
+      "nova-smart-water",
 
     renotify: true,
 
-    vibrate: [200, 100, 200],
+    vibrate: [
+      200,
+      100,
+      200
+    ],
 
     dir: "rtl",
 
     lang: "ar",
 
     data: {
-      url: data.url || "/index.html"
+      url:
+        data.url ||
+        "/index.html"
     }
+
   };
 
+
   event.waitUntil(
-    self.registration
-      .showNotification(title, options)
+    self.registration.showNotification(
+      title,
+      options
+    )
   );
+
 });
 
-// ================================
-// NOTIFICATION CLICK
-// ================================
-self.addEventListener("notificationclick", event => {
 
-  event.notification.close();
+self.addEventListener(
+  "notificationclick",
+  event => {
 
-  const targetUrl =
-    event.notification.data?.url ||
-    "/index.html";
+    event.notification.close();
 
-  event.waitUntil(
+    const targetUrl =
+      event.notification.data?.url ||
+      "/index.html";
 
-    clients.matchAll({
-      type: "window",
-      includeUncontrolled: true
-    })
 
-    .then(clientList => {
+    event.waitUntil(
 
-      for (const client of clientList) {
+      clients.matchAll({
+        type: "window",
+        includeUncontrolled: true
+      })
 
-        if (
-          client.url.startsWith(self.location.origin) &&
-          "focus" in client
-        ) {
+      .then(clientList => {
 
-          return client
-            .navigate(targetUrl)
-            .then(() => client.focus());
+        for (const client of clientList) {
+
+          if (
+            client.url.startsWith(
+              self.location.origin
+            )
+          ) {
+
+            return client
+              .navigate(targetUrl)
+              .then(() => client.focus());
+
+          }
+
         }
-      }
 
-      if (clients.openWindow) {
-        return clients.openWindow(targetUrl);
-      }
 
-    })
+        if (clients.openWindow) {
 
-  );
-});
+          return clients.openWindow(
+            targetUrl
+          );
+
+        }
+
+      })
+
+    );
+
+  }
+);
