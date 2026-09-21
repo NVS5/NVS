@@ -14,18 +14,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
-  <!-- OneSignal Web Push SDK -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "a70e30b5-d703-4102-87fb-d76eb0fa94ab", // ضع App ID الخاص بك هنا
-        allowLocalhostAsSecureOrigin: true,
-      });
-    });
-  </script>
-
   <style>
     :root {
       /* Default Light Theme */
@@ -954,28 +942,28 @@
     <div class="login-box">
       <h2 data-i18n="loginTitle">Control Panel Login</h2>
       <input 
-        type="email" 
-        id="login-email" 
-        placeholder="Email" 
-        data-i18n-ph="emailPh" 
-        autocomplete="username"
-        autocorrect="off" 
-        autocapitalize="none" 
-        spellcheck="false"
-        required 
-      />
+  type="email" 
+  id="login-email" 
+  placeholder="Email" 
+  data-i18n-ph="emailPh" 
+  autocomplete="username"
+  autocorrect="off" 
+  autocapitalize="none" 
+  spellcheck="false"
+  required 
+/>
 
-      <input 
-        type="password" 
-        id="login-password" 
-        placeholder="Password" 
-        data-i18n-ph="passPh" 
-        autocomplete="current-password"
-        autocorrect="off" 
-        autocapitalize="none" 
-        spellcheck="false"
-        required 
-      />
+<input 
+  type="password" 
+  id="login-password" 
+  placeholder="Password" 
+  data-i18n-ph="passPh" 
+  autocomplete="current-password"
+  autocorrect="off" 
+  autocapitalize="none" 
+  spellcheck="false"
+  required 
+/>
 
       <button id="login-btn" data-i18n="loginBtn">Login</button>
       <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
@@ -1008,9 +996,12 @@
         <h1>Nova Smart</h1>
       </div>
       <div class="header-controls">
-        <button class="lang-btn" id="langBtn">العربية</button>
-        <button class="theme-btn" id="themeBtn">🌙 Dark</button>
-      </div>
+  <button class="lang-btn" id="langBtn">العربية</button>
+  <button class="theme-btn" id="themeBtn">🌙 Dark</button>
+  <button class="theme-btn" id="notificationBtn" title="Notifications">
+    🔔
+  </button>
+</div>
     </header>
 
     <!-- Sensors Section -->
@@ -1276,6 +1267,16 @@
     const app = initializeApp(firebaseConfig);  
     const database = getDatabase(app);  
     const auth = getAuth(app);
+    
+    // ======================================================
+// WEB PUSH CONFIGURATION
+// ======================================================
+
+// سنضع المفتاح الحقيقي هنا لاحقاً
+const VAPID_PUBLIC_KEY = "YOUR_VAPID_PUBLIC_KEY";
+
+// سنضع رابط Cloudflare Worker هنا لاحقاً
+const PUSH_SERVER_URL = "https://YOUR-WORKER.workers.dev";
 
     // --- LocalStorage Read ---
     let savedLang = localStorage.getItem('nova_lang') || 'en';
@@ -1327,7 +1328,13 @@
         timerTitlePrefix: "Set Timer for ",
         logoutTitle: "Sign Out",
         logoutConfirmMsg: "Are you sure you want to exit your Nova Smart session?",
-        logoutConfirmBtn: "Logout"
+        notifications: "Notifications",
+       enableNotifications: "Enable Notifications",
+       notificationsEnabled: "Notifications Enabled",
+       notificationsDenied: "Notifications Blocked",
+       notificationsNotSupported: "Notifications are not supported",
+       notificationEnabledMsg: "Water level notifications are enabled.",
+       logoutConfirmBtn: "Logout"
       },
       ar: {
         connecting: "جاري الاتصال...",
@@ -1373,7 +1380,13 @@
         timerTitlePrefix: "ضبط مؤقت جهاز ",
         logoutTitle: "تسجيل الخروج",
         logoutConfirmMsg: "هل أنت تأكد من رغبتك في تسجيل الخروج من تطبيق Nova Smart؟",
-        logoutConfirmBtn: "خروج"
+        notifications: "الإشعارات",
+       enableNotifications: "تفعيل الإشعارات",
+       notificationsEnabled: "الإشعارات مفعّلة",
+       notificationsDenied: "الإشعارات محظورة",
+       notificationsNotSupported: "الإشعارات غير مدعومة",
+       notificationEnabledMsg: "تم تفعيل إشعارات مستوى المياه.",
+       logoutConfirmBtn: "خروج"
       }
     };
 
@@ -1474,6 +1487,221 @@
           .catch(err => console.log('Service Worker registration failed:', err));
       });
     }
+    
+    // ======================================================
+// WEB PUSH NOTIFICATIONS
+// ======================================================
+
+function urlBase64ToUint8Array(base64String) {
+
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+
+  const base64 = (base64String + padding)
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+
+  const rawData = window.atob(base64);
+
+  return Uint8Array.from(
+    [...rawData].map(char => char.charCodeAt(0))
+  );
+}
+
+
+async function enableWaterNotifications() {
+
+  try {
+
+    // Browser support
+    if (!("Notification" in window)) {
+      alert(translations[currentLang].notificationsNotSupported);
+      return;
+    }
+
+    if (!("serviceWorker" in navigator)) {
+      alert(translations[currentLang].notificationsNotSupported);
+      return;
+    }
+
+    if (!("PushManager" in window)) {
+      alert(translations[currentLang].notificationsNotSupported);
+      return;
+    }
+
+
+    // Make sure Service Worker is ready
+    const registration =
+      await navigator.serviceWorker.ready;
+
+
+    // Ask permission
+    let permission = Notification.permission;
+
+    if (permission === "default") {
+
+      permission =
+        await Notification.requestPermission();
+    }
+
+
+    // User denied
+    if (permission !== "granted") {
+
+      console.log("Notification permission:", permission);
+
+      updateNotificationButton();
+
+      return;
+    }
+
+
+    // Existing subscription?
+    let subscription =
+      await registration.pushManager.getSubscription();
+
+
+    // Create new subscription
+    if (!subscription) {
+
+      subscription =
+        await registration.pushManager.subscribe({
+
+          userVisibleOnly: true,
+
+          applicationServerKey:
+            urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+
+        });
+    }
+
+
+    console.log(
+      "Push subscription:",
+      subscription
+    );
+
+
+    // Send subscription to Cloudflare Worker
+    const response = await fetch(
+      `${PUSH_SERVER_URL}/subscribe`,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+          subscription: subscription.toJSON(),
+
+          // حالياً كل الأجهزة تستخدم نفس waterLevel
+          path: "waterLevel"
+
+        })
+      }
+    );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        `Push server error: ${response.status}`
+      );
+
+    }
+
+
+    const result = await response.json();
+
+    console.log(
+      "Push subscription saved:",
+      result
+    );
+
+
+    updateNotificationButton();
+
+
+    alert(
+      translations[currentLang].notificationEnabledMsg
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Notification setup error:",
+      error
+    );
+
+    alert(
+      "Notification Error: " +
+      error.message
+    );
+  }
+}
+
+
+// ======================================================
+// UPDATE NOTIFICATION BUTTON
+// ======================================================
+
+function updateNotificationButton() {
+
+  const btn =
+    document.getElementById("notificationBtn");
+
+  if (!btn) return;
+
+
+  if (!("Notification" in window)) {
+
+    btn.innerText = "🔕";
+    btn.title =
+      translations[currentLang].notificationsNotSupported;
+
+    return;
+  }
+
+
+  if (Notification.permission === "granted") {
+
+    btn.innerText = "🔔";
+    btn.title =
+      translations[currentLang].notificationsEnabled;
+
+    return;
+  }
+
+
+  if (Notification.permission === "denied") {
+
+    btn.innerText = "🔕";
+    btn.title =
+      translations[currentLang].notificationsDenied;
+
+    return;
+  }
+
+
+  btn.innerText = "🔔";
+  btn.title =
+    translations[currentLang].enableNotifications;
+}
+
+
+// Notification button
+document
+  .getElementById("notificationBtn")
+  .addEventListener(
+    "click",
+    enableWaterNotifications
+  );
+
+
+// Initial state
+updateNotificationButton();
 
     const loadingScreen = document.getElementById("loading-screen");
     const loginPopup = document.getElementById("login-popup");
@@ -1490,13 +1718,6 @@
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loginPopup.style.display = "none";
-
-        // OneSignal User Login Link
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        window.OneSignalDeferred.push(function(OneSignal) {
-          OneSignal.login(user.uid);
-        });
-
         onValue(ref(database, ".info/connected"), (snap) => {
           if (snap.val() === true) {
             if (disconnectTimer) {
@@ -1517,12 +1738,6 @@
         });
         initSmartHomeApp();
       } else {
-        // OneSignal User Logout
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        window.OneSignalDeferred.push(function(OneSignal) {
-          OneSignal.logout();
-        });
-
         loadingScreen.style.display = "none";
         loginPopup.style.display = "flex";
       }
