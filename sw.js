@@ -1,4 +1,8 @@
-const CACHE_NAME = "nova-smart-v6";
+const CACHE_NAME = "nova-smart-v7";
+
+// رابط الشعار المباشر والواضح على GitHub Pages
+const LOGO_URL = "https://nvs5.github.io/NVS/logo.png";
+const HOME_URL = "https://nvs5.github.io/NVS/index.html";
 
 self.addEventListener("install", event => {
   console.log("[Nova Smart] SW installing");
@@ -39,17 +43,12 @@ self.addEventListener("push", event => {
 
   const title = data.title || "Nova Smart";
 
-  // استخدام المسار الصحيح للمشروع على GitHub Pages (/NVS/)
-  const baseUrl = self.location.origin + "/NVS";
-
   const options = {
     body: data.body || "لديك تنبيه جديد",
 
-    // المسار الصحيح للوجو الملون داخل مجلد NVS
-    icon: data.icon || `${baseUrl}/logo.png`,
-
-    // أيقونة شريط الحالة العلوي في أندرويد (يفضل أن تكون صورة PNG شفافة)
-    badge: data.badge || `${baseUrl}/logo.png`,
+    // اعتماد رابط اللوجو المباشر بوضوح لمنع ظهور الحرف الافتراضي (N)
+    icon: data.icon || LOGO_URL,
+    badge: data.badge || LOGO_URL,
 
     tag: data.tag || "nova-smart-water",
 
@@ -62,7 +61,7 @@ self.addEventListener("push", event => {
     lang: "ar",
 
     data: {
-      url: data.url || `${baseUrl}/index.html`
+      url: data.url || HOME_URL
     }
   };
 
@@ -77,8 +76,7 @@ self.addEventListener("push", event => {
 self.addEventListener("notificationclick", event => {
   event.notification.close();
 
-  const baseUrl = self.location.origin + "/NVS";
-  const targetUrl = event.notification.data?.url || `${baseUrl}/index.html`;
+  const targetUrl = event.notification.data?.url || HOME_URL;
 
   event.waitUntil(
     clients.matchAll({
