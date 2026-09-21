@@ -942,28 +942,28 @@
     <div class="login-box">
       <h2 data-i18n="loginTitle">Control Panel Login</h2>
       <input 
-  type="email" 
-  id="login-email" 
-  placeholder="Email" 
-  data-i18n-ph="emailPh" 
-  autocomplete="username"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
+        type="email" 
+        id="login-email" 
+        placeholder="Email" 
+        data-i18n-ph="emailPh" 
+        autocomplete="username"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
 
-<input 
-  type="password" 
-  id="login-password" 
-  placeholder="Password" 
-  data-i18n-ph="passPh" 
-  autocomplete="current-password"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
+      <input 
+        type="password" 
+        id="login-password" 
+        placeholder="Password" 
+        data-i18n-ph="passPh" 
+        autocomplete="current-password"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
 
       <button id="login-btn" data-i18n="loginBtn">Login</button>
       <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
@@ -996,12 +996,12 @@
         <h1>Nova Smart</h1>
       </div>
       <div class="header-controls">
-  <button class="lang-btn" id="langBtn">العربية</button>
-  <button class="theme-btn" id="themeBtn">🌙 Dark</button>
-  <button class="theme-btn" id="notificationBtn" title="Notifications">
-    🔔
-  </button>
-</div>
+        <button class="lang-btn" id="langBtn">العربية</button>
+        <button class="theme-btn" id="themeBtn">🌙 Dark</button>
+        <button class="theme-btn" id="notificationBtn" title="Notifications">
+          🔔
+        </button>
+      </div>
     </header>
 
     <!-- Sensors Section -->
@@ -1269,14 +1269,11 @@
     const auth = getAuth(app);
     
     // ======================================================
-// WEB PUSH CONFIGURATION
-// ======================================================
+    // WEB PUSH CONFIGURATION
+    // ======================================================
 
-// سنضع المفتاح الحقيقي هنا لاحقاً
-const VAPID_PUBLIC_KEY = "BMpxFh_AuQOdE0iqk0x0tMEOS6PFWsm1HmQ7jLz1dBWEHX4aF9lyzbOQ1mAjKmYhF7PKTwqjUG2zcWmcFRwFO-w";
-
-// سنضع رابط Cloudflare Worker هنا لاحقاً
-const PUSH_SERVER_URL = "https://nvs-water-notifications.abbasmasri27.workers.dev";
+    const VAPID_PUBLIC_KEY = "BMpxFh_AuQOdE0iqk0x0tMEOS6PFWsm1HmQ7jLz1dBWEHX4aF9lyzbOQ1mAjKmYhF7PKTwqjUG2zcWmcFRwFO-w";
+    const PUSH_SERVER_URL = "https://nvs-water-notifications.abbasmasri27.workers.dev";
 
     // --- LocalStorage Read ---
     let savedLang = localStorage.getItem('nova_lang') || 'en';
@@ -1329,12 +1326,12 @@ const PUSH_SERVER_URL = "https://nvs-water-notifications.abbasmasri27.workers.de
         logoutTitle: "Sign Out",
         logoutConfirmMsg: "Are you sure you want to exit your Nova Smart session?",
         notifications: "Notifications",
-       enableNotifications: "Enable Notifications",
-       notificationsEnabled: "Notifications Enabled",
-       notificationsDenied: "Notifications Blocked",
-       notificationsNotSupported: "Notifications are not supported",
-       notificationEnabledMsg: "Water level notifications are enabled.",
-       logoutConfirmBtn: "Logout"
+        enableNotifications: "Enable Notifications",
+        notificationsEnabled: "Notifications Enabled",
+        notificationsDenied: "Notifications Blocked",
+        notificationsNotSupported: "Notifications are not supported",
+        notificationEnabledMsg: "Water level notifications are enabled.",
+        logoutConfirmBtn: "Logout"
       },
       ar: {
         connecting: "جاري الاتصال...",
@@ -1381,12 +1378,12 @@ const PUSH_SERVER_URL = "https://nvs-water-notifications.abbasmasri27.workers.de
         logoutTitle: "تسجيل الخروج",
         logoutConfirmMsg: "هل أنت تأكد من رغبتك في تسجيل الخروج من تطبيق Nova Smart؟",
         notifications: "الإشعارات",
-       enableNotifications: "تفعيل الإشعارات",
-       notificationsEnabled: "الإشعارات مفعّلة",
-       notificationsDenied: "الإشعارات محظورة",
-       notificationsNotSupported: "الإشعارات غير مدعومة",
-       notificationEnabledMsg: "تم تفعيل إشعارات مستوى المياه.",
-       logoutConfirmBtn: "خروج"
+        enableNotifications: "تفعيل الإشعارات",
+        notificationsEnabled: "الإشعارات مفعّلة",
+        notificationsDenied: "الإشعارات محظورة",
+        notificationsNotSupported: "الإشعارات غير مدعومة",
+        notificationEnabledMsg: "تم تفعيل إشعارات مستوى المياه.",
+        logoutConfirmBtn: "خروج"
       }
     };
 
@@ -1471,585 +1468,276 @@ const PUSH_SERVER_URL = "https://nvs-water-notifications.abbasmasri27.workers.de
       if (e.target === logoutModal) logoutModal.style.display = "none";
     });
 
-confirmLogoutBtn.addEventListener("click", async () => {
-  try {
-
-    // حذف اشتراك الإشعارات قبل تسجيل الخروج
-    await cleanupNotificationsBeforeLogout();
-
-    // تسجيل الخروج من Firebase
-    await signOut(auth);
-
-    // إعادة تحميل الصفحة
-    window.location.reload();
-
-  } catch (err) {
-
-    console.error("Logout error:", err);
-
-  }
-});
+    confirmLogoutBtn.addEventListener("click", async () => {
+      try {
+        await cleanupNotificationsBeforeLogout();
+        await signOut(auth);
+        window.location.reload();
+      } catch (err) {
+        console.error("Logout error:", err);
+      }
+    });
   
     let novaServiceWorkerRegistration = null;
 
-async function registerNovaServiceWorker() {
-  if (!("serviceWorker" in navigator)) {
-    console.error("Service Worker is not supported");
-    return null;
-  }
+    async function registerNovaServiceWorker() {
+      if (!("serviceWorker" in navigator)) {
+        console.error("Service Worker is not supported");
+        return null;
+      }
 
-  try {
-    const registration = await navigator.serviceWorker.register("/sw.js", {
-      scope: "/"
+      try {
+        const registration = await navigator.serviceWorker.register("/sw.js", {
+          scope: "/"
+        });
+
+        novaServiceWorkerRegistration = registration;
+        console.log("Nova Smart Service Worker registered:", registration);
+        await registration.update();
+        return registration;
+      } catch (error) {
+        console.error("Service Worker registration failed:", error);
+        return null;
+      }
+    }
+
+    window.addEventListener("load", () => {
+      registerNovaServiceWorker();
     });
-
-    novaServiceWorkerRegistration = registration;
-
-    console.log("Nova Smart Service Worker registered:", registration);
-
-    await registration.update();
-
-    return registration;
-  } catch (error) {
-    console.error("Service Worker registration failed:", error);
-    return null;
-  }
-}
-
-window.addEventListener("load", () => {
-  registerNovaServiceWorker();
-});
     
-// ======================================================
-// NOVA SMART - WATER NOTIFICATIONS
-// Toggle ON / OFF
-// ======================================================
+    // ======================================================
+    // NOVA SMART - WATER NOTIFICATIONS
+    // Toggle ON / OFF
+    // ======================================================
 
-let notificationsEnabled = false;
-let notificationBusy = false;
+    let notificationsEnabled = false;
+    let notificationBusy = false;
 
-
-// ------------------------------------------------------
-// Convert VAPID public key
-// ------------------------------------------------------
-function urlBase64ToUint8Array(base64String) {
-  const padding = "=".repeat(
-    (4 - (base64String.length % 4)) % 4
-  );
-
-  const base64 = (base64String + padding)
-    .replace(/-/g, "+")
-    .replace(/_/g, "/");
-
-  const rawData = window.atob(base64);
-
-  return Uint8Array.from(
-    [...rawData].map(char => char.charCodeAt(0))
-  );
-}
-
-
-// ------------------------------------------------------
-// Get Service Worker
-// ------------------------------------------------------
-async function getNovaServiceWorker() {
-
-  if (!("serviceWorker" in navigator)) {
-    throw new Error("Service Worker غير مدعوم");
-  }
-
-  const registration = await Promise.race([
-
-    navigator.serviceWorker.ready,
-
-    new Promise((_, reject) =>
-      setTimeout(
-        () => reject(new Error("Service Worker لم يبدأ")),
-        10000
-      )
-    )
-
-  ]);
-
-  return registration;
-}
-
-
-// ------------------------------------------------------
-// Update notification button
-// ------------------------------------------------------
-function updateNotificationButton() {
-
-  const btn = document.getElementById("notificationBtn");
-
-  if (!btn) return;
-
-  if (notificationBusy) {
-
-    btn.innerText = "⏳";
-    btn.disabled = true;
-    btn.title = "Please wait";
-
-    return;
-  }
-
-  btn.disabled = false;
-
-  if (notificationsEnabled) {
-
-    btn.innerText = "🔔";
-
-    btn.title =
-      currentLang === "ar"
-        ? "الإشعارات مفعّلة - اضغط للتعطيل"
-        : "Notifications enabled - click to disable";
-
-  } else {
-
-    btn.innerText = "🔕";
-
-    btn.title =
-      currentLang === "ar"
-        ? "الإشعارات غير مفعّلة - اضغط للتفعيل"
-        : "Notifications disabled - click to enable";
-  }
-}
-
-
-// ======================================================
-// ENABLE NOTIFICATIONS
-// ======================================================
-
-async function enableWaterNotifications() {
-
-  if (notificationBusy) return;
-
-  notificationBusy = true;
-  updateNotificationButton();
-
-  try {
-
-    // -----------------------------------------------
-    // Browser support
-    // -----------------------------------------------
-
-    if (!("Notification" in window)) {
-      throw new Error("Notifications are not supported");
+    // Convert VAPID public key
+    function urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+      const rawData = window.atob(base64);
+      return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
     }
 
-    if (!("serviceWorker" in navigator)) {
-      throw new Error("Service Worker is not supported");
+    // ------------------------------------------------------
+    // Get Service Worker (المعدلة بشكل آمن وبدون Timeout)
+    // ------------------------------------------------------
+    async function getNovaServiceWorker() {
+      if (!("serviceWorker" in navigator)) {
+        throw new Error("Service Worker غير مدعوم في هذا المتصفح");
+      }
+
+      let registration = await navigator.serviceWorker.getRegistration();
+      if (!registration) {
+        registration = await registerNovaServiceWorker();
+      }
+
+      const readyRegistration = await navigator.serviceWorker.ready;
+      return readyRegistration;
     }
 
-    if (!("PushManager" in window)) {
-      throw new Error("Push notifications are not supported");
+    // Update notification button
+    function updateNotificationButton() {
+      const btn = document.getElementById("notificationBtn");
+      if (!btn) return;
+
+      if (notificationBusy) {
+        btn.innerText = "⏳";
+        btn.disabled = true;
+        btn.title = "Please wait";
+        return;
+      }
+
+      btn.disabled = false;
+
+      if (notificationsEnabled) {
+        btn.innerText = "🔔";
+        btn.title = currentLang === "ar"
+            ? "الإشعارات مفعّلة - اضغط للتعطيل"
+            : "Notifications enabled - click to disable";
+      } else {
+        btn.innerText = "🔕";
+        btn.title = currentLang === "ar"
+            ? "الإشعارات غير مفعّلة - اضغط للتفعيل"
+            : "Notifications disabled - click to enable";
+      }
     }
 
+    // ENABLE NOTIFICATIONS
+    async function enableWaterNotifications() {
+      if (notificationBusy) return;
 
-    // -----------------------------------------------
-    // Current Firebase user
-    // -----------------------------------------------
-
-    const user = auth.currentUser;
-
-    if (!user) {
-      throw new Error("Please login first");
-    }
-
-
-    // -----------------------------------------------
-    // Permission
-    // -----------------------------------------------
-
-    let permission = Notification.permission;
-
-    if (permission === "default") {
-
-      permission = await Notification.requestPermission();
-
-    }
-
-    if (permission !== "granted") {
-
-      notificationsEnabled = false;
-
+      notificationBusy = true;
       updateNotificationButton();
 
-      alert(
-        currentLang === "ar"
-          ? "لم يتم السماح بالإشعارات."
-          : "Notification permission was not granted."
-      );
+      try {
+        if (!("Notification" in window)) {
+          throw new Error("Notifications are not supported");
+        }
 
-      return;
-    }
+        if (!("serviceWorker" in navigator)) {
+          throw new Error("Service Worker is not supported");
+        }
 
+        if (!("PushManager" in window)) {
+          throw new Error("Push notifications are not supported");
+        }
 
-    // -----------------------------------------------
-    // Service Worker
-    // -----------------------------------------------
+        const user = auth.currentUser;
+        if (!user) {
+          throw new Error("Please login first");
+        }
 
-    const registration =
-      await getNovaServiceWorker();
+        let permission = Notification.permission;
+        if (permission === "default") {
+          permission = await Notification.requestPermission();
+        }
 
+        if (permission !== "granted") {
+          notificationsEnabled = false;
+          updateNotificationButton();
+          alert(currentLang === "ar" ? "لم يتم السماح بالإشعارات." : "Notification permission was not granted.");
+          return;
+        }
 
-    // -----------------------------------------------
-    // Existing subscription?
-    // -----------------------------------------------
+        const registration = await getNovaServiceWorker();
+        let subscription = await registration.pushManager.getSubscription();
 
-    let subscription =
-      await registration.pushManager.getSubscription();
+        if (!subscription) {
+          subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+          });
+        }
 
+        console.log("[NVS] Push subscription:", subscription);
 
-    // -----------------------------------------------
-    // Create subscription if needed
-    // -----------------------------------------------
-
-    if (!subscription) {
-
-      subscription =
-        await registration.pushManager.subscribe({
-
-          userVisibleOnly: true,
-
-          applicationServerKey:
-            urlBase64ToUint8Array(
-              VAPID_PUBLIC_KEY
-            )
-        });
-    }
-
-
-    console.log(
-      "[NVS] Push subscription:",
-      subscription
-    );
-
-
-    // -----------------------------------------------
-    // Send subscription to Worker
-    // -----------------------------------------------
-
-    const response = await fetch(
-      `${PUSH_SERVER_URL}/subscribe`,
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-
-          uid: user.uid,
-
-          subscription:
-            subscription.toJSON(),
-
-          path: "waterLevel"
-
-        })
-      }
-    );
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        `Worker error: ${response.status}`
-      );
-
-    }
-
-
-    const result =
-      await response.json();
-
-    console.log(
-      "[NVS] Subscription saved:",
-      result
-    );
-
-
-    // -----------------------------------------------
-    // SUCCESS
-    // -----------------------------------------------
-
-    notificationsEnabled = true;
-
-    updateNotificationButton();
-
-    alert(
-      currentLang === "ar"
-        ? "تم تفعيل الإشعارات ✅"
-        : "Notifications enabled ✅"
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "[NVS] Notification enable error:",
-      error
-    );
-
-    notificationsEnabled = false;
-
-    updateNotificationButton();
-
-    alert(
-      currentLang === "ar"
-        ? "حدث خطأ أثناء تفعيل الإشعارات:\n" + error.message
-        : "Notification error:\n" + error.message
-    );
-
-  } finally {
-
-    notificationBusy = false;
-
-    updateNotificationButton();
-  }
-}
-
-
-// ======================================================
-// DISABLE NOTIFICATIONS
-// ======================================================
-
-async function disableWaterNotifications() {
-
-  if (notificationBusy) return;
-
-  notificationBusy = true;
-  updateNotificationButton();
-
-  try {
-
-    const user = auth.currentUser;
-
-    if (!user) {
-      throw new Error("Please login first");
-    }
-
-
-    // -----------------------------------------------
-    // Get current Service Worker
-    // -----------------------------------------------
-
-    const registration =
-      await getNovaServiceWorker();
-
-
-    // -----------------------------------------------
-    // Get browser subscription
-    // -----------------------------------------------
-
-    const subscription =
-      await registration.pushManager.getSubscription();
-
-
-    // -----------------------------------------------
-    // Tell Worker to remove it from Firebase
-    // -----------------------------------------------
-
-    if (subscription) {
-
-      const response = await fetch(
-        `${PUSH_SERVER_URL}/unsubscribe`,
-        {
+        const response = await fetch(`${PUSH_SERVER_URL}/subscribe`, {
           method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-
             uid: user.uid,
-
-            endpoint:
-              subscription.endpoint
-
+            subscription: subscription.toJSON(),
+            path: "waterLevel"
           })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Worker error: ${response.status}`);
         }
-      );
 
+        const result = await response.json();
+        console.log("[NVS] Subscription saved:", result);
 
-      if (!response.ok) {
+        notificationsEnabled = true;
+        updateNotificationButton();
+        alert(currentLang === "ar" ? "تم تفعيل الإشعارات ✅" : "Notifications enabled ✅");
 
-        throw new Error(
-          `Worker error: ${response.status}`
-        );
+      } catch (error) {
+        console.error("[NVS] Notification enable error:", error);
+        notificationsEnabled = false;
+        updateNotificationButton();
+        alert(currentLang === "ar" ? "حدث خطأ أثناء تفعيل الإشعارات:\n" + error.message : "Notification error:\n" + error.message);
+      } finally {
+        notificationBusy = false;
+        updateNotificationButton();
+      }
+    }
 
+    // DISABLE NOTIFICATIONS
+    async function disableWaterNotifications() {
+      if (notificationBusy) return;
+
+      notificationBusy = true;
+      updateNotificationButton();
+
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          throw new Error("Please login first");
+        }
+
+        const registration = await getNovaServiceWorker();
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+          const response = await fetch(`${PUSH_SERVER_URL}/unsubscribe`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              uid: user.uid,
+              endpoint: subscription.endpoint
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`Worker error: ${response.status}`);
+          }
+
+          console.log("[NVS] Subscription removed from server");
+          const unsubscribed = await subscription.unsubscribe();
+          console.log("[NVS] Browser subscription removed:", unsubscribed);
+        }
+
+        notificationsEnabled = false;
+        updateNotificationButton();
+        alert(currentLang === "ar" ? "تم تعطيل الإشعارات 🔕" : "Notifications disabled 🔕");
+
+      } catch (error) {
+        console.error("[NVS] Notification disable error:", error);
+        alert(currentLang === "ar" ? "حدث خطأ أثناء تعطيل الإشعارات:\n" + error.message : "Notification error:\n" + error.message);
+      } finally {
+        notificationBusy = false;
+        updateNotificationButton();
+      }
+    }
+
+    // TOGGLE NOTIFICATIONS
+    async function toggleWaterNotifications() {
+      if (notificationsEnabled) {
+        await disableWaterNotifications();
+      } else {
+        await enableWaterNotifications();
+      }
+    }
+
+    // LOGOUT CLEANUP
+    async function cleanupNotificationsBeforeLogout() {
+      try {
+        console.log("[NVS] Cleaning notification subscription...");
+        const user = auth.currentUser;
+        const registration = await getNovaServiceWorker();
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+          await fetch(`${PUSH_SERVER_URL}/unsubscribe`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              uid: user ? user.uid : null,
+              endpoint: subscription.endpoint
+            })
+          });
+          await subscription.unsubscribe();
+        }
+      } catch (error) {
+        console.error("[NVS] Logout notification cleanup error:", error);
       }
 
-      console.log(
-        "[NVS] Subscription removed from server"
-      );
-
-
-      // ---------------------------------------------
-      // Remove browser push subscription
-      // ---------------------------------------------
-
-      const unsubscribed =
-        await subscription.unsubscribe();
-
-      console.log(
-        "[NVS] Browser subscription removed:",
-        unsubscribed
-      );
+      notificationsEnabled = false;
+      updateNotificationButton();
     }
 
-
-    // -----------------------------------------------
-    // SUCCESS
-    // -----------------------------------------------
+    // BUTTON EVENT
+    const notificationBtn = document.getElementById("notificationBtn");
+    if (notificationBtn) {
+      notificationBtn.addEventListener("click", toggleWaterNotifications);
+    }
 
     notificationsEnabled = false;
-
     updateNotificationButton();
-
-    alert(
-      currentLang === "ar"
-        ? "تم تعطيل الإشعارات 🔕"
-        : "Notifications disabled 🔕"
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "[NVS] Notification disable error:",
-      error
-    );
-
-    alert(
-      currentLang === "ar"
-        ? "حدث خطأ أثناء تعطيل الإشعارات:\n" + error.message
-        : "Notification error:\n" + error.message
-    );
-
-  } finally {
-
-    notificationBusy = false;
-
-    updateNotificationButton();
-  }
-}
-
-
-// ======================================================
-// MAIN BUTTON
-// ======================================================
-
-async function toggleWaterNotifications() {
-
-  if (notificationsEnabled) {
-
-    await disableWaterNotifications();
-
-  } else {
-
-    await enableWaterNotifications();
-
-  }
-}
-
-
-// ======================================================
-// LOGOUT CLEANUP
-// ======================================================
-
-async function cleanupNotificationsBeforeLogout() {
-
-  try {
-
-    console.log(
-      "[NVS] Cleaning notification subscription..."
-    );
-
-    const user = auth.currentUser;
-
-    const registration =
-      await getNovaServiceWorker();
-
-    const subscription =
-      await registration.pushManager.getSubscription();
-
-
-    // -----------------------------------------------
-    // Remove from Worker / Firebase
-    // -----------------------------------------------
-
-    if (subscription) {
-
-      await fetch(
-        `${PUSH_SERVER_URL}/unsubscribe`,
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify({
-
-            uid: user ? user.uid : null,
-
-            endpoint:
-              subscription.endpoint
-
-          })
-        }
-      );
-
-
-      // ---------------------------------------------
-      // Remove from browser
-      // ---------------------------------------------
-
-      await subscription.unsubscribe();
-
-    }
-
-
-  } catch (error) {
-
-    console.error(
-      "[NVS] Logout notification cleanup error:",
-      error
-    );
-
-  }
-
-
-  // Important:
-  notificationsEnabled = false;
-
-  updateNotificationButton();
-}
-
-
-// ======================================================
-// BUTTON EVENT
-// ======================================================
-
-const notificationBtn =
-  document.getElementById("notificationBtn");
-
-if (notificationBtn) {
-
-  notificationBtn.addEventListener(
-    "click",
-    toggleWaterNotifications
-  );
-}
-
-
-// Initial state
-notificationsEnabled = false;
-updateNotificationButton();
 
     const loadingScreen = document.getElementById("loading-screen");
     const loginPopup = document.getElementById("login-popup");
@@ -2064,64 +1752,44 @@ updateNotificationButton();
     }
 
     onAuthStateChanged(auth, (user) => {
+      if (user) {
+        notificationsEnabled = false;
+        updateNotificationButton();
 
-  if (user) {
+        loginPopup.style.display = "none";
 
-    // كل Login جديد يبدأ والإشعارات OFF
-    notificationsEnabled = false;
-    updateNotificationButton();
+        onValue(ref(database, ".info/connected"), (snap) => {
+          if (snap.val() === true) {
+            if (disconnectTimer) {
+              clearTimeout(disconnectTimer);
+              disconnectTimer = null;
+            }
+            setTimeout(hideLoading, 1000);
+          } else {
+            if (pageReady && !disconnectTimer) {
+              disconnectTimer = setTimeout(() => {
+                loadingScreen.style.display = "flex";
+                loadingScreen.style.opacity = "1";
 
-    loginPopup.style.display = "none";
+                document.querySelector(".loading-text").innerText = translations[currentLang].lostConn;
 
-    onValue(ref(database, ".info/connected"), (snap) => {
+                setTimeout(() => {
+                  window.location.reload();
+                }, 500);
+              }, 4000);
+            }
+          }
+        });
 
-      if (snap.val() === true) {
-
-        if (disconnectTimer) {
-          clearTimeout(disconnectTimer);
-          disconnectTimer = null;
-        }
-
-        setTimeout(hideLoading, 1000);
-
+        initSmartHomeApp();
       } else {
+        notificationsEnabled = false;
+        updateNotificationButton();
 
-        if (pageReady && !disconnectTimer) {
-
-          disconnectTimer = setTimeout(() => {
-
-            loadingScreen.style.display = "flex";
-            loadingScreen.style.opacity = "1";
-
-            document.querySelector(".loading-text").innerText =
-              translations[currentLang].lostConn;
-
-            setTimeout(() => {
-              window.location.reload();
-            }, 500);
-
-          }, 4000);
-
-        }
-
+        loadingScreen.style.display = "none";
+        loginPopup.style.display = "flex";
       }
-
     });
-
-    initSmartHomeApp();
-
-  } else {
-
-    // عند عدم وجود مستخدم
-    notificationsEnabled = false;
-    updateNotificationButton();
-
-    loadingScreen.style.display = "none";
-    loginPopup.style.display = "flex";
-
-  }
-
-});
 
     document.getElementById("login-btn").addEventListener("click", () => {
       const email = document.getElementById("login-email").value.trim();
@@ -2204,7 +1872,7 @@ updateNotificationButton();
         acTempVal.innerText = `${temp}°C`;
 
         const ratio = (temp - minTemp) / (maxTemp - minTemp);
-        const angle = Math.PI - (ratio * Math.PI); // Angle from PI down to 0
+        const angle = Math.PI - (ratio * Math.PI);
 
         const x = pathCenterX + pathRadius * Math.cos(angle);
         const y = pathCenterY - pathRadius * Math.sin(angle);
@@ -2253,7 +1921,7 @@ updateNotificationButton();
         isDraggingDial = false;
       });
 
-      updateDialUI(24); // Init Default
+      updateDialUI(24);
     
       // Toggles Setup
       const toggles = [  
