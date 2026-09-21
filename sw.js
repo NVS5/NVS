@@ -1,30 +1,166 @@
-// sw.js
-importScripts('https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging-compat.js');
+// ======================================================
+// Nova Smart Service Worker
+// PWA + Web Push
+// ======================================================
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",
-  authDomain: "smarthome-ad84f.firebaseapp.com",
-  databaseURL: "https://smarthome-ad84f-default-rtdb.firebaseio.com",
-  projectId: "smarthome-ad84f",
-  storageBucket: "smarthome-ad84f.appspot.com",
-  messagingSenderId: "849228056680",
-  appId: "1:849228056680:web:09fa91eaca63dc148953dd"
-};
 
-firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
+// ======================================================
+// INSTALL
+// ======================================================
 
-// استقبال الإشعار عندما يكون التطبيق مغلقاً
-messaging.onBackgroundMessage((payload) => {
-  console.log('[sw.js] Received background message ', payload);
-  const notificationTitle = payload.notification.title || 'تنبيه مستوى المياه';
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: '/logo.png',
-    badge: '/logo.png',
-    vibrate: [200, 100, 200]
-  };
+self.addEventListener("install", event => {
+    console.log("[sw.js] Service Worker installed");
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+    self.skipWaiting();
 });
+
+
+// ======================================================
+// ACTIVATE
+// ======================================================
+
+self.addEventListener("activate", event => {
+
+    console.log("[sw.js] Service Worker activated");
+
+    event.waitUntil(
+        self.clients.claim()
+    );
+});
+
+
+// ======================================================
+// PUSH NOTIFICATION
+// ======================================================
+
+self.addEventListener("push", event => {
+
+    let data = {};
+
+    try {
+
+        if (event.data) {
+            data = event.data.json();
+        }
+
+    } catch (error) {
+
+        console.log(
+            "[sw.js] Push data is not JSON"
+        );
+
+        data = {
+            title: "Nova Smart",
+            body: event.data
+                ? event.data.text()
+                : "لديك تنبيه جديد"
+        };
+    }
+
+
+    const title =
+        data.title || "Nova Smart";
+
+
+    const options = {
+
+        body:
+            data.body ||
+            "لديك تنبيه جديد",
+
+        icon:
+            data.icon ||
+            "/logo.png",
+
+        badge:
+            data.badge ||
+            "/logo.png",
+
+        vibrate: [
+            200,
+            100,
+            200
+        ],
+
+        tag:
+            data.tag ||
+            "nova-water-alert",
+
+        renotify: true,
+
+        data: {
+            url:
+                data.url ||
+                "/"
+        }
+    };
+
+
+    event.waitUntil(
+
+        self.registration.showNotification(
+            title,
+            options
+        )
+
+    );
+
+});
+
+
+// ======================================================
+// NOTIFICATION CLICK
+// ======================================================
+
+self.addEventListener(
+    "notificationclick",
+    event => {
+
+        event.notification.close();
+
+
+        const url =
+            event.notification.data?.url ||
+            "/";
+
+
+        event.waitUntil(
+
+            self.clients
+                .matchAll({
+                    type: "window",
+                    includeUncontrolled: true
+                })
+
+                .then(clientList => {
+
+                    for (
+                        const client
+                        of clientList
+                    ) {
+
+                        if (
+                            "focus"
+                            in client
+                        ) {
+
+                            return client
+                                .focus();
+                        }
+                    }
+
+
+                    if (
+                        self.clients.openWindow
+                    ) {
+
+                        return self.clients
+                            .openWindow(url);
+                    }
+
+                })
+
+        );
+
+    }
+);
