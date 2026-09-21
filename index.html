@@ -1471,30 +1471,71 @@ const PUSH_SERVER_URL = "https://nvs-water-notifications.abbasmasri27.workers.de
       if (e.target === logoutModal) logoutModal.style.display = "none";
     });
 
-    // Execute Signout
-    confirmLogoutBtn.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.reload();
-      }).catch((err) => {
-        console.error("Logout error:", err);
-      });
-    });
+confirmLogoutBtn.addEventListener("click", async () => {
+  try {
+
+    // حذف اشتراك الإشعارات قبل تسجيل الخروج
+    await cleanupNotificationsBeforeLogout();
+
+    // تسجيل الخروج من Firebase
+    await signOut(auth);
+
+    // إعادة تحميل الصفحة
+    window.location.reload();
+
+  } catch (err) {
+
+    console.error("Logout error:", err);
+
+  }
+});
   
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log('Service Worker Registered successfully.'))
-          .catch(err => console.log('Service Worker registration failed:', err));
-      });
-    }
+    let novaServiceWorkerRegistration = null;
+
+async function registerNovaServiceWorker() {
+  if (!("serviceWorker" in navigator)) {
+    console.error("Service Worker is not supported");
+    return null;
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register("/sw.js", {
+      scope: "/"
+    });
+
+    novaServiceWorkerRegistration = registration;
+
+    console.log("Nova Smart Service Worker registered:", registration);
+
+    await registration.update();
+
+    return registration;
+  } catch (error) {
+    console.error("Service Worker registration failed:", error);
+    return null;
+  }
+}
+
+window.addEventListener("load", () => {
+  registerNovaServiceWorker();
+});
     
-    // ======================================================
-// WEB PUSH NOTIFICATIONS
+// ======================================================
+// NOVA SMART - WATER NOTIFICATIONS
+// Toggle ON / OFF
 // ======================================================
 
-function urlBase64ToUint8Array(base64String) {
+let notificationsEnabled = false;
+let notificationBusy = false;
 
-  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+
+// ------------------------------------------------------
+// Convert VAPID public key
+// ------------------------------------------------------
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat(
+    (4 - (base64String.length % 4)) % 4
+  );
 
   const base64 = (base64String + padding)
     .replace(/-/g, "+")
@@ -1508,59 +1549,162 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 
+// ------------------------------------------------------
+// Get Service Worker
+// ------------------------------------------------------
+async function getNovaServiceWorker() {
+
+  if (!("serviceWorker" in navigator)) {
+    throw new Error("Service Worker غير مدعوم");
+  }
+
+  const registration = await Promise.race([
+
+    navigator.serviceWorker.ready,
+
+    new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Service Worker لم يبدأ")),
+        10000
+      )
+    )
+
+  ]);
+
+  return registration;
+}
+
+
+// ------------------------------------------------------
+// Update notification button
+// ------------------------------------------------------
+function updateNotificationButton() {
+
+  const btn = document.getElementById("notificationBtn");
+
+  if (!btn) return;
+
+  if (notificationBusy) {
+
+    btn.innerText = "⏳";
+    btn.disabled = true;
+    btn.title = "Please wait";
+
+    return;
+  }
+
+  btn.disabled = false;
+
+  if (notificationsEnabled) {
+
+    btn.innerText = "🔔";
+
+    btn.title =
+      currentLang === "ar"
+        ? "الإشعارات مفعّلة - اضغط للتعطيل"
+        : "Notifications enabled - click to disable";
+
+  } else {
+
+    btn.innerText = "🔕";
+
+    btn.title =
+      currentLang === "ar"
+        ? "الإشعارات غير مفعّلة - اضغط للتفعيل"
+        : "Notifications disabled - click to enable";
+  }
+}
+
+
+// ======================================================
+// ENABLE NOTIFICATIONS
+// ======================================================
+
 async function enableWaterNotifications() {
+
+  if (notificationBusy) return;
+
+  notificationBusy = true;
+  updateNotificationButton();
 
   try {
 
+    // -----------------------------------------------
     // Browser support
+    // -----------------------------------------------
+
     if (!("Notification" in window)) {
-      alert(translations[currentLang].notificationsNotSupported);
-      return;
+      throw new Error("Notifications are not supported");
     }
 
     if (!("serviceWorker" in navigator)) {
-      alert(translations[currentLang].notificationsNotSupported);
-      return;
+      throw new Error("Service Worker is not supported");
     }
 
     if (!("PushManager" in window)) {
-      alert(translations[currentLang].notificationsNotSupported);
-      return;
+      throw new Error("Push notifications are not supported");
     }
 
 
-    // Make sure Service Worker is ready
-    const registration =
-      await navigator.serviceWorker.ready;
+    // -----------------------------------------------
+    // Current Firebase user
+    // -----------------------------------------------
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      throw new Error("Please login first");
+    }
 
 
-    // Ask permission
+    // -----------------------------------------------
+    // Permission
+    // -----------------------------------------------
+
     let permission = Notification.permission;
 
     if (permission === "default") {
 
-      permission =
-        await Notification.requestPermission();
+      permission = await Notification.requestPermission();
+
     }
 
-
-    // User denied
     if (permission !== "granted") {
 
-      console.log("Notification permission:", permission);
+      notificationsEnabled = false;
 
       updateNotificationButton();
+
+      alert(
+        currentLang === "ar"
+          ? "لم يتم السماح بالإشعارات."
+          : "Notification permission was not granted."
+      );
 
       return;
     }
 
 
+    // -----------------------------------------------
+    // Service Worker
+    // -----------------------------------------------
+
+    const registration =
+      await getNovaServiceWorker();
+
+
+    // -----------------------------------------------
     // Existing subscription?
+    // -----------------------------------------------
+
     let subscription =
       await registration.pushManager.getSubscription();
 
 
-    // Create new subscription
+    // -----------------------------------------------
+    // Create subscription if needed
+    // -----------------------------------------------
+
     if (!subscription) {
 
       subscription =
@@ -1569,19 +1713,23 @@ async function enableWaterNotifications() {
           userVisibleOnly: true,
 
           applicationServerKey:
-            urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-
+            urlBase64ToUint8Array(
+              VAPID_PUBLIC_KEY
+            )
         });
     }
 
 
     console.log(
-      "Push subscription:",
+      "[NVS] Push subscription:",
       subscription
     );
 
 
-    // Send subscription to Cloudflare Worker
+    // -----------------------------------------------
+    // Send subscription to Worker
+    // -----------------------------------------------
+
     const response = await fetch(
       `${PUSH_SERVER_URL}/subscribe`,
       {
@@ -1593,9 +1741,11 @@ async function enableWaterNotifications() {
 
         body: JSON.stringify({
 
-          subscription: subscription.toJSON(),
+          uid: user.uid,
 
-          // حالياً كل الأجهزة تستخدم نفس waterLevel
+          subscription:
+            subscription.toJSON(),
+
           path: "waterLevel"
 
         })
@@ -1606,101 +1756,299 @@ async function enableWaterNotifications() {
     if (!response.ok) {
 
       throw new Error(
-        `Push server error: ${response.status}`
+        `Worker error: ${response.status}`
       );
 
     }
 
 
-    const result = await response.json();
+    const result =
+      await response.json();
 
     console.log(
-      "Push subscription saved:",
+      "[NVS] Subscription saved:",
       result
     );
 
 
+    // -----------------------------------------------
+    // SUCCESS
+    // -----------------------------------------------
+
+    notificationsEnabled = true;
+
     updateNotificationButton();
 
-
     alert(
-      translations[currentLang].notificationEnabledMsg
+      currentLang === "ar"
+        ? "تم تفعيل الإشعارات ✅"
+        : "Notifications enabled ✅"
     );
 
 
   } catch (error) {
 
     console.error(
-      "Notification setup error:",
+      "[NVS] Notification enable error:",
+      error
+    );
+
+    notificationsEnabled = false;
+
+    updateNotificationButton();
+
+    alert(
+      currentLang === "ar"
+        ? "حدث خطأ أثناء تفعيل الإشعارات:\n" + error.message
+        : "Notification error:\n" + error.message
+    );
+
+  } finally {
+
+    notificationBusy = false;
+
+    updateNotificationButton();
+  }
+}
+
+
+// ======================================================
+// DISABLE NOTIFICATIONS
+// ======================================================
+
+async function disableWaterNotifications() {
+
+  if (notificationBusy) return;
+
+  notificationBusy = true;
+  updateNotificationButton();
+
+  try {
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      throw new Error("Please login first");
+    }
+
+
+    // -----------------------------------------------
+    // Get current Service Worker
+    // -----------------------------------------------
+
+    const registration =
+      await getNovaServiceWorker();
+
+
+    // -----------------------------------------------
+    // Get browser subscription
+    // -----------------------------------------------
+
+    const subscription =
+      await registration.pushManager.getSubscription();
+
+
+    // -----------------------------------------------
+    // Tell Worker to remove it from Firebase
+    // -----------------------------------------------
+
+    if (subscription) {
+
+      const response = await fetch(
+        `${PUSH_SERVER_URL}/unsubscribe`,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+
+            uid: user.uid,
+
+            endpoint:
+              subscription.endpoint
+
+          })
+        }
+      );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          `Worker error: ${response.status}`
+        );
+
+      }
+
+      console.log(
+        "[NVS] Subscription removed from server"
+      );
+
+
+      // ---------------------------------------------
+      // Remove browser push subscription
+      // ---------------------------------------------
+
+      const unsubscribed =
+        await subscription.unsubscribe();
+
+      console.log(
+        "[NVS] Browser subscription removed:",
+        unsubscribed
+      );
+    }
+
+
+    // -----------------------------------------------
+    // SUCCESS
+    // -----------------------------------------------
+
+    notificationsEnabled = false;
+
+    updateNotificationButton();
+
+    alert(
+      currentLang === "ar"
+        ? "تم تعطيل الإشعارات 🔕"
+        : "Notifications disabled 🔕"
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "[NVS] Notification disable error:",
       error
     );
 
     alert(
-      "Notification Error: " +
-      error.message
+      currentLang === "ar"
+        ? "حدث خطأ أثناء تعطيل الإشعارات:\n" + error.message
+        : "Notification error:\n" + error.message
     );
+
+  } finally {
+
+    notificationBusy = false;
+
+    updateNotificationButton();
   }
 }
 
 
 // ======================================================
-// UPDATE NOTIFICATION BUTTON
+// MAIN BUTTON
 // ======================================================
 
-function updateNotificationButton() {
+async function toggleWaterNotifications() {
 
-  const btn =
-    document.getElementById("notificationBtn");
+  if (notificationsEnabled) {
 
-  if (!btn) return;
+    await disableWaterNotifications();
 
+  } else {
 
-  if (!("Notification" in window)) {
+    await enableWaterNotifications();
 
-    btn.innerText = "🔕";
-    btn.title =
-      translations[currentLang].notificationsNotSupported;
-
-    return;
   }
-
-
-  if (Notification.permission === "granted") {
-
-    btn.innerText = "🔔";
-    btn.title =
-      translations[currentLang].notificationsEnabled;
-
-    return;
-  }
-
-
-  if (Notification.permission === "denied") {
-
-    btn.innerText = "🔕";
-    btn.title =
-      translations[currentLang].notificationsDenied;
-
-    return;
-  }
-
-
-  btn.innerText = "🔔";
-  btn.title =
-    translations[currentLang].enableNotifications;
 }
 
 
-// Notification button
-document
-  .getElementById("notificationBtn")
-  .addEventListener(
+// ======================================================
+// LOGOUT CLEANUP
+// ======================================================
+
+async function cleanupNotificationsBeforeLogout() {
+
+  try {
+
+    console.log(
+      "[NVS] Cleaning notification subscription..."
+    );
+
+    const user = auth.currentUser;
+
+    const registration =
+      await getNovaServiceWorker();
+
+    const subscription =
+      await registration.pushManager.getSubscription();
+
+
+    // -----------------------------------------------
+    // Remove from Worker / Firebase
+    // -----------------------------------------------
+
+    if (subscription) {
+
+      await fetch(
+        `${PUSH_SERVER_URL}/unsubscribe`,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+
+            uid: user ? user.uid : null,
+
+            endpoint:
+              subscription.endpoint
+
+          })
+        }
+      );
+
+
+      // ---------------------------------------------
+      // Remove from browser
+      // ---------------------------------------------
+
+      await subscription.unsubscribe();
+
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "[NVS] Logout notification cleanup error:",
+      error
+    );
+
+  }
+
+
+  // Important:
+  notificationsEnabled = false;
+
+  updateNotificationButton();
+}
+
+
+// ======================================================
+// BUTTON EVENT
+// ======================================================
+
+const notificationBtn =
+  document.getElementById("notificationBtn");
+
+if (notificationBtn) {
+
+  notificationBtn.addEventListener(
     "click",
-    enableWaterNotifications
+    toggleWaterNotifications
   );
+}
 
 
 // Initial state
+notificationsEnabled = false;
 updateNotificationButton();
 
     const loadingScreen = document.getElementById("loading-screen");
@@ -1716,32 +2064,64 @@ updateNotificationButton();
     }
 
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        loginPopup.style.display = "none";
-        onValue(ref(database, ".info/connected"), (snap) => {
-          if (snap.val() === true) {
-            if (disconnectTimer) {
-              clearTimeout(disconnectTimer);
-              disconnectTimer = null;
-            }
-            setTimeout(hideLoading, 1000);
-          } else {
-            if (pageReady && !disconnectTimer) {
-              disconnectTimer = setTimeout(() => {
-                loadingScreen.style.display = "flex";
-                loadingScreen.style.opacity = "1";
-                document.querySelector(".loading-text").innerText = translations[currentLang].lostConn;
-                setTimeout(() => { window.location.reload(); }, 500);
-              }, 4000); 
-            }
-          }
-        });
-        initSmartHomeApp();
+
+  if (user) {
+
+    // كل Login جديد يبدأ والإشعارات OFF
+    notificationsEnabled = false;
+    updateNotificationButton();
+
+    loginPopup.style.display = "none";
+
+    onValue(ref(database, ".info/connected"), (snap) => {
+
+      if (snap.val() === true) {
+
+        if (disconnectTimer) {
+          clearTimeout(disconnectTimer);
+          disconnectTimer = null;
+        }
+
+        setTimeout(hideLoading, 1000);
+
       } else {
-        loadingScreen.style.display = "none";
-        loginPopup.style.display = "flex";
+
+        if (pageReady && !disconnectTimer) {
+
+          disconnectTimer = setTimeout(() => {
+
+            loadingScreen.style.display = "flex";
+            loadingScreen.style.opacity = "1";
+
+            document.querySelector(".loading-text").innerText =
+              translations[currentLang].lostConn;
+
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
+
+          }, 4000);
+
+        }
+
       }
+
     });
+
+    initSmartHomeApp();
+
+  } else {
+
+    // عند عدم وجود مستخدم
+    notificationsEnabled = false;
+    updateNotificationButton();
+
+    loadingScreen.style.display = "none";
+    loginPopup.style.display = "flex";
+
+  }
+
+});
 
     document.getElementById("login-btn").addEventListener("click", () => {
       const email = document.getElementById("login-email").value.trim();
