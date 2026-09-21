@@ -1,4 +1,4 @@
-const CACHE_NAME = "nova-smart-v5";
+const CACHE_NAME = "nova-smart-v6";
 
 self.addEventListener("install", event => {
   console.log("[Nova Smart] SW installing");
