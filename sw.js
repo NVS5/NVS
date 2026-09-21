@@ -1,4 +1,4 @@
-const CACHE_NAME = "nova-smart-v7";
+const CACHE_NAME = "nova-smart-v10";
 
 // رابط الشعار المباشر والواضح على GitHub Pages
 const LOGO_URL = "https://nvs5.github.io/NVS/logo.png";
