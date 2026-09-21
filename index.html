@@ -1125,11 +1125,11 @@
     <div class="remote-menu-card">  
       <h3 data-i18n="selectRemote">Select Remote</h3>  
       <div class="remote-options-grid">  
-        <button class="remote-option-btn" id="btn-open-tv">  
+        <button class="remote-option-btn" onclick="openTVRemote()">  
           <i class="fa-solid fa-tv"></i>  
           <span>TV</span>  
         </button>  
-        <button class="remote-option-btn" id="btn-open-ac">  
+        <button class="remote-option-btn" onclick="openACRemote()">  
           <i class="fa-solid fa-snowflake"></i>  
           <span>AC</span>  
         </button>  
@@ -1141,57 +1141,57 @@
   <div id="remote-popup">    
     <div class="remote">      
       <div class="row two">    
-        <button class="btn red" onclick="window.sendCmd('0x23DC', '0xFD01')">🔆</button>    
-        <button class="btn" onclick="window.sendCmd('0x8B', '0xFD01')">🔇</button>    
+        <button class="btn red" onclick="sendCmd('0x23DC', '0xFD01')">🔆</button>    
+        <button class="btn" onclick="sendCmd('0x8B', '0xFD01')">🔇</button>    
       </div>      
       <div class="row">    
-        <button class="btn" onclick="window.sendCmd('0xC9', '0xFD01')"><i class="fa-solid fa-play"></i></button>    
-        <button class="btn" onclick="window.sendCmd('0xC8', '0xFD01')">USB</button>    
-        <button class="btn" onclick="window.sendCmd('0x99', '0xFD01')"><i class="fa-solid fa-circle"></i></button>    
-        <button class="btn" onclick="window.sendCmd('0xCD', '0xFD01')">INFO</button>    
+        <button class="btn" onclick="sendCmd('0xC9', '0xFD01')"><i class="fa-solid fa-play"></i></button>    
+        <button class="btn" onclick="sendCmd('0xC8', '0xFD01')">USB</button>    
+        <button class="btn" onclick="sendCmd('0x99', '0xFD01')"><i class="fa-solid fa-circle"></i></button>    
+        <button class="btn" onclick="sendCmd('0xCD', '0xFD01')">INFO</button>    
       </div>      
       <div class="row">    
-        <button class="btn red" onclick="window.sendCmd('0xC7', '0xFD01')"><i class="fa-solid fa-backward-step"></i></button>    
-        <button class="btn green" onclick="window.sendCmd('0xC6', '0xFD01')"><i class="fa-solid fa-forward-step"></i></button>    
-        <button class="btn yellow" onclick="window.sendCmd('0xC5', '0xFD01')"><i class="fa-solid fa-backward"></i></button>    
-        <button class="btn blue" onclick="window.sendCmd('0xC4', '0xFD01')"><i class="fa-solid fa-forward"></i></button>    
+        <button class="btn red" onclick="sendCmd('0xC7', '0xFD01')"><i class="fa-solid fa-backward-step"></i></button>    
+        <button class="btn green" onclick="sendCmd('0xC6', '0xFD01')"><i class="fa-solid fa-forward-step"></i></button>    
+        <button class="btn yellow" onclick="sendCmd('0xC5', '0xFD01')"><i class="fa-solid fa-backward"></i></button>    
+        <button class="btn blue" onclick="sendCmd('0xC4', '0xFD01')"><i class="fa-solid fa-forward"></i></button>    
       </div>    
       <div class="row two">    
-        <button class="btn" onclick="window.sendCmd('0x9F', '0xFD01')">FAV</button>    
-        <button class="btn" onclick="window.sendCmd('0x9B', '0xFD01')">SAT</button>  
+        <button class="btn" onclick="sendCmd('0x9F', '0xFD01')">FAV</button>    
+        <button class="btn" onclick="sendCmd('0x9B', '0xFD01')">SAT</button>  
       </div>      
       <div class="nav">    
-        <div></div><button class="btn" onclick="window.sendCmd('0xDE', '0xFD01')"><i class="fa-solid fa-caret-up"></i></button><div></div>    
-        <button class="btn" onclick="window.sendCmd('0xDB', '0xFD01')"><i class="fa-solid fa-caret-left"></i></button>    
-        <button class="btn ok" onclick="window.sendCmd('0xDA', '0xFD01')">OK</button>    
-        <button class="btn" onclick="window.sendCmd('0xD8', '0xFD01')"><i class="fa-solid fa-caret-right"></i></button>    
-        <div></div><button class="btn" onclick="window.sendCmd('0xD6', '0xFD01')"><i class="fa-solid fa-caret-down"></i></button><div></div>    
+        <div></div><button class="btn" onclick="sendCmd('0xDE', '0xFD01')"><i class="fa-solid fa-caret-up"></i></button><div></div>    
+        <button class="btn" onclick="sendCmd('0xDB', '0xFD01')"><i class="fa-solid fa-caret-left"></i></button>    
+        <button class="btn ok" onclick="sendCmd('0xDA', '0xFD01')">OK</button>    
+        <button class="btn" onclick="sendCmd('0xD8', '0xFD01')"><i class="fa-solid fa-caret-right"></i></button>    
+        <div></div><button class="btn" onclick="sendCmd('0xD6', '0xFD01')"><i class="fa-solid fa-caret-down"></i></button><div></div>    
       </div>       
       <div class="row two">    
-        <button class="btn" onclick="window.sendCmd('0xD4', '0xFD01')">MENU</button>    
-        <button class="btn" onclick="window.sendCmd('0xD7', '0xFD01')">EXIT</button>    
+        <button class="btn" onclick="sendCmd('0xD4', '0xFD01')">MENU</button>    
+        <button class="btn" onclick="sendCmd('0xD7', '0xFD01')">EXIT</button>    
       </div>      
       <div class="extra-keys">    
-        <button class="btn" onclick="window.sendCmd('0x9D', '0xFD01')">SUBTITLE</button>    
-        <button class="btn" onclick="window.sendCmd('0xDD', '0xFD01')">RECALL</button>    
-        <button class="btn green" onclick="window.sendCmd('0x83', '0xFD01')">PAGE +</button>      
-        <button class="btn" onclick="window.sendCmd('0xCE', '0xFD01')">TXT</button>  
-        <button class="btn" onclick="window.sendCmd('0xD0', '0xFD01')">AUDIO</button>  
-        <button class="btn red" onclick="window.sendCmd('0xCC', '0xFD01')">PAGE −</button>  
+        <button class="btn" onclick="sendCmd('0x9D', '0xFD01')">SUBTITLE</button>    
+        <button class="btn" onclick="sendCmd('0xDD', '0xFD01')">RECALL</button>    
+        <button class="btn green" onclick="sendCmd('0x83', '0xFD01')">PAGE +</button>      
+        <button class="btn" onclick="sendCmd('0xCE', '0xFD01')">TXT</button>  
+        <button class="btn" onclick="sendCmd('0xD0', '0xFD01')">AUDIO</button>  
+        <button class="btn red" onclick="sendCmd('0xCC', '0xFD01')">PAGE −</button>  
       </div>      
       <div class="numbers">    
-        <button class="btn" onclick="window.sendCmd('0x8E', '0xFD01')">1</button>    
-        <button class="btn" onclick="window.sendCmd('0x86', '0xFD01')">2</button>    
-        <button class="btn" onclick="window.sendCmd('0x8F', '0xFD01')">3</button>    
-        <button class="btn" onclick="window.sendCmd('0x92', '0xFD01')">4</button>    
-        <button class="btn" onclick="window.sendCmd('0x87', '0xFD01')">5</button>    
-        <button class="btn" onclick="window.sendCmd('0x93', '0xFD01')">6</button>    
-        <button class="btn" onclick="window.sendCmd('0x96', '0xFD01')">7</button>    
-        <button class="btn" onclick="window.sendCmd('0x82', '0xFD01')">8</button>    
-        <button class="btn" onclick="window.sendCmd('0x97', '0xFD01')">9</button>    
-        <button class="btn" onclick="window.sendCmd('0x9A', '0xFD01')">0</button>    
-        <button class="btn" onclick="window.sendCmd('0xDF', '0xFD01')">EPG</button>    
-        <button class="btn" onclick="window.sendCmd('0x89', '0xFD01')">TV/R</button>    
+        <button class="btn" onclick="sendCmd('0x8E', '0xFD01')">1</button>    
+        <button class="btn" onclick="sendCmd('0x86', '0xFD01')">2</button>    
+        <button class="btn" onclick="sendCmd('0x8F', '0xFD01')">3</button>    
+        <button class="btn" onclick="sendCmd('0x92', '0xFD01')">4</button>    
+        <button class="btn" onclick="sendCmd('0x87', '0xFD01')">5</button>    
+        <button class="btn" onclick="sendCmd('0x93', '0xFD01')">6</button>    
+        <button class="btn" onclick="sendCmd('0x96', '0xFD01')">7</button>    
+        <button class="btn" onclick="sendCmd('0x82', '0xFD01')">8</button>    
+        <button class="btn" onclick="sendCmd('0x97', '0xFD01')">9</button>    
+        <button class="btn" onclick="sendCmd('0x9A', '0xFD01')">0</button>    
+        <button class="btn" onclick="sendCmd('0xDF', '0xFD01')">EPG</button>    
+        <button class="btn" onclick="sendCmd('0x89', '0xFD01')">TV/R</button>    
       </div>    
     </div>    
   </div>  
@@ -1216,15 +1216,15 @@
   
       <!-- AC Control Buttons -->  
       <div class="ac-controls-grid">  
-        <button class="ac-btn power-btn" onclick="window.sendCmd('AC_POWER', 'AC')">  
+        <button class="ac-btn power-btn" onclick="sendCmd('AC_POWER', 'AC')">  
           <i class="fa-solid fa-power-off"></i>  
           <span data-i18n="acPower">Power</span>  
         </button>  
-        <button class="ac-btn" onclick="window.sendCmd('AC_MODE', 'AC')">  
+        <button class="ac-btn" onclick="sendCmd('AC_MODE', 'AC')">  
           <i class="fa-solid fa-arrows-rotate"></i>  
           <span data-i18n="acMode">Mode</span>  
         </button>  
-        <button class="ac-btn" onclick="window.sendCmd('AC_FAN', 'AC')">  
+        <button class="ac-btn" onclick="sendCmd('AC_FAN', 'AC')">  
           <i class="fa-solid fa-fan"></i>  
           <span data-i18n="acFan">Fan Speed</span>  
         </button>  
@@ -1251,9 +1251,10 @@
   <!-- Firebase & App Script -->  
   <script type="module">    
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";    
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";    
+    import { getDatabase, ref, get,remove,onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";    
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";  
     
+
     const firebaseConfig = {    
       apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",    
       authDomain: "smarthome-ad84f.firebaseapp.com",    
@@ -1272,13 +1273,7 @@
     const VAPID_PUBLIC_KEY = "BMpxFh_AuQOdE0iqk0x0tMEOS6PFWsm1HmQ7jLz1dBWEHX4aF9lyzbOQ1mAjKmYhF7PKTwqjUG2zcWmcFRwFO-w";  
     const PUSH_SERVER_URL = "https://nvs-water-notifications.abbasmasri27.workers.dev";  
   
-    // Global sendCmd bridge for HTML onClick  
-    window.sendCmd = function (command, address) {    
-      const remoteRef = ref(database, "Remote");    
-      set(remoteRef, { command: command, address: address });    
-    };  
-
-    // LocalStorage Read
+    // --- LocalStorage Read ---  
     let savedLang = localStorage.getItem('nova_lang') || 'en';  
     let savedTheme = localStorage.getItem('nova_theme') || 'light';  
   
@@ -1759,9 +1754,6 @@
       window.openTVRemote = function () { remoteMenuPopup.style.display = "none"; remotePopup.style.display = "block"; };  
       window.openACRemote = function () { remoteMenuPopup.style.display = "none"; acPopup.style.display = "block"; };  
 
-      document.getElementById("btn-open-tv").addEventListener("click", window.openTVRemote);
-      document.getElementById("btn-open-ac").addEventListener("click", window.openACRemote);
-
       remoteMenuPopup.addEventListener("click", (e) => {  
         if (e.target === remoteMenuPopup) remoteMenuPopup.style.display = "none";  
       });  
@@ -1780,6 +1772,11 @@
           currentDevice = null;  
         }  
       });  
+
+      window.sendCmd = function (command, address) {    
+        const remoteRef = ref(database, "Remote");    
+        set(remoteRef, { command: command, address: address });    
+      };    
 
       // Arc Thermostat Dial Slider Logic (16°C - 30°C)  
       const dialContainer = document.getElementById("dial-container");  
@@ -1835,7 +1832,7 @@
         const computedTemp = Math.round(minTemp + ratio * (maxTemp - minTemp));  
         if (computedTemp !== currentAcTemp) {  
           updateDialUI(computedTemp);  
-          window.sendCmd(`AC_TEMP_${computedTemp}`, 'AC');  
+          sendCmd(`AC_TEMP_${computedTemp}`, 'AC');  
         }  
       }  
 
@@ -2000,7 +1997,7 @@
       };  
 
       onValue(ref(database, "output/devices/kahrba"), (snap) => {    
-        window.updatePowerUI(snap.val());    
+        updatePowerUI(snap.val());    
       });    
       
       // Timers logic  
@@ -2077,6 +2074,40 @@
         });    
       });    
     }  
+    
+    
+// دالة مسح كل العقد تحت pushNotifications ما عدا subscriptions
+function clearPushNotificationsExceptSubscriptions() {
+  const db = getDatabase();
+  const pushNotificationsRef = ref(db, 'pushNotifications');
+
+  get(pushNotificationsRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      snapshot.forEach((childSnapshot) => {
+        const childKey = childSnapshot.key;
+        
+        // استثناء عقدة subscriptions من المسح
+        if (childKey !== 'subscriptions' && childKey !== 'notificationState' ) {
+          const childRef = ref(db, `pushNotifications/${childKey}`);
+          remove(childRef)
+            .then(() => console.log(`تم مسح العقدة: ${childKey}`))
+            .catch((err) => console.error(`خطأ في مسح ${childKey}:`, err));
+        }
+      });
+    }
+  }).catch((err) => console.error("خطأ في جلب بيانات pushNotifications:", err));
+}
+
+// تشغيل الدالة فور تحميل الصفحة (Reload)
+window.addEventListener('DOMContentLoaded', () => {
+  clearPushNotificationsExceptSubscriptions();
+});
+
+    
+    
+    
+    
+    
   </script>  
   
 </body>  
