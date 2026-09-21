@@ -1,4 +1,4 @@
-const CACHE_NAME = "nova-smart-v10";
+const CACHE_NAME = "nova-smart-v7";
 
 // رابط الشعار المباشر والواضح على GitHub Pages
 const LOGO_URL = "https://nvs5.github.io/NVS/logo.png";
@@ -76,25 +76,32 @@ self.addEventListener("push", event => {
 self.addEventListener("notificationclick", event => {
   event.notification.close();
 
-  const targetUrl = event.notification.data?.url || HOME_URL;
+  const targetUrl =
+    event.notification?.data?.url ||
+    HOME_URL;
 
   event.waitUntil(
     clients.matchAll({
       type: "window",
       includeUncontrolled: true
-    })
-    .then(clientList => {
+    }).then(clientList => {
+
       for (const client of clientList) {
-        if (client.url.startsWith(self.location.origin)) {
+
+        // إذا كان NVS مفتوحًا بالفعل
+        if (
+          client.url.startsWith(
+            "https://nvs5.github.io/NVS/"
+          )
+        ) {
           return client
             .navigate(targetUrl)
             .then(() => client.focus());
         }
       }
 
-      if (clients.openWindow) {
-        return clients.openWindow(targetUrl);
-      }
+      // إذا NVS غير مفتوح، افتحه
+      return clients.openWindow(targetUrl);
     })
   );
 });
