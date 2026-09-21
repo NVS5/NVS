@@ -1474,7 +1474,7 @@
         throw new Error("Service Worker is not supported by this browser.");  
       }  
       try {  
-        const registration = await navigator.serviceWorker.register("/sw.js", { scope: "/" });  
+        const registration = await navigator.serviceWorker.register("/NVS/sw.js", { scope: "/NVS/" });  
         novaServiceWorkerRegistration = registration;  
         if (registration.active) return registration;  
 
