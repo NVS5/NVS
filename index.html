@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -49,7 +49,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
       transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.1s;
     }
 
@@ -103,7 +103,7 @@
       gap: 8px;
     }
 
-    .theme-btn, .lang-btn, .notif-btn {
+    .theme-btn, .lang-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--text-main);
@@ -934,17 +934,17 @@
   <!-- Loading Screen -->
   <div id="loading-screen">
     <div class="loader"></div>
-    <div class="loading-text" data-i18n="connecting">جاري الاتصال...</div>
+    <div class="loading-text" data-i18n="connecting">Connecting...</div>
   </div>
 
   <!-- Login Popup -->
   <div id="login-popup" style="display: none;">
     <div class="login-box">
-      <h2 data-i18n="loginTitle">تسجيل دخول لوحة التحكم</h2>
+      <h2 data-i18n="loginTitle">Control Panel Login</h2>
       <input 
         type="email" 
         id="login-email" 
-        placeholder="البريد الإلكتروني" 
+        placeholder="Email" 
         data-i18n-ph="emailPh" 
         autocomplete="username"
         autocorrect="off" 
@@ -956,7 +956,7 @@
       <input 
         type="password" 
         id="login-password" 
-        placeholder="كلمة المرور" 
+        placeholder="Password" 
         data-i18n-ph="passPh" 
         autocomplete="current-password"
         autocorrect="off" 
@@ -965,8 +965,8 @@
         required 
       />
 
-      <button id="login-btn" data-i18n="loginBtn">تسجيل الدخول</button>
-      <div class="error-msg" id="login-error" data-i18n="loginErr">فشل تسجيل الدخول! يرجى التحقق من صحة البيانات.</div>
+      <button id="login-btn" data-i18n="loginBtn">Login</button>
+      <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
     </div>
   </div>
 
@@ -976,13 +976,13 @@
       <div class="confirm-icon-box">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
       </div>
-      <h3 data-i18n="logoutTitle">تسجيل الخروج</h3>
-      <p data-i18n="logoutConfirmMsg">هل أنت تأكد من رغبتك في تسجيل الخروج من تطبيق Nova Smart؟</p>
+      <h3 data-i18n="logoutTitle">Sign Out</h3>
+      <p data-i18n="logoutConfirmMsg">Are you sure you want to exit your Nova Smart session?</p>
       <div class="confirm-actions">
-        <button id="cancel-logout-btn" class="confirm-btn confirm-btn-secondary" data-i18n="cancelBtn">إلغاء</button>
+        <button id="cancel-logout-btn" class="confirm-btn confirm-btn-secondary" data-i18n="cancelBtn">Cancel</button>
         <button id="confirm-logout-btn" class="confirm-btn confirm-btn-primary">
           <i class="fa-solid fa-right-from-bracket"></i>
-          <span data-i18n="logoutConfirmBtn">خروج</span>
+          <span data-i18n="logoutConfirmBtn">Logout</span>
         </button>
       </div>
     </div>
@@ -996,8 +996,7 @@
         <h1>Nova Smart</h1>
       </div>
       <div class="header-controls">
-        <button class="notif-btn" id="notifBtn" title="Enable Notifications"><i class="fa-solid fa-bell"></i></button>
-        <button class="lang-btn" id="langBtn">English</button>
+        <button class="lang-btn" id="langBtn">العربية</button>
         <button class="theme-btn" id="themeBtn">🌙 Dark</button>
       </div>
     </header>
@@ -1014,7 +1013,7 @@
           </div>
           <div class="tank-details">
             <h3 id="water-value">0%</h3>
-            <p data-i18n="waterLevel">مستوى المياه</p>
+            <p data-i18n="waterLevel">Water Level</p>
           </div>
         </div>
       </div>
@@ -1022,28 +1021,28 @@
       <div class="card-stat">
         <div class="temp-box">
           <span class="temp-val" id="temperature-value">0°C</span>
-          <span class="temp-lbl" data-i18n="temperature">درجة الحرارة</span>
+          <span class="temp-lbl" data-i18n="temperature">Temperature</span>
         </div>
       </div>
     </div>
 
     <!-- Dynamic Single Power Source Section -->
-    <div class="section-title" data-i18n="secPower">مصدر الكهرباء</div>
+    <div class="section-title" data-i18n="secPower">Power Source</div>
     <div class="single-power-card" id="power-card">
       <div class="power-info">
         <div class="power-icon-wrap" id="power-icon-wrap">
           <i class="fa-solid fa-power-off" id="power-icon"></i>
         </div>
         <div class="power-details">
-          <h3 id="power-title" data-i18n="pwrOff">مقطوعة</h3>
-          <p id="power-desc" data-i18n="pwrOffDesc">لا يوجد مصدر كهرباء فعال</p>
+          <h3 id="power-title" data-i18n="pwrOff">Disconnected</h3>
+          <p id="power-desc" data-i18n="pwrOffDesc">No active power source</p>
         </div>
       </div>
-      <span class="power-badge" id="power-status" data-i18n="off">مقطوع</span>
+      <span class="power-badge" id="power-status" data-i18n="off">OFF</span>
     </div>
 
     <!-- Controls Grid Section -->
-    <div class="section-title" data-i18n="secControls">وحدات التحكم</div>
+    <div class="section-title" data-i18n="secControls">Controls</div>
     <div class="controls-grid">
 
       <!-- Water Pump -->
@@ -1056,7 +1055,7 @@
           </span>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="window-title" data-i18n="waterPump">موتير المياه</div>
+          <div class="window-title" data-i18n="waterPump">Water Pump</div>
           <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="waterpump"></i>
         </div>
       </div>
@@ -1071,7 +1070,7 @@
           </span>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="window-title" data-i18n="heater">السخان</div>
+          <div class="window-title" data-i18n="heater">Heater</div>
           <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="heater"></i>
         </div>
       </div>
@@ -1086,7 +1085,7 @@
           </span>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="window-title" data-i18n="lamp1">اللمبة 1</div>
+          <div class="window-title" data-i18n="lamp1">Lamp 1</div>
           <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="lamp1"></i>
         </div>
       </div>
@@ -1101,7 +1100,7 @@
           </span>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="window-title" data-i18n="lamp2">اللمبة 2</div>
+          <div class="window-title" data-i18n="lamp2">Lamp 2</div>
           <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="lamp2"></i>
         </div>
       </div>
@@ -1112,7 +1111,7 @@
           <i class="fa-solid fa-tower-broadcast window-icon"></i>
           <span class="status-tag">IR</span>
         </div>
-        <div class="window-title" data-i18n="irRemoteTitle">أجهزة التحكم عن بعد</div>
+        <div class="window-title" data-i18n="irRemoteTitle">IR Remote Controls</div>
       </div>
 
     </div>
@@ -1121,13 +1120,13 @@
   <!-- Selection Popup (TV vs AC Menu) -->
   <div id="remote-menu-popup">
     <div class="remote-menu-card">
-      <h3 data-i18n="selectRemote">اختر جهاز التحكم</h3>
+      <h3 data-i18n="selectRemote">Select Remote</h3>
       <div class="remote-options-grid">
-        <button class="remote-option-btn" id="btnOpenTV">
+        <button class="remote-option-btn" onclick="openTVRemote()">
           <i class="fa-solid fa-tv"></i>
           <span>TV</span>
         </button>
-        <button class="remote-option-btn" id="btnOpenAC">
+        <button class="remote-option-btn" onclick="openACRemote()">
           <i class="fa-solid fa-snowflake"></i>
           <span>AC</span>
         </button>
@@ -1139,57 +1138,57 @@
   <div id="remote-popup">  
     <div class="remote">    
       <div class="row two">  
-        <button class="btn red" data-cmd="0x23DC" data-addr="0xFD01">🔆</button>  
-        <button class="btn" data-cmd="0x8B" data-addr="0xFD01">🔇</button>  
+        <button class="btn red" onclick="sendCmd('0x23DC', '0xFD01')">🔆</button>  
+        <button class="btn" onclick="sendCmd('0x8B', '0xFD01')">🔇</button>  
       </div>    
       <div class="row">  
-        <button class="btn" data-cmd="0xC9" data-addr="0xFD01">&#x23EF;</button>  
-        <button class="btn" data-cmd="0xC8" data-addr="0xFD01">USB</button>  
-        <button class="btn" data-cmd="0x99" data-addr="0xFD01">&#x25CF;</button>  
-        <button class="btn" data-cmd="0xCD" data-addr="0xFD01">INFO</button>  
+        <button class="btn" onclick="sendCmd('0xC9', '0xFD01')">&#x23EF;</button>  
+        <button class="btn" onclick="sendCmd('0xC8', '0xFD01')">USB</button>  
+        <button class="btn" onclick="sendCmd('0x99', '0xFD01')">&#x25CF;</button>  
+        <button class="btn" onclick="sendCmd('0xCD', '0xFD01')">INFO</button>  
       </div>    
       <div class="row">  
-        <button class="btn red" data-cmd="0xC7" data-addr="0xFD01">|&#x25C0;&#x25C0;</button>  
-        <button class="btn green" data-cmd="0xC6" data-addr="0xFD01">&#x25B6;&#x25B6;|</button>  
-        <button class="btn yellow" data-cmd="0xC5" data-addr="0xFD01">&#x25C0;&#x25C0;</button>  
-        <button class="btn blue" data-cmd="0xC4" data-addr="0xFD01">&#x25B6;&#x25B6;</button>  
+        <button class="btn red" onclick="sendCmd('0xC7', '0xFD01')">|&#x25C0;&#x25C0;</button>  
+        <button class="btn green" onclick="sendCmd('0xC6', '0xFD01')">&#x25B6;&#x25B6;|</button>  
+        <button class="btn yellow" onclick="sendCmd('0xC5', '0xFD01')">&#x25C0;&#x25C0;</button>  
+        <button class="btn blue" onclick="sendCmd('0xC4', '0xFD01')">&#x25B6;&#x25B6;</button>  
       </div>  
       <div class="row two">  
-        <button class="btn" data-cmd="0x9F" data-addr="0xFD01">FAV</button>  
-        <button class="btn" data-cmd="0x9B" data-addr="0xFD01">SAT</button>
+        <button class="btn" onclick="sendCmd('0x9F', '0xFD01')">FAV</button>  
+        <button class="btn" onclick="sendCmd('0x9B', '0xFD01')">SAT</button>
       </div>    
       <div class="nav">  
-        <div></div><button class="btn" data-cmd="0xDE" data-addr="0xFD01">&#x25B2;</button><div></div>  
-        <button class="btn" data-cmd="0xDB" data-addr="0xFD01">&#x25C0;</button>  
-        <button class="btn ok" data-cmd="0xDA" data-addr="0xFD01">OK</button>  
-        <button class="btn" data-cmd="0xD8" data-addr="0xFD01">&#x25B6;</button>  
-        <div></div><button class="btn" data-cmd="0xD6" data-addr="0xFD01">&#x25BC;</button><div></div>  
+        <div></div><button class="btn" onclick="sendCmd('0xDE', '0xFD01')">&#x25B2;</button><div></div>  
+        <button class="btn" onclick="sendCmd('0xDB', '0xFD01')">&#x25C0;</button>  
+        <button class="btn ok" onclick="sendCmd('0xDA', '0xFD01')">OK</button>  
+        <button class="btn" onclick="sendCmd('0xD8', '0xFD01')">&#x25B6;</button>  
+        <div></div><button class="btn" onclick="sendCmd('0xD6', '0xFD01')">&#x25BC;</button><div></div>  
       </div>     
       <div class="row two">  
-        <button class="btn" data-cmd="0xD4" data-addr="0xFD01">MENU</button>  
-        <button class="btn" data-cmd="0xD7" data-addr="0xFD01">EXIT</button>  
+        <button class="btn" onclick="sendCmd('0xD4', '0xFD01')">MENU</button>  
+        <button class="btn" onclick="sendCmd('0xD7', '0xFD01')">EXIT</button>  
       </div>    
       <div class="extra-keys">  
-        <button class="btn" data-cmd="0x9D" data-addr="0xFD01">SUBTITLE</button>  
-        <button class="btn" data-cmd="0xDD" data-addr="0xFD01">RECALL</button>  
-        <button class="btn green" data-cmd="0x83" data-addr="0xFD01">PAGE +</button>    
-        <button class="btn" data-cmd="0xCE" data-addr="0xFD01">TXT</button>
-        <button class="btn" data-cmd="0xD0" data-addr="0xFD01">AUDIO</button>
-        <button class="btn red" data-cmd="0xCC" data-addr="0xFD01">PAGE −</button>
+        <button class="btn" onclick="sendCmd('0x9D', '0xFD01')">SUBTITLE</button>  
+        <button class="btn" onclick="sendCmd('0xDD', '0xFD01')">RECALL</button>  
+        <button class="btn green" onclick="sendCmd('0x83', '0xFD01')">PAGE +</button>    
+        <button class="btn" onclick="sendCmd('0xCE', '0xFD01')">TXT</button>
+        <button class="btn" onclick="sendCmd('0xD0', '0xFD01')">AUDIO</button>
+        <button class="btn red" onclick="sendCmd('0xCC', '0xFD01')">PAGE −</button>
       </div>    
       <div class="numbers">  
-        <button class="btn" data-cmd="0x8E" data-addr="0xFD01">1</button>  
-        <button class="btn" data-cmd="0x86" data-addr="0xFD01">2</button>  
-        <button class="btn" data-cmd="0x8F" data-addr="0xFD01">3</button>  
-        <button class="btn" data-cmd="0x92" data-addr="0xFD01">4</button>  
-        <button class="btn" data-cmd="0x87" data-addr="0xFD01">5</button>  
-        <button class="btn" data-cmd="0x93" data-addr="0xFD01">6</button>  
-        <button class="btn" data-cmd="0x96" data-addr="0xFD01">7</button>  
-        <button class="btn" data-cmd="0x82" data-addr="0xFD01">8</button>  
-        <button class="btn" data-cmd="0x97" data-addr="0xFD01">9</button>  
-        <button class="btn" data-cmd="0x9A" data-addr="0xFD01">0</button>  
-        <button class="btn" data-cmd="0xDF" data-addr="0xFD01">EPG</button>  
-        <button class="btn" data-cmd="0X89" data-addr="0xFD01">TV/R</button>  
+        <button class="btn" onclick="sendCmd('0x8E', '0xFD01')">1</button>  
+        <button class="btn" onclick="sendCmd('0x86', '0xFD01')">2</button>  
+        <button class="btn" onclick="sendCmd('0x8F', '0xFD01')">3</button>  
+        <button class="btn" onclick="sendCmd('0x92', '0xFD01')">4</button>  
+        <button class="btn" onclick="sendCmd('0x87', '0xFD01')">5</button>  
+        <button class="btn" onclick="sendCmd('0x93', '0xFD01')">6</button>  
+        <button class="btn" onclick="sendCmd('0x96', '0xFD01')">7</button>  
+        <button class="btn" onclick="sendCmd('0x82', '0xFD01')">8</button>  
+        <button class="btn" onclick="sendCmd('0x97', '0xFD01')">9</button>  
+        <button class="btn" onclick="sendCmd('0x9A', '0xFD01')">0</button>  
+        <button class="btn" onclick="sendCmd('0xDF', '0xFD01')">EPG</button>  
+        <button class="btn" onclick="sendCmd('0X89', '0xFD01')">TV/R</button>  
       </div>  
     </div>  
   </div>
@@ -1197,7 +1196,7 @@
   <!-- AC Remote Popup -->
   <div id="ac-popup">
     <div class="ac-remote">
-      <div class="ac-header" data-i18n="acTitle">المكيف الهوائي</div>
+      <div class="ac-header" data-i18n="acTitle">Air Conditioner</div>
       
       <!-- Arc Temperature Slider -->
       <div class="dial-container" id="dial-container">
@@ -1208,23 +1207,23 @@
         </svg>
         <div class="dial-center-info">
           <div class="ac-temp-display" id="ac-temp-val">24°C</div>
-          <div class="ac-mode-sub" id="ac-mode-lbl" data-i18n="acCool">وضع التبريد</div>
+          <div class="ac-mode-sub" id="ac-mode-lbl" data-i18n="acCool">COOL MODE</div>
         </div>
       </div>
 
       <!-- AC Control Buttons -->
       <div class="ac-controls-grid">
-        <button class="ac-btn power-btn" data-cmd="AC_POWER" data-addr="AC">
+        <button class="ac-btn power-btn" onclick="sendCmd('AC_POWER', 'AC')">
           <i class="fa-solid fa-power-off"></i>
-          <span data-i18n="acPower">تشغيل/إطفاء</span>
+          <span data-i18n="acPower">Power</span>
         </button>
-        <button class="ac-btn" data-cmd="AC_MODE" data-addr="AC">
+        <button class="ac-btn" onclick="sendCmd('AC_MODE', 'AC')">
           <i class="fa-solid fa-arrows-rotate"></i>
-          <span data-i18n="acMode">الوضع</span>
+          <span data-i18n="acMode">Mode</span>
         </button>
-        <button class="ac-btn" data-cmd="AC_FAN" data-addr="AC">
+        <button class="ac-btn" onclick="sendCmd('AC_FAN', 'AC')">
           <i class="fa-solid fa-fan"></i>
-          <span data-i18n="acFan">سرعة المروحة</span>
+          <span data-i18n="acFan">Fan Speed</span>
         </button>
       </div>
     </div>
@@ -1233,25 +1232,25 @@
   <!-- Timer Popup -->
   <div id="timer-overlay">  
     <div class="timer-card">
-      <h3 id="timer-popup-title">ضبط مؤقت الجهاز</h3>  
-      <label for="start-time" data-i18n="startTime">البداية:</label>  
+      <h3 id="timer-popup-title">Device Timer Setup</h3>  
+      <label for="start-time" data-i18n="startTime">Start Time:</label>  
       <input type="datetime-local" id="start-time" />  
-      <label for="end-time" data-i18n="endTime">النهاية:</label>  
+      <label for="end-time" data-i18n="endTime">End Time:</label>  
       <input type="datetime-local" id="end-time" />  
       <div style="display:flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">  
-        <button id="set-timer-btn" data-i18n="setBtn">ضبط</button>  
-        <button id="cancel-timer-btn" data-i18n="cancelBtn">إلغاء</button>  
-        <button id="clear-timer-btn" data-i18n="clearBtn">مسح المؤقت</button>  
+        <button id="set-timer-btn" data-i18n="setBtn">Set</button>  
+        <button id="cancel-timer-btn" data-i18n="cancelBtn">Cancel</button>  
+        <button id="clear-timer-btn" data-i18n="clearBtn">Clear Timer</button>  
       </div>  
     </div>
   </div>
 
-  <!-- Firebase v11 Modern Web SDK Script -->
+  <!-- Firebase & App Script -->
   <script type="module">  
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";  
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-database.js";  
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-messaging.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
 
     const firebaseConfig = {  
       apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
@@ -1266,56 +1265,13 @@
     const app = initializeApp(firebaseConfig);  
     const database = getDatabase(app);  
     const auth = getAuth(app);
-    let messaging = null;
+    const messaging = getMessaging(app);
 
-    try {
-      messaging = getMessaging(app);
-    } catch (e) {
-      console.warn("FCM unsupported in this browser/environment.");
-    }
+    // --- LocalStorage Read ---
+    let savedLang = localStorage.getItem('nova_lang') || 'en';
+    let savedTheme = localStorage.getItem('nova_theme') || 'light';
 
-    const vapidKey = "BPDmY53z3T7s0z9hM_23L9-k-8z14Z_0k0s0123456789";
-
-    async function requestNotificationPermission() {
-      if (!messaging) return;
-      try {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
-          const token = await getToken(messaging, { 
-            vapidKey: vapidKey,
-            serviceWorkerRegistration: registration 
-          });
-
-          if (token) {
-            console.log('FCM Token:', token);
-            subscribeTokenToTopic(token, 'nova_alerts');
-          }
-        }
-      } catch (err) {
-        console.error('Notification setup failed:', err);
-      }
-    }
-
-    function subscribeTokenToTopic(token, topicName) {
-      fetch(`https://iid.googleapis.com/iid/v1/${token}/rel/topics/${topicName}`, {
-        method: 'POST'
-      }).then(() => console.log(`Subscribed to: ${topicName}`))
-        .catch(err => console.error('Subscription error:', err));
-    }
-
-    document.getElementById('notifBtn').addEventListener('click', requestNotificationPermission);
-
-    if (messaging) {
-      onMessage(messaging, (payload) => {
-        alert(`${payload.notification.title}\n${payload.notification.body}`);
-      });
-    }
-
-    // LocalStorage Setup
-    let savedLang = localStorage.getItem('nova_lang') || 'ar';
-    let savedTheme = localStorage.getItem('nova_theme') || 'dark';
-
+    // Translations Dictionary
     const translations = {
       en: {
         connecting: "Connecting...",
@@ -1414,6 +1370,7 @@
     let currentLang = savedLang;
     let lastPowerValue = null;
 
+    // Set Language with LocalStorage Support
     function setLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('nova_lang', lang);
@@ -1441,6 +1398,7 @@
       }
     }
 
+    // Set Theme with LocalStorage Support
     function setTheme(theme) {
       const themeBtn = document.getElementById('themeBtn');
       if (theme === 'dark') {
@@ -1454,27 +1412,34 @@
       }
     }
 
+    // Initialize Preferences
     setLanguage(savedLang);
     setTheme(savedTheme);
 
-    document.getElementById('themeBtn').addEventListener('click', () => {
+    // Event Listeners for Theme & Language Switches
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.addEventListener('click', () => {
       const isDark = document.body.classList.contains('dark-mode');
       setTheme(isDark ? 'light' : 'dark');
     });
 
-    document.getElementById('langBtn').addEventListener('click', () => {
+    const langBtn = document.getElementById('langBtn');
+    langBtn.addEventListener('click', () => {
       const newLang = currentLang === 'en' ? 'ar' : 'en';
       setLanguage(newLang);
     });
 
+    // Custom Modern Logout Modal Elements & Logic
     const logoutModal = document.getElementById("logout-confirm-modal");
     const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
     const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
 
+    // Open Custom Logout Modal on Logo Click
     document.getElementById("appLogo").addEventListener("click", () => {
       logoutModal.style.display = "flex";
     });
 
+    // Hide Modal
     cancelLogoutBtn.addEventListener("click", () => {
       logoutModal.style.display = "none";
     });
@@ -1483,15 +1448,21 @@
       if (e.target === logoutModal) logoutModal.style.display = "none";
     });
 
+    // Execute Signout
     confirmLogoutBtn.addEventListener("click", () => {
       signOut(auth).then(() => {
         window.location.reload();
+      }).catch((err) => {
+        console.error("Logout error:", err);
       });
     });
-
+  
+    // Service Worker Registration for PWA & Push Notifications
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('firebase-messaging-sw.js').catch(err => console.log('SW failed:', err));
+        navigator.serviceWorker.register('sw.js')
+          .then((reg) => console.log('Service Worker Registered Successfully:', reg.scope))
+          .catch(err => console.log('Service Worker Registration Failed:', err));
       });
     }
 
@@ -1510,8 +1481,6 @@
     onAuthStateChanged(auth, (user) => {
       if (user) {
         loginPopup.style.display = "none";
-        requestNotificationPermission();
-
         onValue(ref(database, ".info/connected"), (snap) => {
           if (snap.val() === true) {
             if (disconnectTimer) {
@@ -1558,12 +1527,47 @@
         });
     });
 
-    function sendCmd(command, address) {  
-      const remoteRef = ref(database, "Remote");  
-      set(remoteRef, { command: command, address: address });  
-    }
-
     function initSmartHomeApp() {
+      // --- Setup FCM & Notification Requests ---
+      if ('Notification' in window) {
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            getToken(messaging).then((currentToken) => {
+              if (currentToken) {
+                set(ref(database, 'fcmTokens/' + auth.currentUser.uid), currentToken);
+              }
+            }).catch((err) => console.log('FCM Token retrieval failed:', err));
+          }
+        });
+      }
+
+      // Handle Foreground Notifications
+      onMessage(messaging, (payload) => {
+        if (Notification.permission === 'granted') {
+          new Notification(payload.notification?.title || "Nova Smart Alert", {
+            body: payload.notification?.body || "New alert received.",
+            icon: '/logo.png'
+          });
+        }
+      });
+
+      // Listen to Database Triggered Water Level Alerts (From NodeMCU)
+      onValue(ref(database, "alerts/status"), (snap) => {
+        if (snap.val() === true) {
+          onValue(ref(database, "alerts/latest"), (alertSnap) => {
+            const alertMsg = alertSnap.val();
+            if (alertMsg && Notification.permission === 'granted') {
+              new Notification("Nova Smart Water Tank Alert", {
+                body: alertMsg,
+                icon: '/logo.png'
+              });
+            }
+            set(ref(database, "alerts/status"), false);
+          }, { onlyOnce: true });
+        }
+      });
+
+      // Remote Modals Setup
       const remoteMenuPopup = document.getElementById("remote-menu-popup");
       const remotePopup     = document.getElementById("remote-popup");
       const acPopup         = document.getElementById("ac-popup");
@@ -1572,16 +1576,10 @@
     
       remoteCard.addEventListener("click", () => { remoteMenuPopup.style.display = "flex"; });  
       
-      document.getElementById("btnOpenTV").addEventListener("click", () => {
-        remoteMenuPopup.style.display = "none"; 
-        remotePopup.style.display = "block"; 
-      });
+      window.openTVRemote = function () { remoteMenuPopup.style.display = "none"; remotePopup.style.display = "block"; };
+      window.openACRemote = function () { remoteMenuPopup.style.display = "none"; acPopup.style.display = "block"; };
 
-      document.getElementById("btnOpenAC").addEventListener("click", () => {
-        remoteMenuPopup.style.display = "none"; 
-        acPopup.style.display = "block"; 
-      });
-
+      // Close popups when clicking outside card content
       remoteMenuPopup.addEventListener("click", (e) => {
         if (e.target === remoteMenuPopup) remoteMenuPopup.style.display = "none";
       });
@@ -1601,14 +1599,12 @@
         }
       });
 
-      document.querySelectorAll("[data-cmd]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const cmd = btn.getAttribute("data-cmd");
-          const addr = btn.getAttribute("data-addr");
-          if (cmd && addr) sendCmd(cmd, addr);
-        });
-      });
+      window.sendCmd = function (command, address) {  
+        const remoteRef = ref(database, "Remote");  
+        set(remoteRef, { command: command, address: address });  
+      };  
 
+      // Arc Thermostat Dial Slider Logic (16°C - 30°C)
       const dialContainer = document.getElementById("dial-container");
       const dialHandle = document.getElementById("dial-handle");
       const dialActive = document.getElementById("dial-active");
@@ -1630,7 +1626,7 @@
         acTempVal.innerText = `${temp}°C`;
 
         const ratio = (temp - minTemp) / (maxTemp - minTemp);
-        const angle = Math.PI - (ratio * Math.PI);
+        const angle = Math.PI - (ratio * Math.PI); // Angle from PI down to 0
 
         const x = pathCenterX + pathRadius * Math.cos(angle);
         const y = pathCenterY - pathRadius * Math.sin(angle);
@@ -1679,8 +1675,9 @@
         isDraggingDial = false;
       });
 
-      updateDialUI(24);
+      updateDialUI(24); // Init Default
     
+      // Toggles Setup
       const toggles = [  
         { path: "output/devices/waterpump", id: "waterpump" },  
         { path: "output/devices/heater", id: "heater" },  
@@ -1775,6 +1772,7 @@
         });
       });  
 
+      // Sensors updates
       onValue(ref(database, "temperature"), (snap) => {  
         const temp = snap.val() || 0;  
         document.getElementById("temperature-value").innerText = `${temp}°C`;  
@@ -1786,6 +1784,7 @@
         document.getElementById("water-value").innerText = `${level}%`;  
       });  
     
+      // Unified Power State Handler (1 = Grid, 2 = Generator, 3 = Solar)
       const powerCard = document.getElementById("power-card");
       const powerIcon = document.getElementById("power-icon");
       const powerTitle = document.getElementById("power-title");
@@ -1827,6 +1826,7 @@
         updatePowerUI(snap.val());  
       });  
     
+      // Timers logic
       const startInput = document.getElementById("start-time");  
       const endInput = document.getElementById("end-time");  
       const setTimerBtn = document.getElementById("set-timer-btn");  
