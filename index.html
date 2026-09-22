@@ -1434,12 +1434,10 @@
   const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
   const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
 
-  // Open Custom Logout Modal on Logo Click
   document.getElementById("appLogo").addEventListener("click", () => {
     logoutModal.style.display = "flex";
   });
 
-  // Hide Modal
   cancelLogoutBtn.addEventListener("click", () => {
     logoutModal.style.display = "none";
   });
@@ -1448,7 +1446,6 @@
     if (e.target === logoutModal) logoutModal.style.display = "none";
   });
 
-  // Execute Signout
   confirmLogoutBtn.addEventListener("click", () => {
     signOut(auth).then(() => {
       window.location.reload();
@@ -1457,30 +1454,40 @@
     });
   });
 
-  // Service Worker Registration
+  // Service Worker Registration for GitHub Pages (/NVS/)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('Service Worker Registered successfully.'))
-        .catch(err => console.log('Service Worker registration failed:', err));
+      navigator.serviceWorker.register('/NVS/sw.js')
+        .then(() => console.log('App Service Worker Registered successfully.'))
+        .catch(err => console.log('Service Worker registration skipped/failed:', err));
     });
   }
 
-  // FCM Notifications Setup
+  // FCM Notifications Setup (Fix for GitHub Pages Path)
   function setupFCMNotifications(user) {
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
-        // استبدل 'YOUR_PUBLIC_VAPID_KEY_HERE' بمفتاح الـ VAPID من Firebase Console
-        getToken(messaging, { vapidKey: 'BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ' })
+        // تسجيل الـ Service Worker بالتحديد داخل مسار GitHub Pages المسمى /NVS/
+        navigator.serviceWorker.register('/NVS/firebase-messaging-sw.js')
+          .then((swRegistration) => {
+            return getToken(messaging, { 
+              vapidKey: 'BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ', // استبدل هذا بالمفتاح من Firebase Console
+              serviceWorkerRegistration: swRegistration 
+            });
+          })
           .then((currentToken) => {
             if (currentToken) {
+              console.log('FCM Token Generated:', currentToken);
               const tokenRef = ref(database, `fcm_tokens/${user.uid}`);
               set(tokenRef, {
                 token: currentToken,
                 updatedAt: Date.now()
               });
+            } else {
+              console.log('No registration token available.');
             }
-          }).catch((err) => {
+          })
+          .catch((err) => {
             console.error('An error occurred while retrieving token: ', err);
           });
       }
@@ -1509,7 +1516,7 @@
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loginPopup.style.display = "none";
-      setupFCMNotifications(user); // تفعيل وتحديث توكن الإشعارات للمستخدم
+      setupFCMNotifications(user); 
       
       onValue(ref(database, ".info/connected"), (snap) => {
         if (snap.val() === true) {
@@ -1536,7 +1543,7 @@
     }
   });
 
-  // Form submission & enter-key handler for Login
+  // Login Handlers
   function handleLogin() {
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
@@ -1569,7 +1576,6 @@
   });
 
   function initSmartHomeApp() {
-    // Remote Modals Setup
     const remoteMenuPopup = document.getElementById("remote-menu-popup");
     const remotePopup     = document.getElementById("remote-popup");
     const acPopup         = document.getElementById("ac-popup");
@@ -1581,7 +1587,6 @@
     window.openTVRemote = function () { remoteMenuPopup.style.display = "none"; remotePopup.style.display = "block"; };
     window.openACRemote = function () { remoteMenuPopup.style.display = "none"; acPopup.style.display = "block"; };
 
-    // Close popups when clicking outside card content
     remoteMenuPopup.addEventListener("click", (e) => {
       if (e.target === remoteMenuPopup) remoteMenuPopup.style.display = "none";
     });
@@ -1606,7 +1611,7 @@
       set(remoteRef, { command: command, address: address });  
     };  
 
-    // Arc Thermostat Dial Slider Logic (16°C - 30°C)
+    // Arc Thermostat Dial Slider
     const dialContainer = document.getElementById("dial-container");
     const dialHandle = document.getElementById("dial-handle");
     const dialActive = document.getElementById("dial-active");
@@ -1903,6 +1908,7 @@
     });  
   }
 </script>
+
 
 
 </body>
