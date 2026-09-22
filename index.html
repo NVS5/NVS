@@ -1457,7 +1457,7 @@
   // Service Worker Registration for GitHub Pages (/NVS/)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/NVS/sw.js')
+      navigator.serviceWorker.register('/NVS/firebase-messaging-sw.js')
         .then(() => console.log('App Service Worker Registered successfully.'))
         .catch(err => console.log('Service Worker registration skipped/failed:', err));
     });
