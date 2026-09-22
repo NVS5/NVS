@@ -942,28 +942,28 @@
     <div class="login-box">
       <h2 data-i18n="loginTitle">Control Panel Login</h2>
       <input 
-  type="email" 
-  id="login-email" 
-  placeholder="Email" 
-  data-i18n-ph="emailPh" 
-  autocomplete="username"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
+        type="email" 
+        id="login-email" 
+        placeholder="Email" 
+        data-i18n-ph="emailPh" 
+        autocomplete="username"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
 
-<input 
-  type="password" 
-  id="login-password" 
-  placeholder="Password" 
-  data-i18n-ph="passPh" 
-  autocomplete="current-password"
-  autocorrect="off" 
-  autocapitalize="none" 
-  spellcheck="false"
-  required 
-/>
+      <input 
+        type="password" 
+        id="login-password" 
+        placeholder="Password" 
+        data-i18n-ph="passPh" 
+        autocomplete="current-password"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
 
       <button id="login-btn" data-i18n="loginBtn">Login</button>
       <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
@@ -1188,7 +1188,7 @@
         <button class="btn" onclick="sendCmd('0x97', '0xFD01')">9</button>  
         <button class="btn" onclick="sendCmd('0x9A', '0xFD01')">0</button>  
         <button class="btn" onclick="sendCmd('0xDF', '0xFD01')">EPG</button>  
-        <button class="btn" onclick="sendCmd('0X89', '0xFD01')">TV/R</button>  
+        <button class="btn" onclick="sendCmd('0x89', '0xFD01')">TV/R</button>  
       </div>  
     </div>  
   </div>
@@ -1245,10 +1245,9 @@
     </div>
   </div>
 
- 
-       <!-- Firebase & App Script -->
+  <!-- Firebase & App Script -->
   <script type="module">  
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app-js";  
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app-js.js";  
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
     import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
@@ -1266,13 +1265,19 @@
     const app = initializeApp(firebaseConfig);  
     const database = getDatabase(app);  
     const auth = getAuth(app);
-    const messaging = getMessaging(app);
+    let messaging = null;
 
-    // --- LocalStorage Read ---
+    try {
+      messaging = getMessaging(app);
+    } catch (e) {
+      console.warn("FCM messaging not supported in this browser context:", e);
+    }
+
+    // LocalStorage Read
     let savedLang = localStorage.getItem('nova_lang') || 'en';
     let savedTheme = localStorage.getItem('nova_theme') || 'light';
 
-    // --- Translations & Theme System ---
+    // Translations & Theme System
     const translations = {
       en: {
         connecting: "Connecting...", loginTitle: "Control Panel Login", emailPh: "Email", passPh: "Password",
@@ -1299,7 +1304,7 @@
         acTitle: "المكيف الهوائي", acCool: "وضع التبريد", acPower: "تشغيل/إطفاء", acMode: "الوضع", acFan: "سرعة المروحة",
         startTime: "البداية:", endTime: "النهاية:", setBtn: "ضبط", cancelBtn: "إلغاء", clearBtn: "مسح المؤقت",
         autoState: "تلقائي", timerState: "مؤقت", lostConn: "فُقد الاتصال! جاري إعادة التشغيل...", verifying: "جاري التحقق من الصلاحيات...",
-        timerTitlePrefix: "ضبط مؤقت جهاز ", logoutTitle: "تسجيل الخروج", logoutConfirmMsg: "هل أنت تأكد من رغبتك في تسجيل الخروج من تطبيق Nova Smart؟",
+        timerTitlePrefix: "ضبط مؤقت جهاز ", logoutTitle: "تسجيل الخروج", logoutConfirmMsg: "هل أنت متأكد من رغبتك في تسجيل الخروج من تطبيق Nova Smart؟",
         logoutConfirmBtn: "خروج"
       }
     };
@@ -1315,12 +1320,12 @@
 
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) el.innerText = translations[lang][key];
+        if (translations[lang] && translations[lang][key]) el.innerText = translations[lang][key];
       });
 
       document.querySelectorAll('[data-i18n-ph]').forEach(el => {
         const key = el.getAttribute('data-i18n-ph');
-        if (translations[lang][key]) el.placeholder = translations[lang][key];
+        if (translations[lang] && translations[lang][key]) el.placeholder = translations[lang][key];
       });
 
       document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
@@ -1361,15 +1366,6 @@
     document.getElementById("confirm-logout-btn").addEventListener("click", () => {
       signOut(auth).then(() => window.location.reload());
     });
-  
-    // Register Default Service Worker for PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(() => console.log('Service Worker Registered successfully.'))
-          .catch(err => console.log('Service Worker registration failed:', err));
-      });
-    }
 
     const loadingScreen = document.getElementById("loading-screen");
     const loginPopup = document.getElementById("login-popup");
@@ -1389,7 +1385,7 @@
         onValue(ref(database, ".info/connected"), (snap) => {
           if (snap.val() === true) {
             if (disconnectTimer) { clearTimeout(disconnectTimer); disconnectTimer = null; }
-            setTimeout(hideLoading, 1000);
+            setTimeout(hideLoading, 500);
           } else {
             if (pageReady && !disconnectTimer) {
               disconnectTimer = setTimeout(() => {
@@ -1430,35 +1426,28 @@
     });
 
     function initSmartHomeApp() {
-      // ----------------------------------------------------
-      // [جديد] طلب إذن الإشعارات وحفظ الـ Token لـ FCM
-      // ----------------------------------------------------
-      if ('Notification' in window) {
+      if ('Notification' in window && messaging) {
         Notification.requestPermission().then((permission) => {
           if (permission === 'granted') {
             getToken(messaging, { 
               vapidKey: "BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ" 
             }).then((currentToken) => {
               if (currentToken) {
-                // حفظ التوكن بداخل Firebase Realtime Database
                 set(ref(database, "fcm_tokens/user_device"), currentToken);
-                console.log("FCM Token Saved Successfully!");
               }
             }).catch((err) => console.log("FCM Token Error:", err));
           }
         });
-      }
 
-      // استقبال الإشعار والتطبيق مفتوح أمام المستخدم
-      onMessage(messaging, (payload) => {
-        if (Notification.permission === "granted") {
-          new Notification(payload.notification.title, {
-            body: payload.notification.body,
-            icon: "/logo.png"
-          });
-        }
-      });
-      // ----------------------------------------------------
+        onMessage(messaging, (payload) => {
+          if (Notification.permission === "granted") {
+            new Notification(payload.notification.title, {
+              body: payload.notification.body,
+              icon: "/logo.png"
+            });
+          }
+        });
+      }
 
       // Modals
       const remoteMenuPopup = document.getElementById("remote-menu-popup");
