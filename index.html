@@ -1907,6 +1907,18 @@
       });  
     });  
   }
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+    updateViaCache: 'none'
+  }).then((registration) => {
+    // إجبار المتصفح على البحث عن تحديث للـ SW عند كل فتح للموقع
+    registration.update();
+  });
+}
+
+
+        
 </script>
 
 
