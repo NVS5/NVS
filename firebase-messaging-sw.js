@@ -10,15 +10,17 @@ firebase.initializeApp({
   messagingSenderId: "849228056680",
   appId: "1:849228056680:web:09fa91eaca63dc148953dd"
 });
+
 const messaging = firebase.messaging();
 
 // استقبال الإشعار في الخلفية
 messaging.onBackgroundMessage((payload) => {
-  const notificationTitle = payload.notification?.title || 'Nova Smart 🚨';
-  const targetUrl = payload.data?.url || payload.fcmOptions?.link || 'https://nvs5.github.io/NVS/index.html';
+  // الاعتماد على payload.data لتجنب إظهار المتصفح للإشعار تلقائياً وبشكل مكرر
+  const notificationTitle = payload.data?.title || 'Nova Smart 🚨';
+  const targetUrl = payload.data?.url || 'https://nvs5.github.io/NVS/index.html';
 
   const notificationOptions = {
-    body: payload.notification?.body || 'تنبيه جديد من النظام',
+    body: payload.data?.body || 'تنبيه جديد من النظام',
     icon: '/NVS/icon.png',
     data: {
       url: targetUrl
