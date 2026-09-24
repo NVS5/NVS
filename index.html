@@ -1908,13 +1908,34 @@
     });  
   }
 
+// ======================================================
+// Service Worker & FCM Token Registration
+// ======================================================
+
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-    updateViaCache: 'none'
-  }).then((registration) => {
-    // إجبار المتصفح على البحث عن تحديث للـ SW عند كل فتح للموقع
-    registration.update();
-  });
+  // استخدام ./ لضمان القراءة من مجلد NVS مباشرة
+  navigator.serviceWorker.register('./firebase-messaging-sw.js', { updateViaCache: 'none' })
+    .then((registration) => {
+      console.log('App Service Worker Registered successfully.');
+      
+      // إجبار المتصفح على التحقق من وجود تحديث للملف
+      registration.update();
+
+      // طلب توكن FCM وتمرير registration
+      return messaging.getToken({
+        vapidKey: 'YOUR_VAPID_KEY', // ضع مفتاح VAPID الخاص بك هنا إذا كنت تستخدمه
+        serviceWorkerRegistration: registration
+      });
+    })
+    .then((token) => {
+      if (token) {
+        console.log('FCM Token Generated:', token);
+        // هنا يمكنك إرسال التوكن إلى الفايربيس أو السيرفر
+      }
+    })
+    .catch((err) => {
+      console.error('Service Worker / FCM Registration Failed:', err);
+    });
 }
 
 
