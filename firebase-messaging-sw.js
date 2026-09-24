@@ -13,16 +13,14 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// رابط اللوجو بمسار كامل ومباشر مع HTTPS
 const LOGO_URL = 'https://nvs5.github.io/NVS/icon.png';
 
-// استقبال الإشعارات في الخلفية
+// استقبال الإشعارات عندما تكون الصفحة مغلقة أو في الخلفية
 messaging.onBackgroundMessage((payload) => {
-  console.log('[sw.js] Received background message:', payload);
+  console.log('[sw.js] Payload received:', payload);
 
-  // استخراج العنوان والنص سواء جاءا من notification أو data
-  const title = payload.notification?.title || payload.data?.title || 'Nova Smart 🚨';
-  const body = payload.notification?.body || payload.data?.body || 'تنبيه جديد من النظام';
+  const title = payload.data?.title || 'Nova Smart 🚨';
+  const body = payload.data?.body || 'تنبيه جديد من النظام';
   const targetUrl = payload.data?.url || 'https://nvs5.github.io/NVS/index.html';
 
   const notificationOptions = {
@@ -30,8 +28,10 @@ messaging.onBackgroundMessage((payload) => {
     icon: LOGO_URL,
     badge: LOGO_URL,
     image: LOGO_URL,
-    vibrate: [200, 100, 200, 100, 200],
+    vibrate: [300, 100, 300, 100, 300],
     requireInteraction: true,
+    renotify: true,
+    tag: 'nova-smart-alert', // لضمان استبدال الإشعار القديم وعدم التكرار
     data: {
       url: targetUrl
     }
@@ -40,10 +40,9 @@ messaging.onBackgroundMessage((payload) => {
   return self.registration.showNotification(title, notificationOptions);
 });
 
-// فتح الرابط عند النقر على الإشعار
+// فتح التطبيق عند الضغط على الإشعار
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-
   const urlToOpen = event.notification.data?.url || 'https://nvs5.github.io/NVS/index.html';
 
   event.waitUntil(
