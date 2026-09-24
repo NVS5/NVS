@@ -13,7 +13,7 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-const LOGO_URL = 'https://nvs5.github.io/NVS/icon.png';
+const LOGO_URL = 'https://nvs5.github.io/NVS/logo.png';
 
 // استقبال الإشعارات عندما تكون الصفحة مغلقة أو في الخلفية
 messaging.onBackgroundMessage((payload) => {
