@@ -1,6 +1,4 @@
-// ======================================================
-// Firebase Messaging Service Worker (firebase-messaging-sw.js)
-// ======================================================
+// firebase-messaging-sw.js
 
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
@@ -17,24 +15,26 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// استقبال البيانات في الخلفية وإظهار إشعار واحد فقط مخصص
+// معالجة واستقبال الإشعار في الخلفية
 messaging.onBackgroundMessage((payload) => {
-  const notificationTitle = payload.data?.title || 'Nova Smart 🚨';
+  // قراءة البيانات المباشرة الممررة داخل كائن data
+  const title = payload.data?.title || 'Nova Smart 🚨';
+  const body = payload.data?.body || 'تنبيه جديد من النظام';
   const targetUrl = payload.data?.url || 'https://nvs5.github.io/NVS/index.html';
 
   const notificationOptions = {
-    body: payload.data?.body || 'تنبيه جديد من النظام',
-    icon: 'https://nvs5.github.io/NVS/logo.png', // مسار الأيقونة المباشر
+    body: body,
+    icon: '/NVS/logo.png',
     data: {
       url: targetUrl
     }
   };
 
-  // إظهار الإشعار المخصص الوحيد
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  // إرجاع النتيجة مباشرة لضمان عدم إظهار إشعار النظام التلقائي
+  return self.registration.showNotification(title, notificationOptions);
 });
 
-// فتح/التركيز على الصفحة عند النقر على الإشعار
+// التعامل مع النقر على الإشعار
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
@@ -42,14 +42,14 @@ self.addEventListener('notificationclick', (event) => {
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // إذا كانت الصفحة مفتوحة مسبقاً، قم بالتركيز عليها
+      // إذا كانت الصفحة مفتوحة يتم الانتقال إليها والتركيز عليها
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
         if (client.url === urlToOpen && 'focus' in client) {
           return client.focus();
         }
       }
-      // إذا كانت مغلقة، قم بفتحها في تبويب جديد
+      // إذا كانت الصفحة مغلقة يتم فتح نافذة جديدة
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }
