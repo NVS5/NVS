@@ -13,21 +13,10 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// استقبال الإشعار في الخلفية
+// ترك الدالة فارغة أو معالجة البيانات فقط دون عرض إشعار يدوي لتجنب التكرار
 messaging.onBackgroundMessage((payload) => {
-  // الاعتماد على payload.data لتجنب إظهار المتصفح للإشعار تلقائياً وبشكل مكرر
-  const notificationTitle = payload.data?.title || 'Nova Smart 🚨';
-  const targetUrl = payload.data?.url || 'https://nvs5.github.io/NVS/index.html';
-
-  const notificationOptions = {
-    body: payload.data?.body || 'تنبيه جديد من النظام',
-    icon: '/NVS/icon.png',
-    data: {
-      url: targetUrl
-    }
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  // لا تقم باستدعاء self.registration.showNotification هنا
 });
 
 // فتح الرابط عند النقر على الإشعار
@@ -38,14 +27,12 @@ self.addEventListener('notificationclick', (event) => {
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // التركيز على النافذة إذا كانت مفتوحة مسبقاً
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
         if (client.url === urlToOpen && 'focus' in client) {
           return client.focus();
         }
       }
-      // فتح نافذة جديدة بالرابط إذا كانت الصفحة مغلقة
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }
