@@ -10,13 +10,22 @@ firebase.initializeApp({
   messagingSenderId: "849228056680",
   appId: "1:849228056680:web:09fa91eaca63dc148953dd"
 });
-
 const messaging = firebase.messaging();
 
-// ترك الدالة فارغة أو معالجة البيانات فقط دون عرض إشعار يدوي لتجنب التكرار
+// استقبال الإشعار في الخلفية
 messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  // لا تقم باستدعاء self.registration.showNotification هنا
+  const notificationTitle = payload.notification?.title || 'Nova Smart 🚨';
+  const targetUrl = payload.data?.url || payload.fcmOptions?.link || 'https://nvs5.github.io/NVS/index.html';
+
+  const notificationOptions = {
+    body: payload.notification?.body || 'تنبيه جديد من النظام',
+    icon: '/NVS/icon.png',
+    data: {
+      url: targetUrl
+    }
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 // فتح الرابط عند النقر على الإشعار
@@ -27,12 +36,14 @@ self.addEventListener('notificationclick', (event) => {
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      // التركيز على النافذة إذا كانت مفتوحة مسبقاً
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
         if (client.url === urlToOpen && 'focus' in client) {
           return client.focus();
         }
       }
+      // فتح نافذة جديدة بالرابط إذا كانت الصفحة مغلقة
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }
