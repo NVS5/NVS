@@ -1908,33 +1908,6 @@
     });  
   }
 
-// ======================================================
-// Service Worker & FCM Token Registration
-// ======================================================
-
-if ('serviceWorker' in navigator) {
-  // استخدام Registration مباشر من نفس المجلد
-  navigator.serviceWorker.register('./firebase-messaging-sw.js', { updateViaCache: 'none' })
-    .then((registration) => {
-      console.log('App Service Worker Registered successfully.');
-      
-      // إجبار التحديث للبحث عن أحدث نسخة من sw.js
-      registration.update();
-
-      // طلب توكن FCM وتمرير الـ Registration
-      return messaging.getToken({
-        serviceWorkerRegistration: registration
-      });
-    })
-    .then((token) => {
-      if (token) {
-        console.log('FCM Token Generated:', token);
-      }
-    })
-    .catch((err) => {
-      console.error('Service Worker / FCM Registration Failed:', err);
-    });
-}
 
         
 </script>
