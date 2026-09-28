@@ -1463,24 +1463,28 @@
     });
   }
 
-  // FCM Notifications Setup (Fix for GitHub Pages Path)
+  // FCM Notifications Setup (Fix for Multiple Duplicate Notifications)
   function setupFCMNotifications(user) {
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
-        // تسجيل الـ Service Worker بالتحديد داخل مسار GitHub Pages المسمى /NVS/
         navigator.serviceWorker.register('/NVS/firebase-messaging-sw.js')
           .then((swRegistration) => {
             return getToken(messaging, { 
-              vapidKey: 'BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ', // استبدل هذا بالمفتاح من Firebase Console
+              vapidKey: 'BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ', 
               serviceWorkerRegistration: swRegistration 
             });
           })
           .then((currentToken) => {
             if (currentToken) {
               console.log('FCM Token Generated:', currentToken);
-              const tokenRef = ref(database, `fcm_tokens/${user.uid}`);
+              
+              // تنظيف التوكين لاستخدامه كـ Key آمن فريد داخل Firebase لمنع التكرار
+              const safeTokenKey = currentToken.replace(/[\.\$\[\]\#\/]/g, "_");
+              const tokenRef = ref(database, `fcm_tokens/${safeTokenKey}`);
+              
               set(tokenRef, {
                 token: currentToken,
+                uid: user.uid,
                 updatedAt: Date.now()
               });
             } else {
@@ -1907,12 +1911,7 @@
       });  
     });  
   }
-
-
-        
 </script>
 
-
-
 </body>
-  </html>
+</html>
