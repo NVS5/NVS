@@ -50,7 +50,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.1s;
+      transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.1s, opacity 0.2s ease;
     }
 
     body {
@@ -1330,7 +1330,7 @@
       temperature: "درجة الحرارة",
       secPower: "مصدر الكهرباء",
       pwrGrid: "كهرباء الدولة",
-      pwrGridDesc: "موصول على خط الدولة",
+      pwrGridDesc: "موصول على كهرباء لبنان",
       pwrGenerator: "اشتراك المولد",
       pwrGenDesc: "موصول على خط الاشتراك",
       pwrSolar: "الطاقة الشمسية",
@@ -1467,11 +1467,10 @@
   function setupFCMNotifications(user) {
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
-        // تسجيل الـ Service Worker بالتحديد داخل مسار GitHub Pages المسمى /NVS/
         navigator.serviceWorker.register('/NVS/firebase-messaging-sw.js')
           .then((swRegistration) => {
             return getToken(messaging, { 
-              vapidKey: 'BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ', // استبدل هذا بالمفتاح من Firebase Console
+              vapidKey: 'BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ',
               serviceWorkerRegistration: swRegistration 
             });
           })
@@ -1693,6 +1692,7 @@
     ];  
   
     let localDeviceStates = {};
+    let isProcessing = {}; // حالة القفل لمنع الكبسات المتتالية السريعة
 
     toggles.forEach((toggle) => {  
       const card = document.getElementById(`${toggle.id}-card`);  
@@ -1739,10 +1739,23 @@
       let pressTimer = null;
       let isLongPress = false;
 
+      // تابع لقفل الكبسات لمدة 1.25 ثانية (1250ms)
+      const lockCardTemporarily = (deviceId) => {
+        isProcessing[deviceId] = true;
+        card.style.pointerEvents = "none";
+        card.style.opacity = "0.7";
+
+        setTimeout(() => {
+          isProcessing[deviceId] = false;
+          card.style.pointerEvents = "auto";
+          card.style.opacity = "1";
+        }, 1250); 
+      };
+
       card.addEventListener("pointerdown", (e) => {
-        if (localDeviceStates[toggle.id] === 4) return; 
+        if (localDeviceStates[toggle.id] === 4 || isProcessing[toggle.id]) return; 
         if (e.target.classList.contains("timer-icon")) return;
-        
+
         isLongPress = false;
         if (pressTimer) clearTimeout(pressTimer);
 
@@ -1752,14 +1765,15 @@
           let targetState = (current === 1) ? 3 : 2;
 
           set(dbRef, targetState);
+          lockCardTemporarily(toggle.id);
           if (navigator.vibrate) navigator.vibrate(60); 
         }, 700); 
       });
 
       card.addEventListener("pointerup", (e) => {
-        if (localDeviceStates[toggle.id] === 4) return;
+        if (localDeviceStates[toggle.id] === 4 || isProcessing[toggle.id]) return;
         if (e.target.classList.contains("timer-icon")) return;
-        
+
         clearTimeout(pressTimer); 
 
         if (!isLongPress) {
@@ -1771,6 +1785,7 @@
           else if (current === 2 || current === 3) newState = 0;
 
           set(dbRef, newState);
+          lockCardTemporarily(toggle.id);
         }
       });
 
@@ -1909,7 +1924,5 @@
   }
 </script>
 
-
-
 </body>
-  </html>
+</html>
