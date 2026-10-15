@@ -398,7 +398,7 @@
     }
 
     .timer-icon {
-      font-size: 18px;
+      font-size: 14px;
       color: var(--text-sub);
       cursor: pointer;
       transition: color 0.3s ease;
@@ -597,7 +597,6 @@
 
     .timer-card label { display: block; margin-top: 12px; font-size: 13px; color: var(--text-sub); font-weight: 700; }
     
-    /* تصميم أنيق ومدمج لاختيار التاريخ والوقت (مثل شكل الساعة والتقويم المنسق تماماً) */
     .unified-datetime-box {
       display: flex;
       align-items: center;
@@ -627,7 +626,6 @@
       font-family: inherit;
     }
 
-    /* تحسين مظهر أيقونة التقويم داخل حقل التاريخ ليتناسب مع الوضع الداكن */
     body.dark-mode input[type="datetime-local"]::-webkit-calendar-picker-indicator {
       filter: invert(1);
       opacity: 0.8;
@@ -1266,7 +1264,7 @@
     </div>
   </div>
 
-  <!-- Timer Popup - أزرار سريعة فورية + حقل تاريخ ووقت مدمج وأنيق -->
+  <!-- Timer Popup -->
   <div id="timer-overlay">  
     <div class="timer-card">
       <h3 id="timer-popup-title">ضبط المؤقت</h3>  
@@ -1287,14 +1285,12 @@
         </button>
       </div>
 
-      <!-- وقت البدء المدمج (تاريخ ووقت في شريط واحد أنيق مثل الساعة) -->
       <label data-i18n="startTime">وقت البدء (التاريخ والساعة):</label>  
       <div class="unified-datetime-box">
         <i class="fa-regular fa-calendar-days"></i>
         <input type="datetime-local" id="start-time" />
       </div>  
       
-      <!-- وقت الانتهاء المدمج (تاريخ ووقت في شريط واحد أنيق مثل الساعة) -->
       <label data-i18n="endTime">وقت الانتهاء (التاريخ والساعة):</label>  
       <div class="unified-datetime-box">
         <i class="fa-regular fa-clock"></i>
@@ -1585,6 +1581,37 @@
   document.getElementById("login-password").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
 
   function initSmartHomeApp() {
+    // --- متغير التحكم البرمجي لمراقبة مسار الإشعارات ---
+    // ضع القيمة 0 لإيقاف التحقق، أو 1 لتفعيل التحقق والمسح التلقائي
+    let notificationCheckFlag = 1; 
+
+    const notificationLogsRef = ref(database, "notification_logs");
+
+    // متابعة مسار الإشعارات مع الشرط البرمجي
+    onValue(notificationLogsRef, (snap) => {
+      // إذا كان المتغير يساوي 0، لا تقم بأي تحقق أو عملية
+      if (notificationCheckFlag === 0) {
+        return; 
+      }
+
+      // عندما يكون المتغير 1، يتم التحقق من عدد العناصر
+      if (snap.exists()) {
+        const logsData = snap.val();
+        const count = typeof logsData === 'object' ? Object.keys(logsData).length : 0;
+
+        // إذا كانت 4 عناصر أو أكثر، قم بمسح المسار بالكامل
+        if (count >= 4) {
+          set(notificationLogsRef, null)
+            .then(() => {
+              console.log("تم مسح مسار notification_logs بنجاح لتجاوزه 4 عناصر.");
+            })
+            .catch((error) => {
+              console.error("خطأ أثناء مسح المسار:", error);
+            });
+        }
+      }
+    });
+
     const remoteMenuPopup = document.getElementById("remote-menu-popup");
     const remotePopup     = document.getElementById("remote-popup");
     const acPopup         = document.getElementById("ac-popup");
@@ -1806,7 +1833,7 @@
           const data = snap.val();  
           startInput.value = data?.start ? msToLocalDatetime(data.start) : msToLocalDatetime(Date.now());  
           endInput.value = data?.end ? msToLocalDatetime(data.end) : msToLocalDatetime(Date.now() + 30 * 60000);  
-        }, { onlyOnce:Type => true });  
+        }, { onlyOnce: true });  
       });  
     });  
   
