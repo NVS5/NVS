@@ -16,7 +16,6 @@
   
   <style>
     :root {
-      /* Default Light Theme */
       --bg-color: #f8fafc;
       --card-bg: #ffffff;
       --card-border: #e2e8f0;
@@ -31,7 +30,6 @@
     }
 
     body.dark-mode {
-      /* Dark Theme */
       --bg-color: #0b0f19;
       --card-bg: #151c2c;
       --card-border: #222d45;
@@ -67,7 +65,6 @@
       max-width: 480px;
     }
 
-    /* Header */
     header {
       display: flex;
       justify-content: space-between;
@@ -125,7 +122,6 @@
       margin-top: 10px;
     }
 
-    /* Top Grid: Water Tank & Temp */
     .top-grid {
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
@@ -214,7 +210,6 @@
       font-weight: 600;
     }
 
-    /* Single Power Source Block */
     .single-power-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -267,7 +262,6 @@
       color: var(--text-sub);
     }
 
-    /* Power State Styles */
     .single-power-card.grid {
       border-color: var(--accent-blue);
       background: linear-gradient(135deg, var(--card-bg) 0%, rgba(37, 99, 235, 0.08) 100%);
@@ -307,7 +301,6 @@
       color: var(--accent-green);
     }
 
-    /* Controls Grid */
     .controls-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -335,7 +328,6 @@
       transform: scale(0.97);
     }
 
-    /* Active States */
     .control-window.on {
       border-color: var(--accent-blue);
       background: linear-gradient(135deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.08) 100%);
@@ -405,7 +397,6 @@
       font-weight: 700;
     }
 
-    /* Timer Icon */
     .timer-icon {
       font-size: 14px;
       color: var(--text-sub);
@@ -427,7 +418,6 @@
       color: var(--accent-amber) !important;
     }
 
-    /* LED Indicator */
     .status-led {
       width: 8px;
       height: 8px;
@@ -438,7 +428,6 @@
     .status-led.green { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
     .status-led.black { background: #000; }
 
-    /* Modal Overlay Common Cursor */
     #timer-overlay,
     #remote-menu-popup,
     #remote-popup,
@@ -447,7 +436,6 @@
       cursor: pointer;
     }
 
-    /* Popups & Modals Inner Card Cursor */
     .timer-card,
     .remote-menu-card,
     .remote,
@@ -456,7 +444,6 @@
       cursor: default;
     }
 
-    /* Custom Modern Modal Overlay */
     .custom-modal-overlay {
       display: none;
       position: fixed;
@@ -480,7 +467,6 @@
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    /* Confirmation Modal Styling */
     .confirm-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -548,23 +534,13 @@
       box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
     }
 
-    .confirm-btn-primary:active {
-      transform: scale(0.96);
-      opacity: 0.9;
-    }
-
     .confirm-btn-secondary {
       background: var(--bg-color);
       color: var(--text-main);
       border: 1px solid var(--card-border);
     }
 
-    .confirm-btn-secondary:active {
-      transform: scale(0.96);
-      background: var(--card-border);
-    }
-
-    /* Timer Modal Backdrop Overlay */
+    /* Timer Overlay */
     #timer-overlay {
       display: none;
       position: fixed;
@@ -580,40 +556,103 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       padding: 24px;
-      border-radius: 20px;
+      border-radius: 24px;
       color: var(--text-main);
       width: 90%;
-      max-width: 360px;
+      max-width: 380px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    .timer-card h3 { font-size: 16px; margin-bottom: 12px; text-align: center; font-weight: 800; }
-    .timer-card label { display: block; margin-top: 10px; font-size: 12px; color: var(--text-sub); font-weight: 700; }
-    .timer-card input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      background: var(--bg-color);
-      color: var(--text-main);
-      outline: none;
+    .timer-card h3 { font-size: 18px; margin-bottom: 16px; text-align: center; font-weight: 800; }
+    
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
     }
 
-    .timer-card button {
-      margin-top: 14px;
-      padding: 10px;
+    .preset-btn {
+      padding: 14px 10px;
+      font-size: 14px;
+      font-weight: 700;
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--accent-blue);
+      border: 2px solid rgba(59, 130, 246, 0.2);
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .preset-btn:active {
+      background: var(--accent-blue);
+      color: white;
+      transform: scale(0.96);
+    }
+
+    .timer-card label { display: block; margin-top: 12px; font-size: 13px; color: var(--text-sub); font-weight: 700; }
+    
+    /* تصميم أنيق ومدمج لاختيار التاريخ والوقت (مثل شكل الساعة والتقويم المنسق تماماً) */
+    .unified-datetime-box {
+      display: flex;
+      align-items: center;
+      background: var(--bg-color);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-top: 6px;
+      gap: 12px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .unified-datetime-box i {
+      color: var(--accent-blue);
+      font-size: 20px;
+    }
+
+    .unified-datetime-box input[type="datetime-local"] {
+      width: 100%;
       border: none;
-      border-radius: 10px;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* تحسين مظهر أيقونة التقويم داخل حقل التاريخ ليتناسب مع الوضع الداكن */
+    body.dark-mode input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      opacity: 0.8;
+      cursor: pointer;
+    }
+
+    .timer-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .timer-card button.t-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
       cursor: pointer;
       font-weight: 700;
+      font-size: 14px;
       color: white;
-      width: 48%;
     }
 
-    #set-timer-btn { background-color: var(--accent-blue); }
-    #cancel-timer-btn { background-color: var(--text-sub); }
-    #clear-timer-btn { background-color: var(--accent-red); width: 100% !important; margin-top: 10px; }
+    #cancel-timer-btn { background-color: var(--bg-color); color: var(--text-main); border: 1px solid var(--card-border) !important; }
+    #clear-timer-btn { background-color: var(--accent-red); width: 100%; margin-top: 10px; padding: 10px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; color: white; font-size: 13px; }
 
     /* Selection Popup (IR Menu) */
     #remote-menu-popup {
@@ -750,7 +789,6 @@
       color: var(--text-main);
     }
 
-    /* Arc Thermostat Dial */
     .dial-container {
       position: relative;
       width: 220px;
@@ -848,7 +886,6 @@
       transform: scale(0.95);
     }
 
-    /* Loading & Login Screens */
     #loading-screen {
       position: fixed;
       inset: 0;
@@ -1229,19 +1266,46 @@
     </div>
   </div>
 
-  <!-- Timer Popup -->
+  <!-- Timer Popup - أزرار سريعة فورية + حقل تاريخ ووقت مدمج وأنيق -->
   <div id="timer-overlay">  
     <div class="timer-card">
-      <h3 id="timer-popup-title">Device Timer Setup</h3>  
-      <label for="start-time" data-i18n="startTime">Start Time:</label>  
-      <input type="datetime-local" id="start-time" />  
-      <label for="end-time" data-i18n="endTime">End Time:</label>  
-      <input type="datetime-local" id="end-time" />  
-      <div style="display:flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">  
-        <button id="set-timer-btn" data-i18n="setBtn">Set</button>  
-        <button id="cancel-timer-btn" data-i18n="cancelBtn">Cancel</button>  
-        <button id="clear-timer-btn" data-i18n="clearBtn">Clear Timer</button>  
+      <h3 id="timer-popup-title">ضبط المؤقت</h3>  
+      
+      <label data-i18n="quickPresets">أزرار سريعة (تنفيذ فوري):</label>
+      <div class="preset-grid">
+        <button type="button" class="preset-btn" onclick="setPresetDuration(15)">
+          <i class="fa-solid fa-bolt"></i> <span data-i18n="p15">15 mins</span>
+        </button>
+        <button type="button" class="preset-btn" onclick="setPresetDuration(30)">
+          <i class="fa-solid fa-bolt"></i> <span data-i18n="p30">30 mins</span>
+        </button>
+        <button type="button" class="preset-btn" onclick="setPresetDuration(60)">
+          <i class="fa-solid fa-bolt"></i> <span data-i18n="p60">1 hour</span>
+        </button>
+        <button type="button" class="preset-btn" onclick="setPresetDuration(120)">
+          <i class="fa-solid fa-bolt"></i> <span data-i18n="p120">2 hours</span>
+        </button>
+      </div>
+
+      <!-- وقت البدء المدمج (تاريخ ووقت في شريط واحد أنيق مثل الساعة) -->
+      <label data-i18n="startTime">وقت البدء (التاريخ والساعة):</label>  
+      <div class="unified-datetime-box">
+        <i class="fa-regular fa-calendar-days"></i>
+        <input type="datetime-local" id="start-time" />
       </div>  
+      
+      <!-- وقت الانتهاء المدمج (تاريخ ووقت في شريط واحد أنيق مثل الساعة) -->
+      <label data-i18n="endTime">وقت الانتهاء (التاريخ والساعة):</label>  
+      <div class="unified-datetime-box">
+        <i class="fa-regular fa-clock"></i>
+        <input type="datetime-local" id="end-time" />
+      </div>  
+      
+      <div class="timer-actions">  
+        <button id="cancel-timer-btn" class="t-btn" data-i18n="cancelBtn">إلغاء</button>  
+        <button id="set-custom-timer-btn" class="t-btn" style="background-color: var(--accent-blue);" data-i18n="setCustomBtn">تحديد مخصص ✓</button>
+      </div>  
+      <button id="clear-timer-btn" data-i18n="clearBtn">إلغاء وتفريغ المؤقت</button>  
     </div>
   </div>
 
@@ -1267,11 +1331,9 @@
   const auth = getAuth(app);
   const messaging = getMessaging(app);
 
-  // --- LocalStorage Read ---
   let savedLang = localStorage.getItem('nova_lang') || 'en';
   let savedTheme = localStorage.getItem('nova_theme') || 'light';
 
-  // Translations Dictionary
   const translations = {
     en: {
       connecting: "Connecting...",
@@ -1305,9 +1367,14 @@
       acPower: "Power",
       acMode: "Mode",
       acFan: "Fan Speed",
-      startTime: "Start Time:",
-      endTime: "End Time:",
-      setBtn: "Set",
+      quickPresets: "Quick Timer:",
+      p15: "15 mins",
+      p30: "30 mins",
+      p60: "1 hour",
+      p120: "2 hours",
+      startTime: "Start Date & Time:",
+      endTime: "End Date & Time:",
+      setCustomBtn: "Set Timer",
       cancelBtn: "Cancel",
       clearBtn: "Clear Timer",
       autoState: "AUTO",
@@ -1351,11 +1418,16 @@
       acPower: "تشغيل/إطفاء",
       acMode: "الوضع",
       acFan: "سرعة المروحة",
-      startTime: "البداية:",
-      endTime: "النهاية:",
-      setBtn: "ضبط",
+      quickPresets: "مؤقت فوري:",
+      p15: "15 دقيقة",
+      p30: "نصف ساعة",
+      p60: "ساعة واحدة",
+      p120: "ساعتان",
+      startTime: "تاريخ ووقت البدء:",
+      endTime: "تاريخ ووقت الانتهاء:",
+      setCustomBtn: "تأكيد",
       cancelBtn: "إلغاء",
-      clearBtn: "مسح المؤقت",
+      clearBtn: "إلغاء المؤقت",
       autoState: "تلقائي",
       timerState: "مؤقت",
       lostConn: "فُقد الاتصال! جاري إعادة التشغيل...",
@@ -1370,7 +1442,6 @@
   let currentLang = savedLang;
   let lastPowerValue = null;
 
-  // Set Language with LocalStorage Support
   function setLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('nova_lang', lang);
@@ -1398,7 +1469,6 @@
     }
   }
 
-  // Set Theme with LocalStorage Support
   function setTheme(theme) {
     const themeBtn = document.getElementById('themeBtn');
     if (theme === 'dark') {
@@ -1412,24 +1482,19 @@
     }
   }
 
-  // Initialize Preferences
   setLanguage(savedLang);
   setTheme(savedTheme);
 
-  // Event Listeners for Theme & Language Switches
-  const themeBtn = document.getElementById('themeBtn');
-  themeBtn.addEventListener('click', () => {
+  document.getElementById('themeBtn').addEventListener('click', () => {
     const isDark = document.body.classList.contains('dark-mode');
     setTheme(isDark ? 'light' : 'dark');
   });
 
-  const langBtn = document.getElementById('langBtn');
-  langBtn.addEventListener('click', () => {
+  document.getElementById('langBtn').addEventListener('click', () => {
     const newLang = currentLang === 'en' ? 'ar' : 'en';
     setLanguage(newLang);
   });
 
-  // Custom Modern Logout Modal Elements & Logic
   const logoutModal = document.getElementById("logout-confirm-modal");
   const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
   const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
@@ -1454,52 +1519,6 @@
     });
   });
 
-  // Service Worker Registration for GitHub Pages (/NVS/)
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/NVS/firebase-messaging-sw.js')
-        .then(() => console.log('App Service Worker Registered successfully.'))
-        .catch(err => console.log('Service Worker registration skipped/failed:', err));
-    });
-  }
-
-  // FCM Notifications Setup (Fix for GitHub Pages Path)
-  function setupFCMNotifications(user) {
-    Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        navigator.serviceWorker.register('/NVS/firebase-messaging-sw.js')
-          .then((swRegistration) => {
-            return getToken(messaging, { 
-              vapidKey: 'BNo1efb7Vd-Y812wQhZVqnGceDFa3mSm7D4zSLri0gFte25bdwMmvVi18sNk5zv3IFcHBACUazdREMu0ozV5FmQ',
-              serviceWorkerRegistration: swRegistration 
-            });
-          })
-          .then((currentToken) => {
-            if (currentToken) {
-              console.log('FCM Token Generated:', currentToken);
-              const tokenRef = ref(database, `fcm_tokens/${user.uid}`);
-              set(tokenRef, {
-                token: currentToken,
-                updatedAt: Date.now()
-              });
-            } else {
-              console.log('No registration token available.');
-            }
-          })
-          .catch((err) => {
-            console.error('An error occurred while retrieving token: ', err);
-          });
-      }
-    });
-  }
-
-  // Foreground Notification Listener
-  onMessage(messaging, (payload) => {
-    if (payload.notification) {
-      alert(`${payload.notification.title}\n${payload.notification.body}`);
-    }
-  });
-
   const loadingScreen = document.getElementById("loading-screen");
   const loginPopup = document.getElementById("login-popup");
   let pageReady = false;
@@ -1515,8 +1534,6 @@
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loginPopup.style.display = "none";
-      setupFCMNotifications(user); 
-      
       onValue(ref(database, ".info/connected"), (snap) => {
         if (snap.val() === true) {
           if (disconnectTimer) {
@@ -1542,7 +1559,6 @@
     }
   });
 
-  // Login Handlers
   function handleLogin() {
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
@@ -1565,14 +1581,8 @@
   }
 
   document.getElementById("login-btn").addEventListener("click", handleLogin);
-
-  document.getElementById("login-email").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleLogin();
-  });
-
-  document.getElementById("login-password").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") handleLogin();
-  });
+  document.getElementById("login-email").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
+  document.getElementById("login-password").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
 
   function initSmartHomeApp() {
     const remoteMenuPopup = document.getElementById("remote-menu-popup");
@@ -1586,104 +1596,27 @@
     window.openTVRemote = function () { remoteMenuPopup.style.display = "none"; remotePopup.style.display = "block"; };
     window.openACRemote = function () { remoteMenuPopup.style.display = "none"; acPopup.style.display = "block"; };
 
-    remoteMenuPopup.addEventListener("click", (e) => {
-      if (e.target === remoteMenuPopup) remoteMenuPopup.style.display = "none";
-    });
-
-    remotePopup.addEventListener("click", (e) => {
-      if (e.target === remotePopup) remotePopup.style.display = "none";
-    });
-
-    acPopup.addEventListener("click", (e) => {
-      if (e.target === acPopup) acPopup.style.display = "none";
-    });
-
-    timerOverlay.addEventListener("click", (e) => {
-      if (e.target === timerOverlay) {
-        timerOverlay.style.display = "none";
-        currentDevice = null;
-      }
-    });
+    remoteMenuPopup.addEventListener("click", (e) => { if (e.target === remoteMenuPopup) remoteMenuPopup.style.display = "none"; });
+    remotePopup.addEventListener("click", (e) => { if (e.target === remotePopup) remotePopup.style.display = "none"; });
+    acPopup.addEventListener("click", (e) => { if (e.target === acPopup) acPopup.style.display = "none"; });
+    timerOverlay.addEventListener("click", (e) => { if (e.target === timerOverlay) { timerOverlay.style.display = "none"; currentDevice = null; } });
 
     window.sendCmd = function (command, address) {  
-      const remoteRef = ref(database, "Remote");  
-      set(remoteRef, { command: command, address: address });  
+      set(ref(database, "Remote"), { command: command, address: address });  
     };  
 
-    // Arc Thermostat Dial Slider
-    const dialContainer = document.getElementById("dial-container");
-    const dialHandle = document.getElementById("dial-handle");
-    const dialActive = document.getElementById("dial-active");
-    const acTempVal = document.getElementById("ac-temp-val");
+    window.setPresetDuration = function(minutes) {
+      if (!currentDevice) return;
+      const now = new Date();
+      const startMs = now.getTime();
+      const endMs = startMs + (minutes * 60 * 1000);
 
-    const minTemp = 16;
-    const maxTemp = 30;
-    let currentAcTemp = 24;
-    let isDraggingDial = false;
+      set(ref(database, `timers/${currentDevice}`), { start: startMs, end: endMs }).then(() => {  
+        timerOverlay.style.display = "none";  
+        currentDevice = null;  
+      });
+    };
 
-    const pathRadius = 90;
-    const pathCenterX = 110;
-    const pathCenterY = 120;
-    const pathTotalLength = Math.PI * pathRadius;
-
-    function updateDialUI(temp) {
-      temp = Math.max(minTemp, Math.min(maxTemp, temp));
-      currentAcTemp = temp;
-      acTempVal.innerText = `${temp}°C`;
-
-      const ratio = (temp - minTemp) / (maxTemp - minTemp);
-      const angle = Math.PI - (ratio * Math.PI);
-
-      const x = pathCenterX + pathRadius * Math.cos(angle);
-      const y = pathCenterY - pathRadius * Math.sin(angle);
-
-      dialHandle.setAttribute("cx", x);
-      dialHandle.setAttribute("cy", y);
-
-      const strokeDashOffset = pathTotalLength * (1 - ratio);
-      dialActive.style.strokeDasharray = pathTotalLength;
-      dialActive.style.strokeDashoffset = strokeDashOffset;
-    }
-
-    function handleDialPointer(e) {
-      const rect = dialContainer.getBoundingClientRect();
-      const mouseX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
-      const mouseY = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
-
-      const dx = mouseX - (rect.width / 2);
-      const dy = pathCenterY - mouseY;
-
-      let rad = Math.atan2(dy, dx);
-      if (rad < 0) {
-        rad = dx < 0 ? Math.PI : 0;
-      }
-
-      let ratio = (Math.PI - rad) / Math.PI;
-      ratio = Math.max(0, Math.min(1, ratio));
-
-      const computedTemp = Math.round(minTemp + ratio * (maxTemp - minTemp));
-      if (computedTemp !== currentAcTemp) {
-        updateDialUI(computedTemp);
-        sendCmd(`AC_TEMP_${computedTemp}`, 'AC');
-      }
-    }
-
-    dialContainer.addEventListener("pointerdown", (e) => {
-      isDraggingDial = true;
-      handleDialPointer(e);
-    });
-
-    window.addEventListener("pointermove", (e) => {
-      if (isDraggingDial) handleDialPointer(e);
-    });
-
-    window.addEventListener("pointerup", () => {
-      isDraggingDial = false;
-    });
-
-    updateDialUI(24);
-  
-    // Toggles Setup
     const toggles = [  
       { path: "output/devices/waterpump", id: "waterpump" },  
       { path: "output/devices/heater", id: "heater" },  
@@ -1692,7 +1625,7 @@
     ];  
   
     let localDeviceStates = {};
-    let isProcessing = {}; // حالة القفل لمنع الكبسات المتتالية السريعة
+    let isProcessing = {}; 
 
     toggles.forEach((toggle) => {  
       const card = document.getElementById(`${toggle.id}-card`);  
@@ -1739,7 +1672,6 @@
       let pressTimer = null;
       let isLongPress = false;
 
-      // تابع لقفل الكبسات لمدة 1.25 ثانية (1250ms)
       const lockCardTemporarily = (deviceId) => {
         isProcessing[deviceId] = true;
         card.style.pointerEvents = "none";
@@ -1789,15 +1721,11 @@
         }
       });
 
-      card.addEventListener("pointercancel", () => {
-        clearTimeout(pressTimer);
-      });
+      card.addEventListener("pointercancel", () => { clearTimeout(pressTimer); });
     });  
 
-    // Sensors updates
     onValue(ref(database, "temperature"), (snap) => {  
-      const temp = snap.val() || 0;  
-      document.getElementById("temperature-value").innerText = `${temp}°C`;  
+      document.getElementById("temperature-value").innerText = `${snap.val() || 0}°C`;  
     });  
   
     onValue(ref(database, "waterLevel"), (snap) => {  
@@ -1806,7 +1734,6 @@
       document.getElementById("water-value").innerText = `${level}%`;  
     });  
   
-    // Dynamic Power State
     const powerCard = document.getElementById("power-card");
     const powerIcon = document.getElementById("power-icon");
     const powerTitle = document.getElementById("power-title");
@@ -1815,7 +1742,6 @@
 
     window.updatePowerUI = function(val) {
       lastPowerValue = val;
-      
       powerCard.className = "single-power-card";
 
       if (val === 1) {
@@ -1844,14 +1770,12 @@
       }
     };
 
-    onValue(ref(database, "output/devices/kahrba"), (snap) => {  
-      updatePowerUI(snap.val());  
-    });  
+    onValue(ref(database, "output/devices/kahrba"), (snap) => { updatePowerUI(snap.val()); });  
   
     // Timers Logic
     const startInput = document.getElementById("start-time");  
     const endInput = document.getElementById("end-time");  
-    const setTimerBtn = document.getElementById("set-timer-btn");  
+    const setCustomTimerBtn = document.getElementById("set-custom-timer-btn");  
     const cancelTimerBtn = document.getElementById("cancel-timer-btn");  
     const clearTimerBtn = document.getElementById("clear-timer-btn");  
   
@@ -1860,12 +1784,7 @@
     function msToLocalDatetime(ms) {  
       if (!ms) return "";  
       const date = new Date(ms);  
-      const year = date.getFullYear();  
-      const month = String(date.getMonth() + 1).padStart(2, "0");  
-      const day = String(date.getDate()).padStart(2, "0");  
-      const hours = String(date.getHours()).padStart(2, "0");  
-      const minutes = String(date.getMinutes()).padStart(2, "0");  
-      return `${year}-${month}-${day}T${hours}:${minutes}`;  
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}T${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;  
     }  
   
     function datetimeLocalToMs(localStr) {  
@@ -1883,16 +1802,15 @@
         timerOverlay.style.display = "flex";  
         document.getElementById("timer-popup-title").textContent = `${translations[currentLang].timerTitlePrefix}${currentDevice}`;  
   
-        const timerRef = ref(database, `timers/${currentDevice}`);  
-        onValue(timerRef, (snap) => {  
+        onValue(ref(database, `timers/${currentDevice}`), (snap) => {  
           const data = snap.val();  
-          startInput.value = data?.start ? msToLocalDatetime(data.start) : "";  
-          endInput.value = data?.end ? msToLocalDatetime(data.end) : "";  
-        }, { onlyOnce: true });  
+          startInput.value = data?.start ? msToLocalDatetime(data.start) : msToLocalDatetime(Date.now());  
+          endInput.value = data?.end ? msToLocalDatetime(data.end) : msToLocalDatetime(Date.now() + 30 * 60000);  
+        }, { onlyOnce:Type => true });  
       });  
     });  
   
-    setTimerBtn.addEventListener("click", () => {  
+    setCustomTimerBtn.addEventListener("click", () => {  
       if (!currentDevice) return;  
       const startMs = datetimeLocalToMs(startInput.value);  
       const endMs = datetimeLocalToMs(endInput.value);  
@@ -1901,8 +1819,7 @@
         currentDevice = null;  
         return;  
       }  
-      const timerRef = ref(database, `timers/${currentDevice}`);  
-      set(timerRef, { start: startMs, end: endMs }).then(() => {  
+      set(ref(database, `timers/${currentDevice}`), { start: startMs, end: endMs }).then(() => {  
         timerOverlay.style.display = "none";  
         currentDevice = null;  
       });  
@@ -1915,8 +1832,7 @@
   
     clearTimerBtn.addEventListener("click", () => {  
       if (!currentDevice) return;  
-      const timerRef = ref(database, `timers/${currentDevice}`);  
-      set(timerRef, null).then(() => {  
+      set(ref(database, `timers/${currentDevice}`), null).then(() => {  
         timerOverlay.style.display = "none";  
         currentDevice = null;  
       });  
