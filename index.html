@@ -11,6 +11,8 @@
   <meta name="apple-mobile-web-app-title" content="Nova Smart" />
   <link rel="apple-touch-icon" href="logo.png" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
@@ -540,7 +542,7 @@
       border: 1px solid var(--card-border);
     }
 
-    /* Timer Overlay */
+    /* --- Timer Overlay & Dual Start/End Wall Clock --- */
     #timer-overlay {
       display: none;
       position: fixed;
@@ -555,102 +557,226 @@
     .timer-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      padding: 24px;
-      border-radius: 24px;
+      padding: 18px;
+      border-radius: 28px;
       color: var(--text-main);
-      width: 90%;
+      width: 92%;
       max-width: 380px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
-
-    .timer-card h3 { font-size: 18px; margin-bottom: 16px; text-align: center; font-weight: 800; }
-    
-    .preset-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .preset-btn {
-      padding: 14px 10px;
-      font-size: 14px;
-      font-weight: 700;
-      background: rgba(59, 130, 246, 0.1);
-      color: var(--accent-blue);
-      border: 2px solid rgba(59, 130, 246, 0.2);
-      border-radius: 14px;
-      cursor: pointer;
       text-align: center;
-      transition: all 0.2s;
+    }
+
+    .timer-card h3 { 
+      font-size: 18px; 
+      margin-bottom: 10px; 
+      font-weight: 800; 
+    }
+
+    /* --- تصميم الأقسام المنفصلة --- */
+    .timer-section-box {
+      background: var(--bg-color);
+      border: 1.5px solid var(--card-border);
+      border-radius: 16px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-label-inner {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+      text-align: start;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 5px;
+    }
+
+    .quick-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 6px;
     }
 
+    .preset-btn {
+      padding: 6px 2px;
+      background: var(--card-bg);
+      border: 1px solid var(--accent-blue);
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-blue);
+      cursor: pointer;
+    }
     .preset-btn:active {
       background: var(--accent-blue);
       color: white;
-      transform: scale(0.96);
     }
 
-    .timer-card label { display: block; margin-top: 12px; font-size: 13px; color: var(--text-sub); font-weight: 700; }
-    
-    .unified-datetime-box {
+    .time-type-switch {
       display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .time-type-btn {
+      flex: 1;
+      padding: 6px;
+      border: 1.5px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      gap: 2px;
+    }
+
+    .time-type-btn.active-start {
+      background: rgba(5, 150, 105, 0.1);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .time-type-btn.active-end {
+      background: rgba(220, 38, 38, 0.1);
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .day-btn {
+      padding: 6px 4px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .day-btn.active {
+      background: rgba(37, 99, 235, 0.15);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .wall-clock-wrapper {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 8px;
+      background: var(--card-bg);
+      border: 4px solid var(--card-border);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .clock-center-btn {
+      position: absolute;
+      background: var(--bg-color);
+      border: 2px solid var(--card-border);
+      padding: 4px 8px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-main);
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .clock-center-btn:active {
+      transform: scale(0.95);
+    }
+
+    .clock-node {
+      position: absolute;
+      width: 26px;
+      height: 26px;
       background: var(--bg-color);
       border: 1.5px solid var(--card-border);
-      border-radius: 14px;
-      padding: 12px 16px;
-      margin-top: 6px;
-      gap: 12px;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 5;
+    }
+    .clock-node:hover, .clock-node.selected {
+      background: var(--accent-blue);
+      color: white;
+      border-color: var(--accent-blue);
+      transform: scale(1.15);
     }
 
-    .unified-datetime-box i {
+    .minutes-control-box {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .step-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1.5px solid var(--card-border);
+      background: var(--bg-color);
       color: var(--accent-blue);
-      font-size: 20px;
-    }
-
-    .unified-datetime-box input[type="datetime-local"] {
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: var(--text-main);
-      font-size: 15px;
-      font-weight: 700;
-      outline: none;
+      font-size: 16px;
+      font-weight: 800;
       cursor: pointer;
-      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    body.dark-mode input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-      filter: invert(1);
-      opacity: 0.8;
-      cursor: pointer;
+    .step-btn:active {
+      background: var(--accent-blue);
+      color: white;
     }
 
     .timer-actions {
       display: flex;
-      gap: 10px;
-      margin-top: 20px;
+      gap: 8px;
     }
 
     .timer-card button.t-btn {
       flex: 1;
-      padding: 12px;
+      padding: 8px;
       border: none;
       border-radius: 12px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
       color: white;
     }
 
     #cancel-timer-btn { background-color: var(--bg-color); color: var(--text-main); border: 1px solid var(--card-border) !important; }
-    #clear-timer-btn { background-color: var(--accent-red); width: 100%; margin-top: 10px; padding: 10px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; color: white; font-size: 13px; }
+    #clear-timer-btn { background-color: var(--accent-red); width: 100%; margin-top: 6px; padding: 6px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; color: white; font-size: 12px; }
 
     /* Selection Popup (IR Menu) */
     #remote-menu-popup {
@@ -893,7 +1019,7 @@
       justify-content: center;
       align-items: center;
       z-index: 9999999;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.3s ease;
     }
 
     .loader {
@@ -1264,53 +1390,74 @@
     </div>
   </div>
 
-  <!-- Timer Popup -->
+  <!-- Timer Popup (Bilingual Wall Clock) -->
   <div id="timer-overlay">  
     <div class="timer-card">
-      <h3 id="timer-popup-title">ضبط المؤقت</h3>  
+      <h3 id="timer-popup-title">⏱️ Smart Timer Settings</h3>  
       
-      <label data-i18n="quickPresets">أزرار سريعة (تنفيذ فوري):</label>
-      <div class="preset-grid">
-        <button type="button" class="preset-btn" onclick="setPresetDuration(15)">
-          <i class="fa-solid fa-bolt"></i> <span data-i18n="p15">15 mins</span>
-        </button>
-        <button type="button" class="preset-btn" onclick="setPresetDuration(30)">
-          <i class="fa-solid fa-bolt"></i> <span data-i18n="p30">30 mins</span>
-        </button>
-        <button type="button" class="preset-btn" onclick="setPresetDuration(60)">
-          <i class="fa-solid fa-bolt"></i> <span data-i18n="p60">1 hour</span>
-        </button>
-        <button type="button" class="preset-btn" onclick="setPresetDuration(120)">
-          <i class="fa-solid fa-bolt"></i> <span data-i18n="p120">2 hours</span>
-        </button>
+      <!-- القسم الأول: فرع الضبط السريع للتوقيت (أزرار فورية بدون زائد وبدون زر تطبيق) -->
+      <div class="timer-section-box">
+        <div class="section-label-inner" data-i18n="quickSetTitle">
+          <i class="fa-solid fa-bolt"></i> Quick Set
+        </div>
+        <div class="quick-presets">
+          <button type="button" class="preset-btn" onclick="applyQuickPreset(15)">15m</button>
+          <button type="button" class="preset-btn" onclick="applyQuickPreset(30)">30m</button>
+          <button type="button" class="preset-btn" onclick="applyQuickPreset(60)">1h</button>
+          <button type="button" class="preset-btn" onclick="applyQuickPreset(120)">2h</button>
+        </div>
       </div>
 
-      <label data-i18n="startTime">وقت البدء (التاريخ والساعة):</label>  
-      <div class="unified-datetime-box">
-        <i class="fa-regular fa-calendar-days"></i>
-        <input type="datetime-local" id="start-time" />
-      </div>  
-      
-      <label data-i18n="endTime">وقت الانتهاء (التاريخ والساعة):</label>  
-      <div class="unified-datetime-box">
-        <i class="fa-regular fa-clock"></i>
-        <input type="datetime-local" id="end-time" />
-      </div>  
-      
+      <!-- القسم الثاني: فرع ضبط التوقيت اليدوي والساعة -->
+      <div class="timer-section-box">
+        <div class="section-label-inner" data-i18n="setTimerTitle">
+          <i class="fa-solid fa-clock"></i> Set timer
+        </div>
+
+        <div class="time-type-switch">
+          <button type="button" class="time-type-btn active-start" id="start-type-btn" onclick="switchTimeType('start')">
+            <span id="lbl-start-title">🟢 Start Time</span>
+            <span id="start-preview-text" style="font-size:10px; opacity:0.8;">12:00 AM</span>
+          </button>
+          <button type="button" class="time-type-btn" id="end-type-btn" onclick="switchTimeType('end')">
+            <span id="lbl-end-title">🔴 End Time</span>
+            <span id="end-preview-text" style="font-size:10px; opacity:0.8;">12:30 PM</span>
+          </button>
+        </div>
+
+        <div class="days-grid" id="days-container"></div>
+
+        <div class="wall-clock-wrapper" id="wall-clock">
+          <button type="button" class="clock-center-btn" id="period-toggle-btn" onclick="togglePeriod()">
+            <span id="period-icon">☀️</span>
+            <span id="period-text">AM</span>
+          </button>
+        </div>
+
+        <div class="minutes-control-box">
+          <span id="lbl-minute" style="font-size: 11px; font-weight: 700; color: var(--text-sub);">Minute:</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" class="step-btn" onclick="adjustMinute(-1)">-</button>
+            <span id="minute-display" style="font-size: 16px; font-weight: 800; min-width: 25px; text-align: center;">00</span>
+            <button type="button" class="step-btn" onclick="adjustMinute(1)">+</button>
+          </div>
+        </div>
+      </div>
+
       <div class="timer-actions">  
-        <button id="cancel-timer-btn" class="t-btn" data-i18n="cancelBtn">إلغاء</button>  
-        <button id="set-custom-timer-btn" class="t-btn" style="background-color: var(--accent-blue);" data-i18n="setCustomBtn">تحديد مخصص ✓</button>
+        <button id="cancel-timer-btn" class="t-btn">Cancel</button>  
+        <button id="set-custom-timer-btn" class="t-btn" style="background-color: var(--accent-blue);" onclick="saveWallClockTimer()">Apply ✓</button>
       </div>  
-      <button id="clear-timer-btn" data-i18n="clearBtn">إلغاء وتفريغ المؤقت</button>  
+      <button id="clear-timer-btn" onclick="clearActiveTimer()">Clear & Delete Timer</button>  
     </div>
   </div>
 
 <!-- Firebase & App Script -->
 <script type="module">  
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
-  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
+  import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
+  import { getMessaging } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
 
   const firebaseConfig = {  
     apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
@@ -1363,16 +1510,6 @@
       acPower: "Power",
       acMode: "Mode",
       acFan: "Fan Speed",
-      quickPresets: "Quick Timer:",
-      p15: "15 mins",
-      p30: "30 mins",
-      p60: "1 hour",
-      p120: "2 hours",
-      startTime: "Start Date & Time:",
-      endTime: "End Date & Time:",
-      setCustomBtn: "Set Timer",
-      cancelBtn: "Cancel",
-      clearBtn: "Clear Timer",
       autoState: "AUTO",
       timerState: "TIMER",
       lostConn: "Connection lost! Reconnecting...",
@@ -1380,7 +1517,15 @@
       timerTitlePrefix: "Set Timer for ",
       logoutTitle: "Sign Out",
       logoutConfirmMsg: "Are you sure you want to exit your Nova Smart session?",
-      logoutConfirmBtn: "Logout"
+      logoutConfirmBtn: "Logout",
+      startTitle: "🟢 Start Time",
+      endTitle: "🔴 End Time",
+      minuteLabel: "Minute:",
+      cancelBtn: "Cancel",
+      applyBtn: "Apply ✓",
+      clearBtn: "Clear & Delete Timer",
+      quickSetTitle: "Quick Set",
+      setTimerTitle: "Set timer"
     },
     ar: {
       connecting: "جاري الاتصال...",
@@ -1414,16 +1559,6 @@
       acPower: "تشغيل/إطفاء",
       acMode: "الوضع",
       acFan: "سرعة المروحة",
-      quickPresets: "مؤقت فوري:",
-      p15: "15 دقيقة",
-      p30: "نصف ساعة",
-      p60: "ساعة واحدة",
-      p120: "ساعتان",
-      startTime: "تاريخ ووقت البدء:",
-      endTime: "تاريخ ووقت الانتهاء:",
-      setCustomBtn: "تأكيد",
-      cancelBtn: "إلغاء",
-      clearBtn: "إلغاء المؤقت",
       autoState: "تلقائي",
       timerState: "مؤقت",
       lostConn: "فُقد الاتصال! جاري إعادة التشغيل...",
@@ -1431,7 +1566,15 @@
       timerTitlePrefix: "ضبط مؤقت جهاز ",
       logoutTitle: "تسجيل الخروج",
       logoutConfirmMsg: "هل أنت تأكد من رغبتك في تسجيل الخروج من تطبيق Nova Smart؟",
-      logoutConfirmBtn: "خروج"
+      logoutConfirmBtn: "خروج",
+      startTitle: "🟢 وقت التشغيل",
+      endTitle: "🔴 وقت الإيقاف",
+      minuteLabel: "الدقيقة:",
+      cancelBtn: "إلغاء",
+      applyBtn: "تشغيل ✓",
+      clearBtn: "إلغاء وتفريغ المؤقت",
+      quickSetTitle: "الضبط السريع",
+      setTimerTitle: "ضبط توقيت"
     }
   };
 
@@ -1447,7 +1590,13 @@
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (translations[lang][key]) {
-        el.innerText = translations[lang][key];
+        if (key === 'quickSetTitle') {
+          el.innerHTML = `<i class="fa-solid fa-bolt"></i> ${translations[lang][key]}`;
+        } else if (key === 'setTimerTitle') {
+          el.innerHTML = `<i class="fa-solid fa-clock"></i> ${translations[lang][key]}`;
+        } else {
+          el.innerText = translations[lang][key];
+        }
       }
     });
 
@@ -1460,6 +1609,16 @@
 
     document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
     
+    document.getElementById('lbl-start-title').textContent = translations[currentLang].startTitle;
+    document.getElementById('lbl-end-title').textContent = translations[currentLang].endTitle;
+    document.getElementById('lbl-minute').textContent = translations[currentLang].minuteLabel;
+    document.getElementById('cancel-timer-btn').textContent = translations[currentLang].cancelBtn;
+    document.getElementById('set-custom-timer-btn').textContent = translations[currentLang].applyBtn;
+    document.getElementById('clear-timer-btn').textContent = translations[currentLang].clearBtn;
+
+    if (typeof window.initDaysUI === 'function') window.initDaysUI();
+    if (typeof window.updatePreviews === 'function') window.updatePreviews();
+
     if (lastPowerValue !== null && typeof window.updatePowerUI === 'function') {
       window.updatePowerUI(lastPowerValue);
     }
@@ -1518,36 +1677,18 @@
   const loadingScreen = document.getElementById("loading-screen");
   const loginPopup = document.getElementById("login-popup");
   let pageReady = false;
-  let disconnectTimer = null; 
 
   function hideLoading() {
     if (pageReady) return;
     pageReady = true;
     loadingScreen.style.opacity = "0";
-    setTimeout(() => { loadingScreen.style.display = "none"; }, 500);
+    setTimeout(() => { loadingScreen.style.display = "none"; }, 300);
   }
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loginPopup.style.display = "none";
-      onValue(ref(database, ".info/connected"), (snap) => {
-        if (snap.val() === true) {
-          if (disconnectTimer) {
-            clearTimeout(disconnectTimer);
-            disconnectTimer = null;
-          }
-          setTimeout(hideLoading, 1000);
-        } else {
-          if (pageReady && !disconnectTimer) {
-            disconnectTimer = setTimeout(() => {
-              loadingScreen.style.display = "flex";
-              loadingScreen.style.opacity = "1";
-              document.querySelector(".loading-text").innerText = translations[currentLang].lostConn;
-              setTimeout(() => { window.location.reload(); }, 500);
-            }, 4000); 
-          }
-        }
-      });
+      hideLoading();
       initSmartHomeApp();
     } else {
       loadingScreen.style.display = "none";
@@ -1581,37 +1722,6 @@
   document.getElementById("login-password").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
 
   function initSmartHomeApp() {
-    // --- متغير التحكم البرمجي لمراقبة مسار الإشعارات ---
-    // ضع القيمة 0 لإيقاف التحقق، أو 1 لتفعيل التحقق والمسح التلقائي
-    let notificationCheckFlag = 1; 
-
-    const notificationLogsRef = ref(database, "notification_logs");
-
-    // متابعة مسار الإشعارات مع الشرط البرمجي
-    onValue(notificationLogsRef, (snap) => {
-      // إذا كان المتغير يساوي 0، لا تقم بأي تحقق أو عملية
-      if (notificationCheckFlag === 0) {
-        return; 
-      }
-
-      // عندما يكون المتغير 1، يتم التحقق من عدد العناصر
-      if (snap.exists()) {
-        const logsData = snap.val();
-        const count = typeof logsData === 'object' ? Object.keys(logsData).length : 0;
-
-        // إذا كانت 4 عناصر أو أكثر، قم بمسح المسار بالكامل
-        if (count >= 4) {
-          set(notificationLogsRef, null)
-            .then(() => {
-              console.log("تم مسح مسار notification_logs بنجاح لتجاوزه 4 عناصر.");
-            })
-            .catch((error) => {
-              console.error("خطأ أثناء مسح المسار:", error);
-            });
-        }
-      }
-    });
-
     const remoteMenuPopup = document.getElementById("remote-menu-popup");
     const remotePopup     = document.getElementById("remote-popup");
     const acPopup         = document.getElementById("ac-popup");
@@ -1631,18 +1741,6 @@
     window.sendCmd = function (command, address) {  
       set(ref(database, "Remote"), { command: command, address: address });  
     };  
-
-    window.setPresetDuration = function(minutes) {
-      if (!currentDevice) return;
-      const now = new Date();
-      const startMs = now.getTime();
-      const endMs = startMs + (minutes * 60 * 1000);
-
-      set(ref(database, `timers/${currentDevice}`), { start: startMs, end: endMs }).then(() => {  
-        timerOverlay.style.display = "none";  
-        currentDevice = null;  
-      });
-    };
 
     const toggles = [  
       { path: "output/devices/waterpump", id: "waterpump" },  
@@ -1799,70 +1897,243 @@
 
     onValue(ref(database, "output/devices/kahrba"), (snap) => { updatePowerUI(snap.val()); });  
   
-    // Timers Logic
-    const startInput = document.getElementById("start-time");  
-    const endInput = document.getElementById("end-time");  
-    const setCustomTimerBtn = document.getElementById("set-custom-timer-btn");  
-    const cancelTimerBtn = document.getElementById("cancel-timer-btn");  
-    const clearTimerBtn = document.getElementById("clear-timer-btn");  
-  
-    let currentDevice = null;  
-  
-    function msToLocalDatetime(ms) {  
-      if (!ms) return "";  
-      const date = new Date(ms);  
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}T${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;  
-    }  
-  
-    function datetimeLocalToMs(localStr) {  
-      if (!localStr) return null;  
-      const [datePart, timePart] = localStr.split("T");  
-      const [year, month, day] = datePart.split("-").map(Number);  
-      const [hour, minute] = timePart.split(":").map(Number);  
-      return new Date(year, month - 1, day, hour, minute).getTime();  
-    }  
-  
+    // --- Optimized Timer Logic ---
+    let currentDevice = null;
+    let currentSettingType = 'start'; 
+
+    let startState = { hour: 12, isPM: false, minute: 0, dayOffset: 0 };
+    let endState = { hour: 12, isPM: true, minute: 30, dayOffset: 0 };
+
+    function preRenderClockAndDays() {
+      const clockWrapper = document.getElementById("wall-clock");
+      const centerBtn = document.getElementById("period-toggle-btn");
+      clockWrapper.innerHTML = "";
+      clockWrapper.appendChild(centerBtn);
+
+      let radius = 64;
+      for (let i = 1; i <= 12; i++) {
+        let node = document.createElement("div");
+        node.className = "clock-node";
+        node.textContent = i;
+        node.setAttribute("data-hour", i);
+
+        let angle = (i * 30) - 90; 
+        let rad = angle * (Math.PI / 180);
+        let x = 90 + radius * Math.cos(rad) - 13; 
+        let y = 90 + radius * Math.sin(rad) - 13;
+
+        node.style.left = `${x}px`;
+        node.style.top = `${y}px`;
+
+        node.addEventListener("click", () => {
+          if (currentSettingType === 'start') startState.hour = i;
+          else endState.hour = i;
+          updateClockSelection();
+          updatePreviews();
+        });
+
+        clockWrapper.appendChild(node);
+      }
+      initDaysUI();
+    }
+
+    window.initDaysUI = function() {
+      const daysContainer = document.getElementById("days-container");
+      if (!daysContainer) return;
+      daysContainer.innerHTML = "";
+
+      const daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'جمعة', 'السبت'];
+      const daysEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      
+      const todayIndex = new Date().getDay();
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+
+      for (let i = 0; i < 6; i++) {
+        let btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `day-btn ${activeState.dayOffset === i ? 'active' : ''}`;
+        
+        let label = "";
+        if (currentLang === 'ar') {
+          label = (i === 0) ? "اليوم" : (i === 1) ? "غداً" : daysAr[(todayIndex + i) % 7];
+        } else {
+          label = (i === 0) ? "Today" : (i === 1) ? "Tomorrow" : daysEn[(todayIndex + i) % 7];
+        }
+
+        btn.textContent = label;
+        btn.setAttribute("data-dayoffset", i);
+        
+        btn.addEventListener("click", (e) => {
+          document.querySelectorAll(".day-btn").forEach(b => b.classList.remove("active"));
+          e.target.classList.add("active");
+          if (currentSettingType === 'start') startState.dayOffset = i;
+          else endState.dayOffset = i;
+        });
+        daysContainer.appendChild(btn);
+      }
+    }
+
+    function updateClockSelection() {
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+      document.querySelectorAll(".clock-node").forEach(node => {
+        const h = parseInt(node.getAttribute("data-hour"));
+        if (h === activeState.hour) {
+          node.classList.add("selected");
+        } else {
+          node.classList.remove("selected");
+        }
+      });
+    }
+
+    window.updatePreviews = function() {
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+      
+      let periodStr = "";
+      if (currentLang === 'ar') {
+        periodStr = activeState.isPM ? 'بعد الظهر' : 'صبح';
+      } else {
+        periodStr = activeState.isPM ? 'PM' : 'AM';
+      }
+
+      const formatString = (st) => {
+        let p = (currentLang === 'ar') ? (st.isPM ? 'بعد الظهر' : 'صبح') : (st.isPM ? 'PM' : 'AM');
+        return `${st.hour}:${String(st.minute).padStart(2, '0')} ${p}`;
+      };
+
+      document.getElementById("start-preview-text").textContent = formatString(startState);
+      document.getElementById("end-preview-text").textContent = formatString(endState);
+      
+      document.getElementById("period-icon").textContent = activeState.isPM ? "🌙" : "☀️";
+      document.getElementById("period-text").textContent = periodStr;
+      document.getElementById("minute-display").textContent = String(activeState.minute).padStart(2, '0');
+      updateClockSelection();
+    }
+
+    window.switchTimeType = function(type) {
+      currentSettingType = type;
+      const startBtn = document.getElementById("start-type-btn");
+      const endBtn = document.getElementById("end-type-btn");
+
+      if (type === 'start') {
+        startBtn.className = "time-type-btn active-start";
+        endBtn.className = "time-type-btn";
+      } else {
+        startBtn.className = "time-type-btn";
+        endBtn.className = "time-type-btn active-end";
+      }
+
+      initDaysUI();
+      updateClockSelection();
+      updatePreviews();
+    };
+
+    window.togglePeriod = function() {
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+      activeState.isPM = !activeState.isPM;
+      updatePreviews();
+    };
+
+    window.adjustMinute = function(val) {
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+      activeState.minute += val;
+      if (activeState.minute > 59) activeState.minute = 0;
+      if (activeState.minute < 0) activeState.minute = 59;
+      updatePreviews();
+    };
+
+    // تطبيق الضغط المباشر على زر الضبط السريع وحفظه بقاعدة البيانات فورا
+    window.applyQuickPreset = function(minutes) {
+      if (!currentDevice) return;
+
+      let now = new Date();
+      let startMs = now.getTime();
+      let endMs = startMs + (minutes * 60000);
+
+      set(ref(database, `timers/${currentDevice}`), { start: startMs, end: endMs }).then(() => {  
+        timerOverlay.style.display = "none";  
+        currentDevice = null;  
+      });
+    };
+
+    preRenderClockAndDays();
+
     document.querySelectorAll(".timer-icon").forEach(icon => {  
       icon.addEventListener("click", (e) => {  
         e.stopPropagation();  
         currentDevice = icon.getAttribute("data-device");  
+        
         timerOverlay.style.display = "flex";  
         document.getElementById("timer-popup-title").textContent = `${translations[currentLang].timerTitlePrefix}${currentDevice}`;  
-  
-        onValue(ref(database, `timers/${currentDevice}`), (snap) => {  
-          const data = snap.val();  
-          startInput.value = data?.start ? msToLocalDatetime(data.start) : msToLocalDatetime(Date.now());  
-          endInput.value = data?.end ? msToLocalDatetime(data.end) : msToLocalDatetime(Date.now() + 30 * 60000);  
-        }, { onlyOnce: true });  
+        switchTimeType('start');
+
+        get(ref(database, `timers/${currentDevice}`)).then((snap) => {
+          let now = new Date();
+          let startMs = now.getTime();
+          let endMs = startMs + 30 * 60000;
+
+          if (snap.exists() && snap.val()) {
+            if (snap.val().start) startMs = snap.val().start;
+            if (snap.val().end) endMs = snap.val().end;
+          }
+
+          const startDate = new Date(startMs);
+          let sHr = startDate.getHours();
+          startState.isPM = sHr >= 12;
+          startState.hour = sHr % 12 || 12;
+          startState.minute = startDate.getMinutes();
+          startState.dayOffset = 0;
+
+          const endDate = new Date(endMs);
+          let eHr = endDate.getHours();
+          endState.isPM = eHr >= 12;
+          endState.hour = eHr % 12 || 12;
+          endState.minute = endDate.getMinutes();
+          endState.dayOffset = 0;
+
+          updatePreviews();
+        }).catch(() => {});
       });  
     });  
-  
-    setCustomTimerBtn.addEventListener("click", () => {  
-      if (!currentDevice) return;  
-      const startMs = datetimeLocalToMs(startInput.value);  
-      const endMs = datetimeLocalToMs(endInput.value);  
-      if (!startMs || !endMs || startMs >= endMs) {  
-        timerOverlay.style.display = "none";  
-        currentDevice = null;  
-        return;  
-      }  
+
+    window.saveWallClockTimer = function() {
+      if (!currentDevice) return;
+
+      const calcTimestamp = (st) => {
+        let hr24 = st.hour;
+        if (!st.isPM && hr24 === 12) hr24 = 0;
+        else if (st.isPM && hr24 !== 12) hr24 += 12;
+
+        let d = new Date();
+        d.setDate(d.getDate() + st.dayOffset);
+        d.setHours(hr24, st.minute, 0, 0);
+        return d.getTime();
+      };
+
+      const startMs = calcTimestamp(startState);
+      const endMs = calcTimestamp(endState);
+
+      if (endMs <= startMs) {
+        alert(currentLang === 'ar' ? "تنبيه: وقت الإيقاف يجب أن يكون بعد وقت التشغيل!" : "Warning: End time must be after start time!");
+        return;
+      }
+
       set(ref(database, `timers/${currentDevice}`), { start: startMs, end: endMs }).then(() => {  
         timerOverlay.style.display = "none";  
         currentDevice = null;  
-      });  
-    });  
-  
-    cancelTimerBtn.addEventListener("click", () => {  
-      timerOverlay.style.display = "none";  
-      currentDevice = null;  
-    });  
-  
-    clearTimerBtn.addEventListener("click", () => {  
+      });
+    };
+
+    window.clearActiveTimer = function() {
       if (!currentDevice) return;  
       set(ref(database, `timers/${currentDevice}`), null).then(() => {  
         timerOverlay.style.display = "none";  
         currentDevice = null;  
-      });  
+      });
+    };
+
+    document.getElementById("cancel-timer-btn").addEventListener("click", () => {  
+      timerOverlay.style.display = "none";  
+      currentDevice = null;  
     });  
   }
 </script>
