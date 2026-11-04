@@ -46,12 +46,24 @@
     }
 
     * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.1s, opacity 0.2s ease;
-    }
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+}
+
+button,
+.card-stat,
+.single-power-card,
+.control-window,
+.theme-btn,
+.lang-btn {
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.1s;
+}
 
     body {
       background-color: var(--bg-color);
@@ -543,16 +555,17 @@
     }
 
     /* --- Timer Overlay & Dual Start/End Wall Clock --- */
-    #timer-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(5px);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
+#timer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
 
     .timer-card {
       background: var(--card-bg);
@@ -2057,44 +2070,75 @@
 
     preRenderClockAndDays();
 
-    document.querySelectorAll(".timer-icon").forEach(icon => {  
-      icon.addEventListener("click", (e) => {  
-        e.stopPropagation();  
-        currentDevice = icon.getAttribute("data-device");  
-        
-        timerOverlay.style.display = "flex";  
-        document.getElementById("timer-popup-title").textContent = `${translations[currentLang].timerTitlePrefix}${currentDevice}`;  
-        switchTimeType('start');
+document.querySelectorAll(".timer-icon").forEach(icon => {
 
-        get(ref(database, `timers/${currentDevice}`)).then((snap) => {
-          let now = new Date();
-          let startMs = now.getTime();
-          let endMs = startMs + 30 * 60000;
+    icon.addEventListener("click", function(e) {
+        e.stopPropagation();
 
-          if (snap.exists() && snap.val()) {
-            if (snap.val().start) startMs = snap.val().start;
-            if (snap.val().end) endMs = snap.val().end;
-          }
+        currentDevice = icon.getAttribute("data-device");
+        const device = currentDevice;
 
-          const startDate = new Date(startMs);
-          let sHr = startDate.getHours();
-          startState.isPM = sHr >= 12;
-          startState.hour = sHr % 12 || 12;
-          startState.minute = startDate.getMinutes();
-          startState.dayOffset = 0;
+        // 1. Open popup immediately
+        timerOverlay.style.display = "flex";
 
-          const endDate = new Date(endMs);
-          let eHr = endDate.getHours();
-          endState.isPM = eHr >= 12;
-          endState.hour = eHr % 12 || 12;
-          endState.minute = endDate.getMinutes();
-          endState.dayOffset = 0;
+        document.getElementById("timer-popup-title").textContent =
+            `${translations[currentLang].timerTitlePrefix}${device}`;
 
-          updatePreviews();
-        }).catch(() => {});
-      });  
-    });  
+        // 2. Display current default values immediately
+        switchTimeType("start");
 
+        // 3. Load saved timer after popup becomes visible
+        setTimeout(async () => {
+
+            try {
+                const timerRef = ref(database, `timers/${device}`);
+                const snapshot = await get(timerRef);
+
+                // User may have closed popup or selected another device
+                if (currentDevice !== device) return;
+
+                const now = new Date();
+
+                let startMs = now.getTime();
+                let endMs = startMs + 30 * 60000;
+
+                if (snapshot.exists()) {
+                    const timerData = snapshot.val();
+
+                    if (timerData.start) {
+                        startMs = timerData.start;
+                    }
+
+                    if (timerData.end) {
+                        endMs = timerData.end;
+                    }
+                }
+
+                // Convert saved timestamps to clock values
+                const startDate = new Date(startMs);
+                const endDate = new Date(endMs);
+
+                startState.hour = startDate.getHours() % 12 || 12;
+                startState.isPM = startDate.getHours() >= 12;
+                startState.minute = startDate.getMinutes();
+                startState.dayOffset = 0;
+
+                endState.hour = endDate.getHours() % 12 || 12;
+                endState.isPM = endDate.getHours() >= 12;
+                endState.minute = endDate.getMinutes();
+                endState.dayOffset = 0;
+
+                updatePreviews();
+
+            } catch (error) {
+                console.error("Failed to load timer:", error);
+            }
+
+        }, 100);
+
+    });
+
+});
     window.saveWallClockTimer = function() {
       if (!currentDevice) return;
 
