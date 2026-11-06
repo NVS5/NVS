@@ -1806,6 +1806,27 @@ button,
           if (statusText) statusText.innerText = "OFF";
         }
       });
+      
+        // --- مراقبة وحذف سجلات الإشعارات إذا بلغت 4 خانات أو أكثر ---
+  onValue(ref(database, "notification_logs"), (snapshot) => {
+    if (snapshot.exists()) {
+      const logsData = snapshot.val();
+      // حساب عدد الخانات (العناصر) الموجودة داخل المسار
+      const logsCount = typeof logsData === 'object' ? Object.keys(logsData).length : 0;
+      
+      if (logsCount >= 4) {
+        // حذف مسار notification_logs بالكامل عند الوصول لـ 4 خانات أو أكثر
+        set(ref(database, "notification_logs"), null)
+          .then(() => {
+            console.log("notification_logs path deleted successfully because it reached 4 or more entries.");
+          })
+          .catch((error) => {
+            console.error("Error deleting notification_logs:", error);
+          });
+      }
+    }
+  });
+
 
       let pressTimer = null;
       let isLongPress = false;
