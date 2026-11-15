@@ -25,7 +25,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationOptions = {
   body: body,
   icon: '/NVS/logo.png',
-  badge: '/NVS/logo.png',
+  badge: '/NVS/logo1.png',
   vibrate: [300, 150, 300, 150, 300],
   tag: payload.data?.type || 'nova-alert',
   renotify: true,
