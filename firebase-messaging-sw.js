@@ -23,12 +23,16 @@ messaging.onBackgroundMessage((payload) => {
   const targetUrl = payload.data?.url || 'https://nvs5.github.io/NVS/index.html';
 
   const notificationOptions = {
-    body: body,
-    icon: '/NVS/logo.png',
-    data: {
-      url: targetUrl
-    }
-  };
+  body: body,
+  icon: '/NVS/logo.png',
+  badge: '/NVS/logo.png',
+  vibrate: [300, 150, 300, 150, 300],
+  tag: payload.data?.type || 'nova-alert',
+  renotify: true,
+  requireInteraction: true,
+  silent: false,
+  data: { url: targetUrl }
+};
 
   // إرجاع النتيجة مباشرة لضمان عدم إظهار إشعار النظام التلقائي
   return self.registration.showNotification(title, notificationOptions);
