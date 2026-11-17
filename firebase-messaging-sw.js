@@ -15,7 +15,7 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// معالجة واستقبال الإشعار في الخلفية (Popup / منبثق مثل الواتساب)
+// معالجة واستقبال الإشعار في الخلفية
 messaging.onBackgroundMessage((payload) => {
   const title = payload.data?.title || 'Nova Smart 🚨';
   const body = payload.data?.body || 'تنبيه جديد من النظام';
@@ -23,20 +23,21 @@ messaging.onBackgroundMessage((payload) => {
 
   const notificationOptions = {
     body: body,
-    icon: '/NVS/logo.png', // ظهور لوغو الشركة في الإشعار
-    badge: '/NVS/logo1.png',
-    vibrate: [200, 100, 200],
+    icon: '/NVS/logo.png',     // الشعار الكبير الملون على اليسار داخل الإشعار
+    badge: '/NVS/1794939365614.jpg',   // أيقونة شريط الحالة العلوي (يجب أن تكون شفافة وذات لون أبيض)[span_1](start_span)[span_1](end_span)
     data: {
       url: targetUrl
     }
   };
 
+  // إرجاع النتيجة مباشرة لضمان عدم إظهار إشعار النظام التلقائي[span_2](start_span)[span_2](end_span)
   return self.registration.showNotification(title, notificationOptions);
 });
 
-// التعامل مع النقر على الإشعار وفتح التطبيق
+// التعامل مع النقر على الإشعار
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
   const urlToOpen = event.notification.data?.url || 'https://nvs5.github.io/NVS/index.html';
 
   event.waitUntil(
