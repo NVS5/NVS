@@ -15,41 +15,38 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// معالجة واستقبال الإشعار في الخلفية
+// معالجة واستقبال الإشعار في الخلفية (Popup / منبثق مثل الواتساب)
 messaging.onBackgroundMessage((payload) => {
-  // قراءة البيانات المباشرة الممررة داخل كائن data
   const title = payload.data?.title || 'Nova Smart 🚨';
   const body = payload.data?.body || 'تنبيه جديد من النظام';
   const targetUrl = payload.data?.url || 'https://nvs5.github.io/NVS/index.html';
 
   const notificationOptions = {
     body: body,
-    icon: '/NVS/logo.png',
+    icon: '/NVS/logo.png', // ظهور لوغو الشركة في الإشعار
+    badge: '/NVS/logo.png',
+    vibrate: [200, 100, 200],
     data: {
       url: targetUrl
     }
   };
 
-  // إرجاع النتيجة مباشرة لضمان عدم إظهار إشعار النظام التلقائي
   return self.registration.showNotification(title, notificationOptions);
 });
 
-// التعامل مع النقر على الإشعار
+// التعامل مع النقر على الإشعار وفتح التطبيق
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-
   const urlToOpen = event.notification.data?.url || 'https://nvs5.github.io/NVS/index.html';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      // إذا كانت الصفحة مفتوحة يتم الانتقال إليها والتركيز عليها
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
         if (client.url === urlToOpen && 'focus' in client) {
           return client.focus();
         }
       }
-      // إذا كانت الصفحة مغلقة يتم فتح نافذة جديدة
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }
