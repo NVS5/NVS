@@ -554,6 +554,32 @@ button,
       border: 1px solid var(--card-border);
     }
 
+    /* --- بانر طلب الإذن للإشعارات --- */
+    .notif-permission-banner {
+      background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      box-shadow: var(--box-shadow);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .notif-permission-banner button {
+      background: white;
+      color: var(--accent-blue);
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
     /* --- Timer Overlay & Dual Start/End Wall Clock --- */
 #timer-overlay {
   display: none;
@@ -1175,6 +1201,12 @@ button,
       </div>
     </header>
 
+    <!-- بانر طلب الإذن للإشعارات عند تسجيل الدخول الأول -->
+    <div id="notif-permission-banner" class="notif-permission-banner">
+      <span id="notif-banner-text">🔔 تفعيل الإشعارات الفورية المنبثقة للتنبيهات</span>
+      <button id="enable-notif-btn">سماح / Allow</button>
+    </div>
+
     <!-- Sensors Section -->
     <div class="top-grid">
       <div class="card-stat">
@@ -1470,7 +1502,7 @@ button,
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
   import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-  import { getMessaging } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
+  import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
 
   const firebaseConfig = {  
     apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
@@ -1538,7 +1570,8 @@ button,
       applyBtn: "Apply ✓",
       clearBtn: "Clear & Delete Timer",
       quickSetTitle: "Quick Set",
-      setTimerTitle: "Set timer"
+      setTimerTitle: "Set timer",
+      notifBannerText: "🔔 Enable instant push notifications for alerts"
     },
     ar: {
       connecting: "جاري الاتصال...",
@@ -1587,11 +1620,13 @@ button,
       applyBtn: "تشغيل ✓",
       clearBtn: "إلغاء وتفريغ المؤقت",
       quickSetTitle: "الضبط السريع",
-      setTimerTitle: "ضبط توقيت"
+      setTimerTitle: "ضبط توقيت",
+      notifBannerText: "🔔 تفعيل الإشعارات الفورية المنبثقة للتنبيهات"
     }
   };
 
   let currentLang = savedLang;
+  let loggedInUserUid = null;
   let lastPowerValue = null;
 
   function setLanguage(lang) {
@@ -1621,6 +1656,8 @@ button,
     });
 
     document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
+    const bannerText = document.getElementById('notif-banner-text');
+    if (bannerText) bannerText.textContent = translations[currentLang].notifBannerText;
     
     document.getElementById('lbl-start-title').textContent = translations[currentLang].startTitle;
     document.getElementById('lbl-end-title').textContent = translations[currentLang].endTitle;
@@ -1698,12 +1735,65 @@ button,
     setTimeout(() => { loadingScreen.style.display = "none"; }, 300);
   }
 
+  // --- دالة طلب إذن الإشعارات وحفظ التوكن شخصياً في مسار fcm_tokens ---
+  async function requestAndSaveUserToken() {
+    try {
+      if ('serviceWorker' in navigator) {
+        await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+        
+        const swReg = await navigator.serviceWorker.ready;
+        const currentToken = await getToken(messaging, { serviceWorkerRegistration: swReg });
+
+        if (currentToken && loggedInUserUid) {
+          // حفظ التوكن في مسار fcm_tokens وربطه بحساب العميل الشخصي (بواسطة الـ UID الخاص به)
+          await set(ref(database, `fcm_tokens/${loggedInUserUid}`), {
+            token: currentToken,
+            email: auth.currentUser?.email || "",
+            timestamp: Date.now()
+          });
+          console.log("FCM Token successfully saved for user under fcm_tokens:", currentToken);
+          
+          const banner = document.getElementById('notif-permission-banner');
+          if (banner) banner.style.display = 'none';
+        } else {
+          console.log('No FCM registration token available or user not logged in.');
+        }
+      } else {
+        console.log('Notification permission denied by user.');
+      }
+    } catch (err) {
+      console.error('Error in requestAndSaveUserToken:', err);
+    }
+  }
+
+  function checkAndPromptNotifications() {
+    if (Notification.permission !== 'granted') {
+      const banner = document.getElementById('notif-permission-banner');
+      if (banner) {
+        banner.style.display = 'flex';
+        document.getElementById('notif-banner-text').textContent = translations[currentLang].notifBannerText;
+      }
+    } else {
+      requestAndSaveUserToken();
+    }
+  }
+
+  document.getElementById('enable-notif-btn').addEventListener('click', requestAndSaveUserToken);
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      loggedInUserUid = user.uid; // الاحتفاظ بمعرف العميل الشخصي
       loginPopup.style.display = "none";
       hideLoading();
+      checkAndPromptNotifications(); // طلب الإذن وفحص الحجز فور تسجيل الدخول
       initSmartHomeApp();
     } else {
+      loggedInUserUid = null;
       loadingScreen.style.display = "none";
       loginPopup.style.display = "flex";
     }
@@ -1807,26 +1897,23 @@ button,
         }
       });
       
-        // --- مراقبة وحذف سجلات الإشعارات إذا بلغت 4 خانات أو أكثر ---
-  onValue(ref(database, "notification_logs"), (snapshot) => {
-    if (snapshot.exists()) {
-      const logsData = snapshot.val();
-      // حساب عدد الخانات (العناصر) الموجودة داخل المسار
-      const logsCount = typeof logsData === 'object' ? Object.keys(logsData).length : 0;
-      
-      if (logsCount >= 4) {
-        // حذف مسار notification_logs بالكامل عند الوصول لـ 4 خانات أو أكثر
-        set(ref(database, "notification_logs"), null)
-          .then(() => {
-            console.log("notification_logs path deleted successfully because it reached 4 or more entries.");
-          })
-          .catch((error) => {
-            console.error("Error deleting notification_logs:", error);
-          });
-      }
-    }
-  });
-
+      // --- مراقبة وحذف سجلات الإشعارات إذا بلغت 4 خانات أو أكثر ---
+      onValue(ref(database, "notification_logs"), (snapshot) => {
+        if (snapshot.exists()) {
+          const logsData = snapshot.val();
+          const logsCount = typeof logsData === 'object' ? Object.keys(logsData).length : 0;
+          
+          if (logsCount >= 4) {
+            set(ref(database, "notification_logs"), null)
+              .then(() => {
+                console.log("notification_logs path deleted successfully because it reached 4 or more entries.");
+              })
+              .catch((error) => {
+                console.error("Error deleting notification_logs:", error);
+              });
+          }
+        }
+      });
 
       let pressTimer = null;
       let isLongPress = false;
@@ -1931,7 +2018,6 @@ button,
 
     onValue(ref(database, "output/devices/kahrba"), (snap) => { updatePowerUI(snap.val()); });  
   
-    // --- Optimized Timer Logic ---
     let currentDevice = null;
     let currentSettingType = 'start'; 
 
@@ -2075,7 +2161,6 @@ button,
       updatePreviews();
     };
 
-    // تطبيق الضغط المباشر على زر الضبط السريع وحفظه بقاعدة البيانات فورا
     window.applyQuickPreset = function(minutes) {
       if (!currentDevice) return;
 
@@ -2091,75 +2176,57 @@ button,
 
     preRenderClockAndDays();
 
-document.querySelectorAll(".timer-icon").forEach(icon => {
-
-    icon.addEventListener("click", function(e) {
+    document.querySelectorAll(".timer-icon").forEach(icon => {
+      icon.addEventListener("click", function(e) {
         e.stopPropagation();
 
         currentDevice = icon.getAttribute("data-device");
         const device = currentDevice;
 
-        // 1. Open popup immediately
         timerOverlay.style.display = "flex";
-
         document.getElementById("timer-popup-title").textContent =
             `${translations[currentLang].timerTitlePrefix}${device}`;
 
-        // 2. Display current default values immediately
         switchTimeType("start");
 
-        // 3. Load saved timer after popup becomes visible
         setTimeout(async () => {
+          try {
+            const timerRef = ref(database, `timers/${device}`);
+            const snapshot = await get(timerRef);
 
-            try {
-                const timerRef = ref(database, `timers/${device}`);
-                const snapshot = await get(timerRef);
+            if (currentDevice !== device) return;
 
-                // User may have closed popup or selected another device
-                if (currentDevice !== device) return;
+            const now = new Date();
+            let startMs = now.getTime();
+            let endMs = startMs + 30 * 60000;
 
-                const now = new Date();
-
-                let startMs = now.getTime();
-                let endMs = startMs + 30 * 60000;
-
-                if (snapshot.exists()) {
-                    const timerData = snapshot.val();
-
-                    if (timerData.start) {
-                        startMs = timerData.start;
-                    }
-
-                    if (timerData.end) {
-                        endMs = timerData.end;
-                    }
-                }
-
-                // Convert saved timestamps to clock values
-                const startDate = new Date(startMs);
-                const endDate = new Date(endMs);
-
-                startState.hour = startDate.getHours() % 12 || 12;
-                startState.isPM = startDate.getHours() >= 12;
-                startState.minute = startDate.getMinutes();
-                startState.dayOffset = 0;
-
-                endState.hour = endDate.getHours() % 12 || 12;
-                endState.isPM = endDate.getHours() >= 12;
-                endState.minute = endDate.getMinutes();
-                endState.dayOffset = 0;
-
-                updatePreviews();
-
-            } catch (error) {
-                console.error("Failed to load timer:", error);
+            if (snapshot.exists()) {
+              const timerData = snapshot.val();
+              if (timerData.start) startMs = timerData.start;
+              if (timerData.end) endMs = timerData.end;
             }
 
-        }, 100);
+            const startDate = new Date(startMs);
+            const endDate = new Date(endMs);
 
+            startState.hour = startDate.getHours() % 12 || 12;
+            startState.isPM = startDate.getHours() >= 12;
+            startState.minute = startDate.getMinutes();
+            startState.dayOffset = 0;
+
+            endState.hour = endDate.getHours() % 12 || 12;
+            endState.isPM = endDate.getHours() >= 12;
+            endState.minute = endDate.getMinutes();
+            endState.dayOffset = 0;
+
+            updatePreviews();
+          } catch (error) {
+            console.error("Failed to load timer:", error);
+          }
+        }, 100);
+      });
     });
 
-});
     window.saveWallClockTimer = function() {
       if (!currentDevice) return;
 
