@@ -24,7 +24,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationOptions = {
     body: body,
     icon: '/NVS/logo.png', // ظهور لوغو الشركة في الإشعار
-    badge: '/NVS/logo.png',
+    badge: '/NVS/logo1.png',
     vibrate: [200, 100, 200],
     data: {
       url: targetUrl
