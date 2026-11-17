@@ -1,1 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova Smart</title>
+  
+  <link rel="manifest" href="manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Nova Smart" />
+  <link rel="apple-touch-icon" href="logo.png" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #94a3b8;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark-mode {
+      --bg-color: #0b0f19;
+      --card-bg: #151c2c;
+      --card-border: #222d45;
+      --text-main: #ffffff;
+      --text-sub: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .theme-btn, .lang-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--box-shadow);
+    }
+
+    /* زر تفعيل الإشعارات العائم أو العلوي */
+    .notification-banner {
+      background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      box-shadow: var(--box-shadow);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .notification-banner button {
+      background: white;
+      color: var(--accent-blue);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-sub);
+      font-weight: 700;
+      margin-bottom: 12px;
+      margin-top: 10px;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-stat {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .tank-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 90px;
+    }
+
+    .tank-container {
+      position: relative;
+      width: 50px;
+      height: 80px;
+      border: 2px solid var(--accent-blue);
+      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.05);
+      overflow: hidden;
+    }
+
+    .tank-fill {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+      border-radius: 0 0 4px 4px;
+      transition: height 0.5s ease;
+    }
+
+    .tank-details h3 { font-size: 22px; font-weight: 800; }
+    .tank-details p { font-size: 12px; color: var(--text-sub); }
+
+    .temp-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 90px;
+    }
+
+    .temp-val { font-size: 28px; font-weight: 800; color: var(--accent-red); }
+    .temp-lbl { font-size: 11px; color: var(--text-sub); font-weight: 600; }
+
+    .single-power-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .power-info { display: flex; align-items: center; gap: 16px; }
+    .power-icon-wrap {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: rgba(148, 163, 184, 0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: var(--text-sub);
+    }
+    .power-details h3 { font-size: 16px; font-weight: 800; color: var(--text-main); }
+    .power-details p { font-size: 12px; color: var(--text-sub); font-weight: 600; margin-top: 2px; }
+    .power-badge { font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 10px; background: rgba(148, 163, 184, 0.1); color: var(--text-sub); }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .control-window {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 110px;
+      box-shadow: var(--box-shadow);
+      cursor: pointer;
+    }
+
+    .window-top { display: flex; justify-content: space-between; align-items: center; }
+    .window-icon { font-size: 20px; color: var(--text-sub); }
+    .window-title { font-size: 13px; font-weight: 700; }
+
+    #loading-screen {
+      position: fixed; inset: 0; background: var(--bg-color);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 9999999; transition: opacity 0.3s ease;
+    }
+    .loader {
+      width: 50px; height: 50px; border: 4px solid var(--card-border);
+      border-top: 4px solid var(--accent-blue); border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .loading-text { margin-top: 15px; font-size: 14px; color: var(--text-sub); font-weight: 600; }
+
+    #login-popup {
+      position: fixed; inset: 0; background: var(--bg-color);
+      z-index: 999999; display: flex; justify-content: center; align-items: center;
+    }
+    .login-box {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      padding: 30px; border-radius: 20px; width: 90%; max-width: 360px;
+      box-shadow: var(--box-shadow); text-align: center;
+    }
+    .login-box h2 { margin-bottom: 20px; font-size: 20px; color: var(--accent-blue); font-weight: 800; }
+    .login-box input {
+      width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 10px;
+      border: 1px solid var(--card-border); background: var(--bg-color); color: var(--text-main); outline: none;
+    }
+    .login-box button {
+      width: 100%; padding: 12px; background: var(--accent-blue); border: none;
+      color: white; font-weight: 700; border-radius: 10px; cursor: pointer;
+    }
+    .login-box .error-msg { color: var(--accent-red); font-size: 12px; margin-top: 12px; display: none; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader"></div>
+    <div class="loading-text" data-i18n="connecting">Connecting...</div>
+  </div>
+
+  <!-- Login Popup -->
+  <div id="login-popup" style="display: none;">
+    <div class="login-box">
+      <h2 data-i18n="loginTitle">Control Panel Login</h2>
+      <input type="email" id="login-email" placeholder="Email" autocomplete="username" required />
+      <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required />
+      <button id="login-btn" data-i18n="loginBtn">Login</button>
+      <div class="error-msg" id="login-error">Login failed! Please check your credentials.</div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <header>
+      <div class="header-brand">
+        <img src="logo.png" alt="Logo" class="logo" id="appLogo" />
+        <h1>Nova Smart</h1>
+      </div>
+      <div class="header-controls">
+        <button class="lang-btn" id="langBtn">العربية</button>
+        <button class="theme-btn" id="themeBtn">🌙 Dark</button>
+      </div>
+    </header>
+
+    <!-- تنبيه طلب الإشعارات اليدوي لضمان ظهور النافذة وحفظ الـ Token -->
+    <div id="notif-banner" class="notification-banner" style="display: none;">
+      <span>🔔 تفعيل الإشعارات المنبثقة للتنبيهات</span>
+      <button id="enable-notif-btn">سماح</button>
+    </div>
+
+    <!-- Sensors Section -->
+    <div class="top-grid">
+      <div class="card-stat">
+        <div class="tank-box">
+          <div class="tank-container">
+            <div id="water-bar" class="tank-fill"></div>
+          </div>
+          <div class="tank-details">
+            <h3 id="water-value">0%</h3>
+            <p data-i18n="waterLevel">Water Level</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-stat">
+        <div class="temp-box">
+          <span class="temp-val" id="temperature-value">0°C</span>
+          <span class="temp-lbl" data-i18n="temperature">Temperature</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Power Source Section -->
+    <div class="section-title">Power Source</div>
+    <div class="single-power-card" id="power-card">
+      <div class="power-info">
+        <div class="power-icon-wrap" id="power-icon-wrap">
+          <i class="fa-solid fa-power-off" id="power-icon"></i>
+        </div>
+        <div class="power-details">
+          <h3 id="power-title">Disconnected</h3>
+          <p id="power-desc">No active power source</p>
+        </div>
+      </div>
+      <span class="power-badge" id="power-status">OFF</span>
+    </div>
+
+    <!-- Controls Grid Section -->
+    <div class="section-title">Controls</div>
+    <div class="controls-grid">
+      <div class="control-window" id="waterpump-card">
+        <div class="window-top">
+          <i class="fa-solid fa-faucet-drip window-icon"></i>
+        </div>
+        <div class="window-title">Water Pump</div>
+      </div>
+      <div class="control-window" id="heater-card">
+        <div class="window-top">
+          <i class="fa-solid fa-temperature-arrow-up window-icon"></i>
+        </div>
+        <div class="window-title">Heater</div>
+      </div>
+    </div>
+  </div>
+
+<!-- Firebase & App Script -->
+<script type="module">  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
+  import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
+
+  const firebaseConfig = {  
+    apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
+    authDomain: "smarthome-ad84f.firebaseapp.com",  
+    databaseURL: "https://smarthome-ad84f-default-rtdb.firebaseio.com",  
+    projectId: "smarthome-ad84f",  
+    storageBucket: "smarthome-ad84f.appspot.com",  
+    messagingSenderId: "849228056680",  
+    appId: "1:849228056680:web:09fa91eaca63dc148953dd"  
+  };  
+
+  const app = initializeApp(firebaseConfig);  
+  const database = getDatabase(app);  
+  const auth = getAuth(app);
+  const messaging = getMessaging(app);
+
+  let savedLang = localStorage.getItem('nova_lang') || 'en';
+  let savedTheme = localStorage.getItem('nova_theme') || 'light';
+
+  const translations = {
+    en: { connecting: "Connecting...", loginTitle: "Control Panel Login", loginBtn: "Login", waterLevel: "Water Level", temperature: "Temperature" },
+    ar: { connecting: "جاري الاتصال...", loginTitle: "تسجيل دخول لوحة التحكم", loginBtn: "تسجيل الدخول", waterLevel: "مستوى المياه", temperature: "درجة الحرارة" }
+  };
+
+  let currentLang = savedLang;
+
+  // تسجيل الـ Service Worker وطلب الـ Token عند الضغط على زر السماح
+  async function requestAndSaveFCMToken() {
+    try {
+      // 1. تسجيل ملف الـ Service Worker بشكل صريح ومحدد النطاق
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+        console.log('Service Worker registered with scope:', registration.scope);
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+        
+        // استخراج الـ FCM Token الخاص بالجهاز (ملاحظة: تأكد من وضع VapidKey الخاص بمشروعك إن وجد، أو تركه فارغاً إذا كان مدعوماً افتراضياً)
+        const currentToken = await getToken(messaging, { 
+          serviceWorkerRegistration: await navigator.serviceWorker.ready 
+        });
+
+        if (currentToken) {
+          const tokenCleanId = currentToken.substring(0, 30).replace(/[^a-zA-Z0-9]/g, "_");
+          // حفظ التوكن تحت مسار fcm_tokens كما يطلبه الكلاود
+          await set(ref(database, `fcm_tokens/${tokenCleanId}`), {
+            token: currentToken,
+            timestamp: Date.now()
+          });
+          console.log("FCM Token saved successfully in fcm_tokens path:", currentToken);
+          document.getElementById('notif-banner').style.display = 'none';
+        } else {
+          console.log('No registration token available.');
+        }
+      } else {
+        alert('تم رفض إذن الإشعارات. يرجى السماح بها من إعدادات المتصفح.');
+      }
+    } catch (err) {
+      console.error('Error in FCM setup:', err);
+    }
+  }
+
+  // التحقق مما إذا كان الإذن ممنوحاً مسبقاً أم لا لإظهار زر التفعيل
+  function checkNotificationStatus() {
+    if (Notification.permission !== 'granted') {
+      document.getElementById('notif-banner').style.display = 'flex';
+    } else {
+      // إذا كان ممنوحاً مسبقاً، نقوم بتحديث الـ Token تلقائياً في الخلفية
+      requestAndSaveFCMToken();
+    }
+  }
+
+  document.getElementById('enable-notif-btn').addEventListener('click', requestAndSaveFCMToken);
+
+  const loadingScreen = document.getElementById("loading-screen");
+  const loginPopup = document.getElementById("login-popup");
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginPopup.style.display = "none";
+      loadingScreen.style.opacity = "0";
+      setTimeout(() => { loadingScreen.style.display = "none"; }, 300);
+      
+      // فحص حالة الإشعارات فور دخول المستخدم
+      checkNotificationStatus();
+      initSmartHomeApp();
+    } else {
+      loadingScreen.style.display = "none";
+      loginPopup.style.display = "flex";
+    }
+  });
+
+  function handleLogin() {
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+    if (!email || !password) return;
+
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => signInWithEmailAndPassword(auth, email, password))
+      .catch((error) => {
+        document.getElementById("login-error").style.display = "block";
+      });
+  }
+
+  document.getElementById("login-btn").addEventListener("click", handleLogin);
+
+  function initSmartHomeApp() {
+    onValue(ref(database, "temperature"), (snap) => {  
+      document.getElementById("temperature-value").innerText = `${snap.val() || 0}°C`;  
+    });  
+  
+    onValue(ref(database, "waterLevel"), (snap) => {  
+      const level = snap.val() || 0;  
+      document.getElementById("water-bar").style.height = `${level}%`;  
+      document.getElementById("water-value").innerText = `${level}%`;  
+    });  
+  }
+</script>
+
+</body>
+</html>
