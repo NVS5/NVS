@@ -1,1 +1,2215 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova Smart</title>
+  
+  <link rel="manifest" href="manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Nova Smart" />
+  <link rel="apple-touch-icon" href="logo.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #94a3b8;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+      --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark-mode {
+      --bg-color: #0b0f19;
+      --card-bg: #151c2c;
+      --card-border: #222d45;
+      --text-main: #ffffff;
+      --text-sub: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+    }
+
+    button,
+    .card-stat,
+    .single-power-card,
+    .control-window,
+    .theme-btn,
+    .lang-btn {
+      transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        transform 0.1s;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .logo:active {
+      transform: scale(0.9);
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .theme-btn, .lang-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--box-shadow);
+    }
+
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-sub);
+      font-weight: 700;
+      margin-bottom: 12px;
+      margin-top: 10px;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-stat {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .tank-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 90px;
+    }
+
+    .tank-container {
+      position: relative;
+      width: 50px;
+      height: 80px;
+      border: 2px solid var(--accent-blue);
+      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.05);
+      overflow: hidden;
+    }
+
+    .tank-fill {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+      border-radius: 0 0 4px 4px;
+      transition: height 0.5s ease;
+    }
+
+    .bubble {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      bottom: 0;
+      animation: rise 3s infinite ease-in;
+    }
+    .b1 { width: 4px; height: 4px; left: 30%; animation-duration: 2.5s; }
+    .b2 { width: 6px; height: 6px; left: 60%; animation-duration: 3.2s; animation-delay: 0.5s; }
+
+    @keyframes rise {
+      0% { bottom: -5px; opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { bottom: 100%; opacity: 0; }
+    }
+
+    .tank-details h3 {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .tank-details p {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .temp-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 90px;
+    }
+
+    .temp-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-red);
+    }
+
+    .temp-lbl {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .single-power-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .power-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .power-icon-wrap {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(148, 163, 184, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--text-sub);
+    }
+
+    .power-details h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .power-details p {
+      font-size: 12px;
+      color: var(--text-sub);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .power-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--text-sub);
+    }
+
+    .single-power-card.grid {
+      border-color: var(--accent-blue);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(37, 99, 235, 0.08) 100%);
+    }
+    .single-power-card.grid .power-icon-wrap {
+      background: rgba(37, 99, 235, 0.15);
+      color: var(--accent-blue);
+    }
+    .single-power-card.grid .power-badge {
+      background: rgba(37, 99, 235, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .single-power-card.generator {
+      border-color: var(--accent-amber);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(217, 119, 6, 0.08) 100%);
+    }
+    .single-power-card.generator .power-icon-wrap {
+      background: rgba(217, 119, 6, 0.15);
+      color: var(--accent-amber);
+    }
+    .single-power-card.generator .power-badge {
+      background: rgba(217, 119, 6, 0.15);
+      color: var(--accent-amber);
+    }
+
+    .single-power-card.solar {
+      border-color: var(--accent-green);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(5, 150, 105, 0.08) 100%);
+    }
+    .single-power-card.solar .power-icon-wrap {
+      background: rgba(5, 150, 105, 0.15);
+      color: var(--accent-green);
+    }
+    .single-power-card.solar .power-badge {
+      background: rgba(5, 150, 105, 0.15);
+      color: var(--accent-green);
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .control-window {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 110px;
+      box-shadow: var(--box-shadow);
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      position: relative;
+    }
+
+    .control-window:active {
+      transform: scale(0.97);
+    }
+
+    .control-window.on {
+      border-color: var(--accent-blue);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(59, 130, 246, 0.08) 100%);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .control-window.auto {
+      border-color: var(--accent-amber);
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(245, 158, 11, 0.08) 100%);
+    }
+
+    .control-window.timer-locked {
+      border-color: var(--accent-purple) !important;
+      background: linear-gradient(135deg, var(--card-bg) 0%, rgba(139, 92, 246, 0.1) 100%) !important;
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    .window-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-icon {
+      font-size: 20px;
+      color: var(--text-sub);
+    }
+
+    .control-window.on .window-icon { color: var(--accent-blue); }
+    .control-window.auto .window-icon { color: var(--accent-amber); }
+    .control-window.timer-locked .window-icon { color: var(--accent-purple); }
+
+    .status-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-sub);
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body.dark-mode .status-tag {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .control-window.on .status-tag {
+      color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.15);
+    }
+
+    .control-window.auto .status-tag {
+      color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.15);
+    }
+
+    .control-window.timer-locked .status-tag {
+      color: var(--accent-purple);
+      background: rgba(139, 92, 246, 0.15);
+    }
+
+    .window-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .timer-icon {
+      font-size: 14px;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: color 0.3s ease;
+      padding: 4px;
+    }
+    .timer-icon:hover { color: var(--accent-blue); }
+
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-15deg); }
+      75% { transform: rotate(15deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .timer-active {
+      animation: shake 0.5s infinite;
+      color: var(--accent-amber) !important;
+    }
+
+    .status-led {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: none;
+    }
+    .status-led.show { display: inline-block; }
+    .status-led.green { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+    .status-led.black { background: #000; }
+
+    #timer-overlay,
+    #remote-menu-popup,
+    #remote-popup,
+    #ac-popup,
+    #logout-confirm-modal {
+      cursor: pointer;
+    }
+
+    .timer-card,
+    .remote-menu-card,
+    .remote,
+    .ac-remote,
+    .confirm-card {
+      cursor: default;
+    }
+
+    .custom-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 999999;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .confirm-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 32px 24px 24px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      position: relative;
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .confirm-icon-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: rgba(220, 38, 38, 0.1);
+      color: var(--accent-red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 20px;
+    }
+
+    .confirm-card h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .confirm-card p {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.5;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .confirm-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .confirm-btn-primary {
+      background: var(--accent-red);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    }
+
+    .confirm-btn-secondary {
+      background: var(--bg-color);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    /* --- Timer Overlay & Dual Start/End Wall Clock --- */
+    #timer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timer-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 18px;
+      border-radius: 28px;
+      color: var(--text-main);
+      width: 92%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    .timer-card h3 { 
+      font-size: 18px; 
+      margin-bottom: 10px; 
+      font-weight: 800; 
+    }
+
+    /* --- تصميم الأقسام المنفصلة --- */
+    .timer-section-box {
+      background: var(--bg-color);
+      border: 1.5px solid var(--card-border);
+      border-radius: 16px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .section-label-inner {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+      text-align: start;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .quick-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .preset-btn {
+      padding: 6px 2px;
+      background: var(--card-bg);
+      border: 1px solid var(--accent-blue);
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-blue);
+      cursor: pointer;
+    }
+    .preset-btn:active {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .time-type-switch {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .time-type-btn {
+      flex: 1;
+      padding: 6px;
+      border: 1.5px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text-main);
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .time-type-btn.active-start {
+      background: rgba(5, 150, 105, 0.1);
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .time-type-btn.active-end {
+      background: rgba(220, 38, 38, 0.1);
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .day-btn {
+      padding: 6px 4px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .day-btn.active {
+      background: rgba(37, 99, 235, 0.15);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .wall-clock-wrapper {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 8px;
+      background: var(--card-bg);
+      border: 4px solid var(--card-border);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .clock-center-btn {
+      position: absolute;
+      background: var(--bg-color);
+      border: 2px solid var(--card-border);
+      padding: 4px 8px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-main);
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .clock-center-btn:active {
+      transform: scale(0.95);
+    }
+
+    .clock-node {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      background: var(--bg-color);
+      border: 1.5px solid var(--card-border);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      z-index: 5;
+    }
+    .clock-node:hover, .clock-node.selected {
+      background: var(--accent-blue);
+      color: white;
+      border-color: var(--accent-blue);
+      transform: scale(1.15);
+    }
+
+    .minutes-control-box {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .step-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1.5px solid var(--card-border);
+      background: var(--bg-color);
+      color: var(--accent-blue);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-btn:active {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .timer-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .timer-card button.t-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      color: white;
+    }
+
+    #cancel-timer-btn { background-color: var(--bg-color); color: var(--text-main); border: 1px solid var(--card-border) !important; }
+    #clear-timer-btn { background-color: var(--accent-red); width: 100%; margin-top: 6px; padding: 6px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; color: white; font-size: 12px; }
+
+    /* Selection Popup (IR Menu) */
+    #remote-menu-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px);
+      z-index: 99998;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .remote-menu-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      position: relative;
+    }
+
+    .remote-menu-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    .remote-options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .remote-option-btn {
+      background: var(--bg-color);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .remote-option-btn i {
+      font-size: 26px;
+      color: var(--accent-blue);
+    }
+
+    .remote-option-btn:hover, .remote-option-btn:active {
+      border-color: var(--accent-blue);
+      background: rgba(37, 99, 235, 0.08);
+      transform: translateY(-2px);
+    }
+
+    /* TV Remote Popup */
+    #remote-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 99999;
+      overflow: auto;
+    }
+
+    .remote {
+      width: 280px;
+      background: #0f0f0f;
+      border-radius: 30px;
+      padding: 16px 14px 22px;
+      margin: 40px auto;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+    .row.two { grid-template-columns: repeat(2, 1fr); }
+    .btn { background: #2b2b2b; border: none; border-radius: 12px; padding: 12px 0; color: #fff; font-size: 14px; cursor: pointer; }
+    .btn:active { background: #555; }
+    .red { background: #c0392b; }
+    .green { background: #27ae60; }
+    .yellow { background: #f1c40f; color: #000; }
+    .blue { background: #2980b9; }
+
+    .nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+    .ok { background: #444; font-weight: bold; }
+    .numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .extra-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+    .extra-keys .btn { padding: 14px 0; font-size: 13px; border-radius: 14px; }
+
+    /* AC Remote Popup */
+    #ac-popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 99999;
+      overflow: auto;
+    }
+
+    .ac-remote {
+      width: 300px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 30px;
+      padding: 24px 20px;
+      margin: 40px auto;
+      color: var(--text-main);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ac-header {
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 15px;
+      color: var(--text-main);
+    }
+
+    .dial-container {
+      position: relative;
+      width: 220px;
+      height: 140px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      margin: 10px 0 20px;
+      touch-action: none;
+    }
+
+    .dial-svg {
+      width: 220px;
+      height: 140px;
+    }
+
+    .dial-bg-path {
+      fill: none;
+      stroke: var(--card-border);
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+
+    .dial-active-path {
+      fill: none;
+      stroke: var(--accent-blue);
+      stroke-width: 12;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.05s linear;
+    }
+
+    .dial-handle {
+      fill: #ffffff;
+      stroke: var(--accent-blue);
+      stroke-width: 4;
+      cursor: pointer;
+      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .dial-center-info {
+      position: absolute;
+      bottom: 10px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .ac-temp-display {
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+    }
+
+    .ac-mode-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    .ac-controls-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .ac-btn {
+      background: var(--bg-color);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 8px;
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ac-btn i { font-size: 16px; }
+
+    .ac-btn.power-btn {
+      background: rgba(220, 38, 38, 0.1);
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+    .ac-btn.power-btn i { color: var(--accent-red); }
+
+    .ac-btn:active {
+      transform: scale(0.95);
+    }
+
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999999;
+      transition: opacity 0.3s ease;
+    }
+
+    .loader {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--card-border);
+      border-top: 4px solid var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text { margin-top: 15px; font-size: 14px; color: var(--text-sub); font-weight: 600; }
+
+    #login-popup {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-color);
+      z-index: 999999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+    }
+
+    .login-box h2 { margin-bottom: 20px; font-size: 20px; color: var(--accent-blue); font-weight: 800; }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--bg-color);
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent-blue);
+      border: none;
+      color: white;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .login-box .error-msg {
+      color: var(--accent-red);
+      font-size: 12px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loader"></div>
+    <div class="loading-text" data-i18n="connecting">Connecting...</div>
+  </div>
+
+  <!-- Login Popup -->
+  <div id="login-popup" style="display: none;">
+    <div class="login-box">
+      <h2 data-i18n="loginTitle">Control Panel Login</h2>
+      <input 
+        type="email" 
+        id="login-email" 
+        placeholder="Email" 
+        data-i18n-ph="emailPh" 
+        autocomplete="username"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
+
+      <input 
+        type="password" 
+        id="login-password" 
+        placeholder="Password" 
+        data-i18n-ph="passPh" 
+        autocomplete="current-password"
+        autocorrect="off" 
+        autocapitalize="none" 
+        spellcheck="false"
+        required 
+      />
+
+      <button id="login-btn" data-i18n="loginBtn">Login</button>
+      <div class="error-msg" id="login-error" data-i18n="loginErr">Login failed! Please check your credentials.</div>
+    </div>
+  </div>
+
+  <!-- Custom Modern Logout Confirmation Modal -->
+  <div id="logout-confirm-modal" class="custom-modal-overlay">
+    <div class="confirm-card">
+      <div class="confirm-icon-box">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </div>
+      <h3 data-i18n="logoutTitle">Sign Out</h3>
+      <p data-i18n="logoutConfirmMsg">Are you sure you want to exit your Nova Smart session?</p>
+      <div class="confirm-actions">
+        <button id="cancel-logout-btn" class="confirm-btn confirm-btn-secondary" data-i18n="cancelBtn">Cancel</button>
+        <button id="confirm-logout-btn" class="confirm-btn confirm-btn-primary">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span data-i18n="logoutConfirmBtn">Logout</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <header>
+      <div class="header-brand">
+        <img src="logo.png" alt="Logo" class="logo" id="appLogo" title="Logout / تسجيل الخروج" />
+        <h1>Nova Smart</h1>
+      </div>
+      <div class="header-controls">
+        <button class="lang-btn" id="langBtn">العربية</button>
+        <button class="theme-btn" id="themeBtn">🌙 Dark</button>
+      </div>
+    </header>
+
+    <!-- Sensors Section -->
+    <div class="top-grid">
+      <div class="card-stat">
+        <div class="tank-box">
+          <div class="tank-container">
+            <div id="water-bar" class="tank-fill">
+              <div class="bubble b1"></div>
+              <div class="bubble b2"></div>
+            </div>
+          </div>
+          <div class="tank-details">
+            <h3 id="water-value">0%</h3>
+            <p data-i18n="waterLevel">Water Level</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-stat">
+        <div class="temp-box">
+          <span class="temp-val" id="temperature-value">0°C</span>
+          <span class="temp-lbl" data-i18n="temperature">Temperature</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Single Power Source Section -->
+    <div class="section-title" data-i18n="secPower">Power Source</div>
+    <div class="single-power-card" id="power-card">
+      <div class="power-info">
+        <div class="power-icon-wrap" id="power-icon-wrap">
+          <i class="fa-solid fa-power-off" id="power-icon"></i>
+        </div>
+        <div class="power-details">
+          <h3 id="power-title" data-i18n="pwrOff">Disconnected</h3>
+          <p id="power-desc" data-i18n="pwrOffDesc">No active power source</p>
+        </div>
+      </div>
+      <span class="power-badge" id="power-status" data-i18n="off">OFF</span>
+    </div>
+
+    <!-- Controls Grid Section -->
+    <div class="section-title" data-i18n="secControls">Controls</div>
+    <div class="controls-grid">
+
+      <!-- Water Pump -->
+      <div class="control-window" id="waterpump-card">
+        <div class="window-top">
+          <i class="fa-solid fa-faucet-drip window-icon"></i>
+          <span class="status-tag">
+            <span class="status-led"></span>
+            <span class="status-text">OFF</span>
+          </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="window-title" data-i18n="waterPump">Water Pump</div>
+          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="waterpump"></i>
+        </div>
+      </div>
+
+      <!-- Heater -->
+      <div class="control-window" id="heater-card">
+        <div class="window-top">
+          <i class="fa-solid fa-temperature-arrow-up window-icon"></i>
+          <span class="status-tag">
+            <span class="status-led"></span>
+            <span class="status-text">OFF</span>
+          </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="window-title" data-i18n="heater">Heater</div>
+          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="heater"></i>
+        </div>
+      </div>
+
+      <!-- Lamp 1 -->
+      <div class="control-window" id="lamp1-card">
+        <div class="window-top">
+          <i class="fa-solid fa-lightbulb window-icon"></i>
+          <span class="status-tag">
+            <span class="status-led"></span>
+            <span class="status-text">OFF</span>
+          </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="window-title" data-i18n="lamp1">Lamp 1</div>
+          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="lamp1"></i>
+        </div>
+      </div>
+
+      <!-- Lamp 2 -->
+      <div class="control-window" id="lamp2-card">
+        <div class="window-top">
+          <i class="fa-solid fa-lightbulb window-icon"></i>
+          <span class="status-tag">
+            <span class="status-led"></span>
+            <span class="status-text">OFF</span>
+          </span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="window-title" data-i18n="lamp2">Lamp 2</div>
+          <i class="fa-solid fa-clock timer-icon" title="Set Timer" data-device="lamp2"></i>
+        </div>
+      </div>
+
+      <!-- Remote Control Card -->
+      <div class="control-window" id="remote-card" style="grid-column: span 2;">
+        <div class="window-top">
+          <i class="fa-solid fa-tower-broadcast window-icon"></i>
+          <span class="status-tag">IR</span>
+        </div>
+        <div class="window-title" data-i18n="irRemoteTitle">IR Remote Controls</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Selection Popup (TV vs AC Menu) -->
+  <div id="remote-menu-popup">
+    <div class="remote-menu-card">
+      <h3 data-i18n="selectRemote">Select Remote</h3>
+      <div class="remote-options-grid">
+        <button class="remote-option-btn" onclick="openTVRemote()">
+          <i class="fa-solid fa-tv"></i>
+          <span>TV</span>
+        </button>
+        <button class="remote-option-btn" onclick="openACRemote()">
+          <i class="fa-solid fa-snowflake"></i>
+          <span>AC</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TV Remote Popup -->
+  <div id="remote-popup">  
+    <div class="remote">    
+      <div class="row two">  
+        <button class="btn red" onclick="sendCmd('0x23DC', '0xFD01')">🔆</button>  
+        <button class="btn" onclick="sendCmd('0x8B', '0xFD01')">🔇</button>  
+      </div>    
+      <div class="row">  
+        <button class="btn" onclick="sendCmd('0xC9', '0xFD01')">&#x23EF;</button>  
+        <button class="btn" onclick="sendCmd('0xC8', '0xFD01')">USB</button>  
+        <button class="btn" onclick="sendCmd('0x99', '0xFD01')">&#x25CF;</button>  
+        <button class="btn" onclick="sendCmd('0xCD', '0xFD01')">INFO</button>  
+      </div>    
+      <div class="row">  
+        <button class="btn red" onclick="sendCmd('0xC7', '0xFD01')">|&#x25C0;&#x25C0;</button>  
+        <button class="btn green" onclick="sendCmd('0xC6', '0xFD01')">&#x25B6;&#x25B6;|</button>  
+        <button class="btn yellow" onclick="sendCmd('0xC5', '0xFD01')">&#x25C0;&#x25C0;</button>  
+        <button class="btn blue" onclick="sendCmd('0xC4', '0xFD01')">&#x25B6;&#x25B6;</button>  
+      </div>  
+      <div class="row two">  
+        <button class="btn" onclick="sendCmd('0x9F', '0xFD01')">FAV</button>  
+        <button class="btn" onclick="sendCmd('0x9B', '0xFD01')">SAT</button>
+      </div>    
+      <div class="nav">  
+        <div></div><button class="btn" onclick="sendCmd('0xDE', '0xFD01')">&#x25B2;</button><div></div>  
+        <button class="btn" onclick="sendCmd('0xDB', '0xFD01')">&#x25C0;</button>  
+        <button class="btn ok" onclick="sendCmd('0xDA', '0xFD01')">OK</button>  
+        <button class="btn" onclick="sendCmd('0xD8', '0xFD01')">&#x25B6;</button>  
+        <div></div><button class="btn" onclick="sendCmd('0xD6', '0xFD01')">&#x25BC;</button><div></div>  
+      </div>     
+      <div class="row two">  
+        <button class="btn" onclick="sendCmd('0xD4', '0xFD01')">MENU</button>  
+        <button class="btn" onclick="sendCmd('0xD7', '0xFD01')">EXIT</button>  
+      </div>    
+      <div class="extra-keys">  
+        <button class="btn" onclick="sendCmd('0x9D', '0xFD01')">SUBTITLE</button>  
+        <button class="btn" onclick="sendCmd('0xDD', '0xFD01')">RECALL</button>  
+        <button class="btn green" onclick="sendCmd('0x83', '0xFD01')">PAGE +</button>    
+        <button class="btn" onclick="sendCmd('0xCE', '0xFD01')">TXT</button>
+        <button class="btn" onclick="sendCmd('0xD0', '0xFD01')">AUDIO</button>
+        <button class="btn red" onclick="sendCmd('0xCC', '0xFD01')">PAGE −</button>
+      </div>    
+      <div class="numbers">  
+        <button class="btn" onclick="sendCmd('0x8E', '0xFD01')">1</button>  
+        <button class="btn" onclick="sendCmd('0x86', '0xFD01')">2</button>  
+        <button class="btn" onclick="sendCmd('0x8F', '0xFD01')">3</button>  
+        <button class="btn" onclick="sendCmd('0x92', '0xFD01')">4</button>  
+        <button class="btn" onclick="sendCmd('0x87', '0xFD01')">5</button>  
+        <button class="btn" onclick="sendCmd('0x93', '0xFD01')">6</button>  
+        <button class="btn" onclick="sendCmd('0x96', '0xFD01')">7</button>  
+        <button class="btn" onclick="sendCmd('0x82', '0xFD01')">8</button>  
+        <button class="btn" onclick="sendCmd('0x97', '0xFD01')">9</button>  
+        <button class="btn" onclick="sendCmd('0x9A', '0xFD01')">0</button>  
+        <button class="btn" onclick="sendCmd('0xDF', '0xFD01')">EPG</button>  
+        <button class="btn" onclick="sendCmd('0X89', '0xFD01')">TV/R</button>  
+      </div>  
+    </div>  
+  </div>
+
+  <!-- AC Remote Popup -->
+  <div id="ac-popup">
+    <div class="ac-remote">
+      <div class="ac-header" data-i18n="acTitle">Air Conditioner</div>
+      
+      <!-- Arc Temperature Slider -->
+      <div class="dial-container" id="dial-container">
+        <svg class="dial-svg" viewBox="0 0 220 140">
+          <path class="dial-bg-path" d="M 20 120 A 90 90 0 0 1 200 120" />
+          <path class="dial-active-path" id="dial-active" d="M 20 120 A 90 90 0 0 1 200 120" />
+          <circle class="dial-handle" id="dial-handle" cx="20" cy="120" r="12" />
+        </svg>
+        <div class="dial-center-info">
+          <div class="ac-temp-display" id="ac-temp-val">24°C</div>
+          <div class="ac-mode-sub" id="ac-mode-lbl" data-i18n="acCool">COOL MODE</div>
+        </div>
+      </div>
+
+      <!-- AC Control Buttons -->
+      <div class="ac-controls-grid">
+        <button class="ac-btn power-btn" onclick="sendCmd('AC_POWER', 'AC')">
+          <i class="fa-solid fa-power-off"></i>
+          <span data-i18n="acPower">Power</span>
+        </button>
+        <button class="ac-btn" onclick="sendCmd('AC_MODE', 'AC')">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span data-i18n="acMode">Mode</span>
+        </button>
+        <button class="ac-btn" onclick="sendCmd('AC_FAN', 'AC')">
+          <i class="fa-solid fa-fan"></i>
+          <span data-i18n="acFan">Fan Speed</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timer Popup (Bilingual Wall Clock) -->
+  <div id="timer-overlay">  
+    <div class="timer-card">
+      <h3 id="timer-popup-title">⏱️ Smart Timer Settings</h3>  
+      
+      <div class="timer-section-box">
+        <div class="section-label-inner" data-i18n="quickSetTitle">
+          <i class="fa-solid fa-bolt"></i> Quick Set
+        </div>
+        <div class="quick-presets">
+          <button type="button" class="preset-btn" onclick="applyQuickPreset(15)">15m</button>
+          <button type="button" class="preset-btn" onclick="applyQuickPreset(30)">30m</button>
+          <button type="button" class="preset-btn" onclick="applyQuickPreset(60)">1h</button>
+          <button type="button" class="preset-btn" onclick="applyQuickPreset(120)">2h</button>
+        </div>
+      </div>
+
+      <div class="timer-section-box">
+        <div class="section-label-inner" data-i18n="setTimerTitle">
+          <i class="fa-solid fa-clock"></i> Set timer
+        </div>
+
+        <div class="time-type-switch">
+          <button type="button" class="time-type-btn active-start" id="start-type-btn" onclick="switchTimeType('start')">
+            <span id="lbl-start-title">🟢 Start Time</span>
+            <span id="start-preview-text" style="font-size:10px; opacity:0.8;">12:00 AM</span>
+          </button>
+          <button type="button" class="time-type-btn" id="end-type-btn" onclick="switchTimeType('end')">
+            <span id="lbl-end-title">🔴 End Time</span>
+            <span id="end-preview-text" style="font-size:10px; opacity:0.8;">12:30 PM</span>
+          </button>
+        </div>
+
+        <div class="days-grid" id="days-container"></div>
+
+        <div class="wall-clock-wrapper" id="wall-clock">
+          <button type="button" class="clock-center-btn" id="period-toggle-btn" onclick="togglePeriod()">
+            <span id="period-icon">☀️</span>
+            <span id="period-text">AM</span>
+          </button>
+        </div>
+
+        <div class="minutes-control-box">
+          <span id="lbl-minute" style="font-size: 11px; font-weight: 700; color: var(--text-sub);">Minute:</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button type="button" class="step-btn" onclick="adjustMinute(-1)">-</button>
+            <span id="minute-display" style="font-size: 16px; font-weight: 800; min-width: 25px; text-align: center;">00</span>
+            <button type="button" class="step-btn" onclick="adjustMinute(1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="timer-actions">  
+        <button id="cancel-timer-btn" class="t-btn">Cancel</button>  
+        <button id="set-custom-timer-btn" class="t-btn" style="background-color: var(--accent-blue);" onclick="saveWallClockTimer()">Apply ✓</button>
+      </div>  
+      <button id="clear-timer-btn" onclick="clearActiveTimer()">Clear & Delete Timer</button>  
+    </div>
+  </div>
+
+<!-- Firebase & App Script -->
+<script type="module">  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";  
+  import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";  
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging.js";
+
+  const firebaseConfig = {  
+    apiKey: "AIzaSyDy18HXJDYsLqlgCcbnuBBa1a_av9-FyoE",  
+    authDomain: "smarthome-ad84f.firebaseapp.com",  
+    databaseURL: "https://smarthome-ad84f-default-rtdb.firebaseio.com",  
+    projectId: "smarthome-ad84f",  
+    storageBucket: "smarthome-ad84f.appspot.com",  
+    messagingSenderId: "849228056680",  
+    appId: "1:849228056680:web:09fa91eaca63dc148953dd"  
+  };  
+
+  const app = initializeApp(firebaseConfig);  
+  const database = getDatabase(app);  
+  const auth = getAuth(app);
+  const messaging = getMessaging(app);
+
+  let savedLang = localStorage.getItem('nova_lang') || 'en';
+  let savedTheme = localStorage.getItem('nova_theme') || 'light';
+
+  const translations = {
+    en: {
+      connecting: "Connecting...",
+      loginTitle: "Control Panel Login",
+      emailPh: "Email",
+      passPh: "Password",
+      loginBtn: "Login",
+      loginErr: "Login failed! Please check your credentials.",
+      waterLevel: "Water Level",
+      temperature: "Temperature",
+      secPower: "Power Source",
+      pwrGrid: "Grid Power",
+      pwrGridDesc: "Main Electricity Active",
+      pwrGenerator: "Generator",
+      pwrGenDesc: "Generator Subscription Active",
+      pwrSolar: "Solar Power",
+      pwrSolarDesc: "Solar Inverter Active",
+      pwrOff: "No Power",
+      pwrOffDesc: "Electricity Disconnected",
+      active: "ACTIVE",
+      off: "OFF",
+      secControls: "Controls",
+      waterPump: "Water Pump",
+      heater: "Heater",
+      lamp1: "Lamp 1",
+      lamp2: "Lamp 2",
+      irRemoteTitle: "IR Remote Controls",
+      selectRemote: "Select Device Remote",
+      acTitle: "Air Conditioner",
+      acCool: "COOL MODE",
+      acPower: "Power",
+      acMode: "Mode",
+      acFan: "Fan Speed",
+      autoState: "AUTO",
+      timerState: "TIMER",
+      lostConn: "Connection lost! Reconnecting...",
+      verifying: "Verifying credentials...",
+      timerTitlePrefix: "Set Timer for ",
+      logoutTitle: "Sign Out",
+      logoutConfirmMsg: "Are you sure you want to exit your Nova Smart session?",
+      logoutConfirmBtn: "Logout",
+      startTitle: "🟢 Start Time",
+      endTitle: "🔴 End Time",
+      minuteLabel: "Minute:",
+      cancelBtn: "Cancel",
+      applyBtn: "Apply ✓",
+      clearBtn: "Clear & Delete Timer",
+      quickSetTitle: "Quick Set",
+      setTimerTitle: "Set timer"
+    },
+    ar: {
+      connecting: "جاري الاتصال...",
+      loginTitle: "تسجيل دخول لوحة التحكم",
+      emailPh: "البريد الإلكتروني",
+      passPh: "كلمة المرور",
+      loginBtn: "تسجيل الدخول",
+      loginErr: "فشل تسجيل الدخول! يرجى التحقق من صحة البيانات.",
+      waterLevel: "مستوى المياه",
+      temperature: "درجة الحرارة",
+      secPower: "مصدر الكهرباء",
+      pwrGrid: "كهرباء الدولة",
+      pwrGridDesc: "موصول على كهرباء لبنان",
+      pwrGenerator: "اشتراك المولد",
+      pwrGenDesc: "موصول على خط الاشتراك",
+      pwrSolar: "الطاقة الشمسية",
+      pwrSolarDesc: "موصول على نظام الطاقة",
+      pwrOff: "مقطوعة",
+      pwrOffDesc: "لا يوجد مصدر كهرباء فعال",
+      active: "فعّال",
+      off: "مقطوع",
+      secControls: "وحدات التحكم",
+      waterPump: "موتير المياه",
+      heater: "السخان",
+      lamp1: "اللمبة 1",
+      lamp2: "اللمبة 2",
+      irRemoteTitle: "أجهزة التحكم عن بعد",
+      selectRemote: "اختر جهاز التحكم",
+      acTitle: "المكيف الهوائي",
+      acCool: "وضع التبريد",
+      acPower: "تشغيل/إطفاء",
+      acMode: "الوضع",
+      acFan: "سرعة المروحة",
+      autoState: "تلقائي",
+      timerState: "مؤقت",
+      lostConn: "فُقد الاتصال! جاري إعادة التشغيل...",
+      verifying: "جاري التحقق من الصلاحيات...",
+      timerTitlePrefix: "ضبط مؤقت جهاز ",
+      logoutTitle: "تسجيل الخروج",
+      logoutConfirmMsg: "هل أنت تأكد من رغبتك في تسجيل الخروج من تطبيق Nova Smart؟",
+      logoutConfirmBtn: "خروج",
+      startTitle: "🟢 وقت التشغيل",
+      endTitle: "🔴 وقت الإيقاف",
+      minuteLabel: "الدقيقة:",
+      cancelBtn: "إلغاء",
+      applyBtn: "تشغيل ✓",
+      clearBtn: "إلغاء وتفريغ المؤقت",
+      quickSetTitle: "الضبط السريع",
+      setTimerTitle: "ضبط توقيت"
+    }
+  };
+
+  let currentLang = savedLang;
+  let lastPowerValue = null;
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('nova_lang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang][key]) {
+        if (key === 'quickSetTitle') {
+          el.innerHTML = `<i class="fa-solid fa-bolt"></i> ${translations[lang][key]}`;
+        } else if (key === 'setTimerTitle') {
+          el.innerHTML = `<i class="fa-solid fa-clock"></i> ${translations[lang][key]}`;
+        } else {
+          el.innerText = translations[lang][key];
+        }
+      }
+    });
+
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const key = el.getAttribute('data-i18n-ph');
+      if (translations[lang][key]) {
+        el.placeholder = translations[lang][key];
+      }
+    });
+
+    document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
+    
+    document.getElementById('lbl-start-title').textContent = translations[currentLang].startTitle;
+    document.getElementById('lbl-end-title').textContent = translations[currentLang].endTitle;
+    document.getElementById('lbl-minute').textContent = translations[currentLang].minuteLabel;
+    document.getElementById('cancel-timer-btn').textContent = translations[currentLang].cancelBtn;
+    document.getElementById('set-custom-timer-btn').textContent = translations[currentLang].applyBtn;
+    document.getElementById('clear-timer-btn').textContent = translations[currentLang].clearBtn;
+
+    if (typeof window.initDaysUI === 'function') window.initDaysUI();
+    if (typeof window.updatePreviews === 'function') window.updatePreviews();
+
+    if (lastPowerValue !== null && typeof window.updatePowerUI === 'function') {
+      window.updatePowerUI(lastPowerValue);
+    }
+  }
+
+  function setTheme(theme) {
+    const themeBtn = document.getElementById('themeBtn');
+    if (theme === 'dark') {
+      document.body.classList.add('dark-mode');
+      themeBtn.textContent = '☀️ Light';
+      localStorage.setItem('nova_theme', 'dark');
+    } else {
+      document.body.classList.remove('dark-mode');
+      themeBtn.textContent = '🌙 Dark';
+      localStorage.setItem('nova_theme', 'light');
+    }
+  }
+
+  setLanguage(savedLang);
+  setTheme(savedTheme);
+
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const isDark = document.body.classList.contains('dark-mode');
+    setTheme(isDark ? 'light' : 'dark');
+  });
+
+  document.getElementById('langBtn').addEventListener('click', () => {
+    const newLang = currentLang === 'en' ? 'ar' : 'en';
+    setLanguage(newLang);
+  });
+
+  const logoutModal = document.getElementById("logout-confirm-modal");
+  const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
+  const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
+
+  document.getElementById("appLogo").addEventListener("click", () => {
+    logoutModal.style.display = "flex";
+  });
+
+  cancelLogoutBtn.addEventListener("click", () => {
+    logoutModal.style.display = "none";
+  });
+
+  logoutModal.addEventListener("click", (e) => {
+    if (e.target === logoutModal) logoutModal.style.display = "none";
+  });
+
+  confirmLogoutBtn.addEventListener("click", () => {
+    signOut(auth).then(() => {
+      window.location.reload();
+    }).catch((err) => {
+      console.error("Logout error:", err);
+    });
+  });
+
+  const loadingScreen = document.getElementById("loading-screen");
+  const loginPopup = document.getElementById("login-popup");
+  let pageReady = false;
+
+  function hideLoading() {
+    if (pageReady) return;
+    pageReady = true;
+    loadingScreen.style.opacity = "0";
+    setTimeout(() => { loadingScreen.style.display = "none"; }, 300);
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginPopup.style.display = "none";
+      hideLoading();
+      initSmartHomeApp();
+    } else {
+      loadingScreen.style.display = "none";
+      loginPopup.style.display = "flex";
+    }
+  });
+
+  function handleLogin() {
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+    const errorMsg = document.getElementById("login-error");
+
+    if (!email || !password) return;
+
+    loadingScreen.style.display = "flex";
+    loadingScreen.style.opacity = "1";
+    document.querySelector(".loading-text").innerText = translations[currentLang].verifying;
+
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => signInWithEmailAndPassword(auth, email, password))
+      .then(() => { errorMsg.style.display = "none"; })
+      .catch((error) => {
+        loadingScreen.style.display = "none";
+        errorMsg.style.display = "block";
+        errorMsg.innerText = `Login Error: ${error.code}`;
+      });
+  }
+
+  document.getElementById("login-btn").addEventListener("click", handleLogin);
+  document.getElementById("login-email").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
+  document.getElementById("login-password").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
+
+  // --- دالة طلب إذن الإشعارات وحفظ الـ FCM Token تلقائياً للعميل ---
+  async function setupFCMNotifications() {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+        
+        const currentToken = await getToken(messaging, { 
+          vapidKey: "BEl42iUYgUiv-No825cTzE1iL8L0_r1y1r_a_b_c_d_e_f" 
+        });
+
+        if (currentToken) {
+          const tokenCleanId = currentToken.substring(0, 30).replace(/[^a-zA-Z0-9]/g, "_");
+          await set(ref(database, `fcm_tokens/${tokenCleanId}`), {
+            token: currentToken,
+            timestamp: Date.now()
+          });
+          console.log("FCM Token saved successfully:", currentToken);
+        } else {
+          console.log('No registration token available.');
+        }
+      } else {
+        console.log('Notification permission denied.');
+      }
+    } catch (err) {
+      console.error('An error occurred while retrieving token. ', err);
+    }
+  }
+
+  function initSmartHomeApp() {
+    // تشغيل طلب الإشعارات وحفظ التوكن أول ما يسجل دخول العميل
+    setupFCMNotifications();
+
+    const remoteMenuPopup = document.getElementById("remote-menu-popup");
+    const remotePopup     = document.getElementById("remote-popup");
+    const acPopup         = document.getElementById("ac-popup");
+    const remoteCard      = document.getElementById("remote-card");  
+    const timerOverlay    = document.getElementById("timer-overlay");
+  
+    remoteCard.addEventListener("click", () => { remoteMenuPopup.style.display = "flex"; });  
+    
+    window.openTVRemote = function () { remoteMenuPopup.style.display = "none"; remotePopup.style.display = "block"; };
+    window.openACRemote = function () { remoteMenuPopup.style.display = "none"; acPopup.style.display = "block"; };
+
+    remoteMenuPopup.addEventListener("click", (e) => { if (e.target === remoteMenuPopup) remoteMenuPopup.style.display = "none"; });
+    remotePopup.addEventListener("click", (e) => { if (e.target === remotePopup) remotePopup.style.display = "none"; });
+    acPopup.addEventListener("click", (e) => { if (e.target === acPopup) acPopup.style.display = "none"; });
+    timerOverlay.addEventListener("click", (e) => { if (e.target === timerOverlay) { timerOverlay.style.display = "none"; currentDevice = null; } });
+
+    window.sendCmd = function (command, address) {  
+      set(ref(database, "Remote"), { command: command, address: address });  
+    };  
+
+    const toggles = [  
+      { path: "output/devices/waterpump", id: "waterpump" },  
+      { path: "output/devices/heater", id: "heater" },  
+      { path: "output/devices/lamp1", id: "lamp1" },  
+      { path: "output/devices/lamp2", id: "lamp2" }
+    ];  
+  
+    let localDeviceStates = {};
+    let isProcessing = {}; 
+
+    toggles.forEach((toggle) => {  
+      const card = document.getElementById(`${toggle.id}-card`);  
+      const dbRef = ref(database, toggle.path);  
+      const timerRef = ref(database, `timers/${toggle.id}`);
+
+      onValue(timerRef, (snap) => {
+        const timerIcon = card.querySelector(".timer-icon");
+        if (snap.exists() && snap.val() !== null) {
+          timerIcon.classList.add("timer-active");
+        } else {
+          timerIcon.classList.remove("timer-active");
+        }
+      });
+
+      onValue(dbRef, (snap) => {  
+        const val = snap.val() ?? 0;
+        localDeviceStates[toggle.id] = val;
+
+        card.classList.remove("on", "auto", "timer-locked");
+        const led = card.querySelector(".status-led");
+        const statusText = card.querySelector(".status-text");
+        if (led) { led.classList.remove("show", "green", "black"); }
+
+        if (val === 1) {
+          card.classList.add("on");
+          if (statusText) statusText.innerText = "ON";
+        } else if (val === 2) {
+          card.classList.add("auto");
+          if (statusText) statusText.innerText = translations[currentLang].autoState;
+          if (led) { led.classList.add("show", "black"); }
+        } else if (val === 3) {
+          card.classList.add("auto");
+          if (statusText) statusText.innerText = translations[currentLang].autoState;
+          if (led) { led.classList.add("show", "green"); }
+        } else if (val === 4) {
+          card.classList.add("timer-locked");
+          if (statusText) statusText.innerText = translations[currentLang].timerState;
+        } else {
+          if (statusText) statusText.innerText = "OFF";
+        }
+      });
+      
+      // --- مراقبة وحذف سجلات الإشعارات إذا بلغت 4 خانات أو أكثر ---
+      onValue(ref(database, "notification_logs"), (snapshot) => {
+        if (snapshot.exists()) {
+          const logsData = snapshot.val();
+          const logsCount = typeof logsData === 'object' ? Object.keys(logsData).length : 0;
+          
+          if (logsCount >= 4) {
+            set(ref(database, "notification_logs"), null)
+              .then(() => {
+                console.log("notification_logs path deleted successfully because it reached 4 or more entries.");
+              })
+              .catch((error) => {
+                console.error("Error deleting notification_logs:", error);
+              });
+          }
+        }
+      });
+
+      let pressTimer = null;
+      let isLongPress = false;
+
+      const lockCardTemporarily = (deviceId) => {
+        isProcessing[deviceId] = true;
+        card.style.pointerEvents = "none";
+        card.style.opacity = "0.7";
+
+        setTimeout(() => {
+          isProcessing[deviceId] = false;
+          card.style.pointerEvents = "auto";
+          card.style.opacity = "1";
+        }, 2000); 
+      };
+
+      card.addEventListener("pointerdown", (e) => {
+        if (localDeviceStates[toggle.id] === 4 || isProcessing[toggle.id]) return; 
+        if (e.target.classList.contains("timer-icon")) return;
+
+        isLongPress = false;
+        if (pressTimer) clearTimeout(pressTimer);
+
+        pressTimer = setTimeout(() => {
+          isLongPress = true;
+          let current = localDeviceStates[toggle.id] ?? 0;
+          let targetState = (current === 1) ? 3 : 2;
+
+          set(dbRef, targetState);
+          lockCardTemporarily(toggle.id);
+          if (navigator.vibrate) navigator.vibrate(60); 
+        }, 700); 
+      });
+
+      card.addEventListener("pointerup", (e) => {
+        if (localDeviceStates[toggle.id] === 4 || isProcessing[toggle.id]) return;
+        if (e.target.classList.contains("timer-icon")) return;
+
+        clearTimeout(pressTimer); 
+
+        if (!isLongPress) {
+          let current = localDeviceStates[toggle.id] ?? 0;
+          let newState = 0;
+
+          if (current === 0) newState = 1;
+          else if (current === 1) newState = 0;
+          else if (current === 2 || current === 3) newState = 0;
+
+          set(dbRef, newState);
+          lockCardTemporarily(toggle.id);
+        }
+      });
+
+      card.addEventListener("pointercancel", () => { clearTimeout(pressTimer); });
+    });  
+
+    onValue(ref(database, "temperature"), (snap) => {  
+      document.getElementById("temperature-value").innerText = `${snap.val() || 0}°C`;  
+    });  
+  
+    onValue(ref(database, "waterLevel"), (snap) => {  
+      const level = snap.val() || 0;  
+      document.getElementById("water-bar").style.height = `${level}%`;  
+      document.getElementById("water-value").innerText = `${level}%`;  
+    });  
+  
+    const powerCard = document.getElementById("power-card");
+    const powerIcon = document.getElementById("power-icon");
+    const powerTitle = document.getElementById("power-title");
+    const powerDesc = document.getElementById("power-desc");
+    const powerStatus = document.getElementById("power-status");
+
+    window.updatePowerUI = function(val) {
+      lastPowerValue = val;
+      powerCard.className = "single-power-card";
+
+      if (val === 1) {
+        powerCard.classList.add("grid");
+        powerIcon.className = "fa-solid fa-building-columns";
+        powerTitle.innerText = translations[currentLang].pwrGrid;
+        powerDesc.innerText = translations[currentLang].pwrGridDesc;
+        powerStatus.innerText = translations[currentLang].active;
+      } else if (val === 2) {
+        powerCard.classList.add("generator");
+        powerIcon.className = "fa-solid fa-plug-circle-bolt";
+        powerTitle.innerText = translations[currentLang].pwrGenerator;
+        powerDesc.innerText = translations[currentLang].pwrGenDesc;
+        powerStatus.innerText = translations[currentLang].active;
+      } else if (val === 3) {
+        powerCard.classList.add("solar");
+        powerIcon.className = "fa-solid fa-solar-panel";
+        powerTitle.innerText = translations[currentLang].pwrSolar;
+        powerDesc.innerText = translations[currentLang].pwrSolarDesc;
+        powerStatus.innerText = translations[currentLang].active;
+      } else {
+        powerIcon.className = "fa-solid fa-power-off";
+        powerTitle.innerText = translations[currentLang].pwrOff;
+        powerDesc.innerText = translations[currentLang].pwrOffDesc;
+        powerStatus.innerText = translations[currentLang].off;
+      }
+    };
+
+    onValue(ref(database, "output/devices/kahrba"), (snap) => { updatePowerUI(snap.val()); });  
+  
+    let currentDevice = null;
+    let currentSettingType = 'start'; 
+
+    let startState = { hour: 12, isPM: false, minute: 0, dayOffset: 0 };
+    let endState = { hour: 12, isPM: true, minute: 30, dayOffset: 0 };
+
+    function preRenderClockAndDays() {
+      const clockWrapper = document.getElementById("wall-clock");
+      const centerBtn = document.getElementById("period-toggle-btn");
+      clockWrapper.innerHTML = "";
+      clockWrapper.appendChild(centerBtn);
+
+      let radius = 64;
+      for (let i = 1; i <= 12; i++) {
+        let node = document.createElement("div");
+        node.className = "clock-node";
+        node.textContent = i;
+        node.setAttribute("data-hour", i);
+
+        let angle = (i * 30) - 90; 
+        let rad = angle * (Math.PI / 180);
+        let x = 90 + radius * Math.cos(rad) - 13; 
+        let y = 90 + radius * Math.sin(rad) - 13;
+
+        node.style.left = `${x}px`;
+        node.style.top = `${y}px`;
+
+        node.addEventListener("click", () => {
+          if (currentSettingType === 'start') startState.hour = i;
+          else endState.hour = i;
+          updateClockSelection();
+          updatePreviews();
+        });
+
+        clockWrapper.appendChild(node);
+      }
+      initDaysUI();
+    }
+
+    window.initDaysUI = function() {
+      const daysContainer = document.getElementById("days-container");
+      if (!daysContainer) return;
+      daysContainer.innerHTML = "";
+
+      const daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'جمعة', 'السبت'];
+      const daysEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      
+      const todayIndex = new Date().getDay();
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+
+      for (let i = 0; i < 6; i++) {
+        let btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `day-btn ${activeState.dayOffset === i ? 'active' : ''}`;
+        
+        let label = "";
+        if (currentLang === 'ar') {
+          label = (i === 0) ? "اليوم" : (i === 1) ? "غداً" : daysAr[(todayIndex + i) % 7];
+        } else {
+          label = (i === 0) ? "Today" : (i === 1) ? "Tomorrow" : daysEn[(todayIndex + i) % 7];
+        }
+
+        btn.textContent = label;
+        btn.setAttribute("data-dayoffset", i);
+        
+        btn.addEventListener("click", (e) => {
+          document.querySelectorAll(".day-btn").forEach(b => b.classList.remove("active"));
+          e.target.classList.add("active");
+          if (currentSettingType === 'start') startState.dayOffset = i;
+          else endState.dayOffset = i;
+        });
+        daysContainer.appendChild(btn);
+      }
+    }
+
+    function updateClockSelection() {
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+      document.querySelectorAll(".clock-node").forEach(node => {
+        const h = parseInt(node.getAttribute("data-hour"));
+        if (h === activeState.hour) {
+          node.classList.add("selected");
+        } else {
+          node.classList.remove("selected");
+        }
+      });
+    }
+
+    window.updatePreviews = function() {
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+      
+      let periodStr = "";
+      if (currentLang === 'ar') {
+        periodStr = activeState.isPM ? 'بعد الظهر' : 'صبح';
+      } else {
+        periodStr = activeState.isPM ? 'PM' : 'AM';
+      }
+
+      const formatString = (st) => {
+        let p = (currentLang === 'ar') ? (st.isPM ? 'بعد الظهر' : 'صبح') : (st.isPM ? 'PM' : 'AM');
+        return `${st.hour}:${String(st.minute).padStart(2, '0')} ${p}`;
+      };
+
+      document.getElementById("start-preview-text").textContent = formatString(startState);
+      document.getElementById("end-preview-text").textContent = formatString(endState);
+      
+      document.getElementById("period-icon").textContent = activeState.isPM ? "🌙" : "☀️";
+      document.getElementById("period-text").textContent = periodStr;
+      document.getElementById("minute-display").textContent = String(activeState.minute).padStart(2, '0');
+      updateClockSelection();
+    }
+
+    window.switchTimeType = function(type) {
+      currentSettingType = type;
+      const startBtn = document.getElementById("start-type-btn");
+      const endBtn = document.getElementById("end-type-btn");
+
+      if (type === 'start') {
+        startBtn.className = "time-type-btn active-start";
+        endBtn.className = "time-type-btn";
+      } else {
+        startBtn.className = "time-type-btn";
+        endBtn.className = "time-type-btn active-end";
+      }
+
+      initDaysUI();
+      updateClockSelection();
+      updatePreviews();
+    };
+
+    window.togglePeriod = function() {
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+      activeState.isPM = !activeState.isPM;
+      updatePreviews();
+    };
+
+    window.adjustMinute = function(val) {
+      const activeState = (currentSettingType === 'start') ? startState : endState;
+      activeState.minute += val;
+      if (activeState.minute > 59) activeState.minute = 0;
+      if (activeState.minute < 0) activeState.minute = 59;
+      updatePreviews();
+    };
+
+    window.applyQuickPreset = function(minutes) {
+      if (!currentDevice) return;
+
+      let now = new Date();
+      let startMs = now.getTime();
+      let endMs = startMs + (minutes * 60000);
+
+      set(ref(database, `timers/${currentDevice}`), { start: startMs, end: endMs }).then(() => {  
+        timerOverlay.style.display = "none";  
+        currentDevice = null;  
+      });
+    };
+
+    preRenderClockAndDays();
+
+    document.querySelectorAll(".timer-icon").forEach(icon => {
+      icon.addEventListener("click", function(e) {
+        e.stopPropagation();
+
+        currentDevice = icon.getAttribute("data-device");
+        const device = currentDevice;
+
+        timerOverlay.style.display = "flex";
+        document.getElementById("timer-popup-title").textContent =
+            `${translations[currentLang].timerTitlePrefix}${device}`;
+
+        switchTimeType("start");
+
+        setTimeout(async () => {
+          try {
+            const timerRef = ref(database, `timers/${device}`);
+            const snapshot = await get(timerRef);
+
+            if (currentDevice !== device) return;
+
+            const now = new Date();
+            let startMs = now.getTime();
+            let endMs = startMs + 30 * 60000;
+
+            if (snapshot.exists()) {
+              const timerData = snapshot.val();
+              if (timerData.start) startMs = timerData.start;
+              if (timerData.end) endMs = timerData.end;
+            }
+
+            const startDate = new Date(startMs);
+            const endDate = new Date(endMs);
+
+            startState.hour = startDate.getHours() % 12 || 12;
+            startState.isPM = startDate.getHours() >= 12;
+            startState.minute = startDate.getMinutes();
+            startState.dayOffset = 0;
+
+            endState.hour = endDate.getHours() % 12 || 12;
+            endState.isPM = endDate.getHours() >= 12;
+            endState.minute = endDate.getMinutes();
+            endState.dayOffset = 0;
+
+            updatePreviews();
+          } catch (error) {
+            console.error("Failed to load timer:", error);
+          }
+        }, 100);
+      });
+    });
+
+    window.saveWallClockTimer = function() {
+      if (!currentDevice) return;
+
+      const calcTimestamp = (st) => {
+        let hr24 = st.hour;
+        if (!st.isPM && hr24 === 12) hr24 = 0;
+        else if (st.isPM && hr24 !== 12) hr24 += 12;
+
+        let d = new Date();
+        d.setDate(d.getDate() + st.dayOffset);
+        d.setHours(hr24, st.minute, 0, 0);
+        return d.getTime();
+      };
+
+      const startMs = calcTimestamp(startState);
+      const endMs = calcTimestamp(endState);
+
+      if (endMs <= startMs) {
+        alert(currentLang === 'ar' ? "تنبيه: وقت الإيقاف يجب أن يكون بعد وقت التشغيل!" : "Warning: End time must be after start time!");
+        return;
+      }
+
+      set(ref(database, `timers/${currentDevice}`), { start: startMs, end: endMs }).then(() => {  
+        timerOverlay.style.display = "none";  
+        currentDevice = null;  
+      });
+    };
+
+    window.clearActiveTimer = function() {
+      if (!currentDevice) return;  
+      set(ref(database, `timers/${currentDevice}`), null).then(() => {  
+        timerOverlay.style.display = "none";  
+        currentDevice = null;  
+      });
+    };
+
+    document.getElementById("cancel-timer-btn").addEventListener("click", () => {  
+      timerOverlay.style.display = "none";  
+      currentDevice = null;  
+    });  
+  }
+</script>
+
+</body>
+</html>
 
