@@ -122,52 +122,100 @@
       box-shadow: var(--box-shadow);
     }
 
-    /* --- تصميم بانر الإشعارات العلوي (Allow / Deny) --- */
-    .notif-banner {
+    /* --- نافذة التنبيه المنبثقة (Alert Modal) للإشعارات --- */
+    .custom-modal-overlay {
       display: none;
-      background: var(--card-bg);
-      border: 1.5px solid var(--accent-blue);
-      border-radius: 16px;
-      padding: 14px 16px;
-      margin-bottom: 20px;
-      box-shadow: var(--box-shadow);
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 999999;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      animation: fadeIn 0.3s ease;
+      justify-content: center;
+      animation: fadeIn 0.25s ease-out forwards;
     }
 
-    .notif-banner-text {
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .confirm-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 32px 24px 24px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      position: relative;
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .confirm-icon-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 20px;
+    }
+
+    .confirm-card h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .confirm-card p {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.5;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .confirm-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: none;
       font-size: 13px;
       font-weight: 700;
-      color: var(--text-main);
+      cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
+      transition: all 0.2s ease;
     }
 
-    .notif-banner-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .notif-btn {
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      border: none;
-    }
-
-    .notif-allow-btn {
+    .confirm-btn-primary {
       background: var(--accent-blue);
-      color: white;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
 
-    .notif-deny-btn {
+    .confirm-btn-secondary {
       background: var(--bg-color);
-      color: var(--text-sub);
+      color: var(--text-main);
       border: 1px solid var(--card-border);
     }
 
@@ -491,7 +539,8 @@
     #remote-menu-popup,
     #remote-popup,
     #ac-popup,
-    #logout-confirm-modal {
+    #logout-confirm-modal,
+    #notif-alert-modal {
       cursor: pointer;
     }
 
@@ -501,102 +550,6 @@
     .ac-remote,
     .confirm-card {
       cursor: default;
-    }
-
-    .custom-modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 999999;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.25s ease-out forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.9) translateY(10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .confirm-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 32px 24px 24px;
-      width: 90%;
-      max-width: 360px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      text-align: center;
-      position: relative;
-      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    .confirm-icon-box {
-      width: 64px;
-      height: 64px;
-      border-radius: 20px;
-      background: rgba(220, 38, 38, 0.1);
-      color: var(--accent-red);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      margin: 0 auto 20px;
-    }
-
-    .confirm-card h3 {
-      font-size: 19px;
-      font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-
-    .confirm-card p {
-      font-size: 13px;
-      color: var(--text-sub);
-      line-height: 1.5;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    .confirm-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .confirm-btn {
-      flex: 1;
-      padding: 12px 16px;
-      border-radius: 14px;
-      border: none;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-
-    .confirm-btn-primary {
-      background: var(--accent-red);
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
-    }
-
-    .confirm-btn-secondary {
-      background: var(--bg-color);
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
     }
 
     /* --- Timer Overlay & Dual Start/End Wall Clock --- */
@@ -1188,17 +1141,35 @@
     </div>
   </div>
 
+  <!-- نافذة التنبيه المنبثقة (Custom Alert Modal) لطلب الإشعارات Allow / Deny -->
+  <div id="notif-alert-modal" class="custom-modal-overlay">
+    <div class="confirm-card">
+      <div class="confirm-icon-box">
+        <i class="fa-solid fa-bell"></i>
+      </div>
+      <h3 id="notif-alert-title" data-i18n="notifAlertTitle">Enable Notifications</h3>
+      <p id="notif-alert-msg" data-i18n="notifAlertMsg">Would you like to allow instant push notifications for alerts and device updates?</p>
+      <div class="confirm-actions">
+        <button id="notif-deny-action" class="confirm-btn confirm-btn-secondary" data-i18n="notifDenyBtn">Deny</button>
+        <button id="notif-allow-action" class="confirm-btn confirm-btn-primary">
+          <i class="fa-solid fa-check"></i>
+          <span data-i18n="notifAllowBtn">Allow</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Custom Modern Logout Confirmation Modal -->
   <div id="logout-confirm-modal" class="custom-modal-overlay">
     <div class="confirm-card">
-      <div class="confirm-icon-box">
+      <div class="confirm-icon-box" style="background: rgba(220, 38, 38, 0.1); color: var(--accent-red);">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
       </div>
       <h3 data-i18n="logoutTitle">Sign Out</h3>
       <p data-i18n="logoutConfirmMsg">Are you sure you want to exit your Nova Smart session?</p>
       <div class="confirm-actions">
         <button id="cancel-logout-btn" class="confirm-btn confirm-btn-secondary" data-i18n="cancelBtn">Cancel</button>
-        <button id="confirm-logout-btn" class="confirm-btn confirm-btn-primary">
+        <button id="confirm-logout-btn" class="confirm-btn confirm-btn-primary" style="background: var(--accent-red);">
           <i class="fa-solid fa-right-from-bracket"></i>
           <span data-i18n="logoutConfirmBtn">Logout</span>
         </button>
@@ -1218,18 +1189,6 @@
         <button class="theme-btn" id="themeBtn">🌙 Dark</button>
       </div>
     </header>
-
-    <!-- بانر طلب الإذن العلوي (Allow / Deny) -->
-    <div id="notif-banner" class="notif-banner">
-      <div class="notif-banner-text">
-        <i class="fa-solid fa-bell" style="color: var(--accent-blue);"></i>
-        <span id="notif-banner-msg">تفعيل التنبيهات الفورية للبلاغات؟</span>
-      </div>
-      <div class="notif-banner-actions">
-        <button id="notif-allow-btn" class="notif-btn notif-allow-btn">Allow</button>
-        <button id="notif-deny-btn" class="notif-btn notif-deny-btn">Deny</button>
-      </div>
-    </div>
 
     <!-- Sensors Section -->
     <div class="top-grid">
@@ -1591,7 +1550,10 @@
       clearBtn: "Clear & Delete Timer",
       quickSetTitle: "Quick Set",
       setTimerTitle: "Set timer",
-      notifBannerText: "Allow notifications for smart alerts?"
+      notifAlertTitle: "Enable Notifications",
+      notifAlertMsg: "Would you like to allow instant push notifications for alerts and device updates?",
+      notifAllowBtn: "Allow",
+      notifDenyBtn: "Deny"
     },
     ar: {
       connecting: "جاري الاتصال...",
@@ -1641,7 +1603,10 @@
       clearBtn: "إلغاء وتفريغ المؤقت",
       quickSetTitle: "الضبط السريع",
       setTimerTitle: "ضبط توقيت",
-      notifBannerText: "تفعيل التنبيهات الفورية للبلاغات والأجهزة؟"
+      notifAlertTitle: "تفعيل الإشعارات",
+      notifAlertMsg: "هل ترغب في السماح باستلام التنبيهات الفورية وحالة الأجهزة؟",
+      notifAllowBtn: "سماح (Allow)",
+      notifDenyBtn: "رفض (Deny)"
     }
   };
 
@@ -1676,9 +1641,7 @@
     });
 
     document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
-    const bannerMsg = document.getElementById('notif-banner-msg');
-    if (bannerMsg) bannerMsg.textContent = translations[currentLang].notifBannerText;
-
+    
     document.getElementById('lbl-start-title').textContent = translations[currentLang].startTitle;
     document.getElementById('lbl-end-title').textContent = translations[currentLang].endTitle;
     document.getElementById('lbl-minute').textContent = translations[currentLang].minuteLabel;
@@ -1746,6 +1709,7 @@
 
   const loadingScreen = document.getElementById("loading-screen");
   const loginPopup = document.getElementById("login-popup");
+  const notifAlertModal = document.getElementById("notif-alert-modal");
   let pageReady = false;
 
   function hideLoading() {
@@ -1778,8 +1742,9 @@
     }
   }
 
-  // --- عند الضغط على Allow من البانر العلوي ---
-  document.getElementById('notif-allow-btn').addEventListener('click', async () => {
+  // --- عند الضغط على Allow في نافذة التنبيه المنبثقة ---
+  document.getElementById('notif-allow-action').addEventListener('click', async () => {
+    notifAlertModal.style.display = 'none';
     try {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
@@ -1788,13 +1753,11 @@
     } catch (err) {
       console.error('Error requesting permission:', err);
     }
-    // إخفاء البانر بغض النظر عن النتيجة
-    document.getElementById('notif-banner').style.display = 'none';
   });
 
-  // --- عند الضغط على Deny من البانر العلوي ---
-  document.getElementById('notif-deny-btn').addEventListener('click', () => {
-    document.getElementById('notif-banner').style.display = 'none';
+  // --- عند الضغط على Deny في نافذة التنبيه المنبثقة ---
+  document.getElementById('notif-deny-action').addEventListener('click', () => {
+    notifAlertModal.style.display = 'none';
   });
 
   onAuthStateChanged(auth, (user) => {
@@ -1803,23 +1766,19 @@
       loginPopup.style.display = "none";
       hideLoading();
 
-      // فحص حالة الإذن عند تسجيل الدخول
-      // إذا لم يمنح الإذن بعد (أو كان بوضع Default ولم يضغط مسبقاً)، نظهر البانر العلوي
+      // فحص إذن الإشعارات عند تسجيل الدخول
+      // إذا لم يمنحه مسبقاً (Notification.permission === 'default')، تظهر نافذة التنبيه المنبثقة (Alert)
       if (Notification.permission === 'default') {
-        const banner = document.getElementById('notif-banner');
-        if (banner) {
-          document.getElementById('notif-banner-msg').textContent = translations[currentLang].notifBannerText;
-          banner.style.display = 'flex';
-        }
+        notifAlertModal.style.display = 'flex';
       } else if (Notification.permission === 'granted') {
-        // إذا كان مسموحاً مسبقاً، نقوم بتحديث الـ token تلقائياً في الخلفية
+        // إذا كان مسموحاً مسبقاً، نقوم بتحديث الـ token تلقائياً في الخلفية بصمت
         fetchAndSaveToken();
       }
       
       initSmartHomeApp();
     } else {
       loggedInUserUid = null;
-      document.getElementById('notif-banner').style.display = 'none';
+      notifAlertModal.style.display = 'none';
       loadingScreen.style.display = "none";
       loginPopup.style.display = "flex";
     }
@@ -2282,7 +2241,7 @@
 
     window.clearActiveTimer = function() {
       if (!currentDevice) return;  
-      set(ref(database, `timers/${currentDocument}`), null).then(() => {  
+      set(ref(database, `timers/${currentDevice}`), null).then(() => {  
         timerOverlay.style.display = "none";  
         currentDevice = null;  
       });
