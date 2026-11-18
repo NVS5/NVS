@@ -23,13 +23,7 @@ messaging.onBackgroundMessage((payload) => {
 
   const notificationOptions = {
     body: body,
-    icon: '/NVS/logo.png',
-    badge: '/NVS/logo.png',
-    // ⬇️ أضف هذه الخصائص لإجبار الإشعار على الظهور كنافذة منبثقة عائمة ⬇️
-    vibrate: [300, 100, 300], // اهتزاز لجذب انتباه النظام والجهاز
-    tag: 'nvs-smart-alert',   // يمنع تكرار الإشعارات المتشابهة ويجعلها تحل محل بعضها
-    renotify: true,           // يجعل الهاتف يهتز ويصدر تنبيهاً حتى لو كان هناك إشعار سابق بنفس الـ tag
-    requireInteraction: true, // يبقي الإشعار بارزاً على الشاشة حتى يتفاعل معه المستخدم
+    icon: '/NVS/logo.png', 
     data: {
       url: targetUrl
     }
