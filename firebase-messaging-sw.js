@@ -23,14 +23,12 @@ messaging.onBackgroundMessage((payload) => {
 
   const notificationOptions = {
     body: body,
-    icon: '/NVS/logo.png',     // الشعار الكبير الملون على اليسار داخل الإشعار
-    badge: '/NVS/badge.png',   // أيقونة شريط الحالة العلوي (يجب أن تكون شفافة وذات لون أبيض)[span_1](start_span)[span_1](end_span)
+    icon: '/NVS/logo.png', 
     data: {
       url: targetUrl
     }
   };
 
-  // إرجاع النتيجة مباشرة لضمان عدم إظهار إشعار النظام التلقائي[span_2](start_span)[span_2](end_span)
   return self.registration.showNotification(title, notificationOptions);
 });
 
