@@ -24,7 +24,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationOptions = {
     body: body,
     icon: '/NVS/logo.png',     // الشعار الكبير الملون على اليسار داخل الإشعار
-    badge: '/NVS/1794939365614.jpg',   // أيقونة شريط الحالة العلوي (يجب أن تكون شفافة وذات لون أبيض)[span_1](start_span)[span_1](end_span)
+    badge: '/NVS/badge.png',   // أيقونة شريط الحالة العلوي (يجب أن تكون شفافة وذات لون أبيض)[span_1](start_span)[span_1](end_span)
     data: {
       url: targetUrl
     }
